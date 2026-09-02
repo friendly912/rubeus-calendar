@@ -1,0 +1,203 @@
+/*
+  themes.css
+  ------------------------------------------------------------
+  「ダーク」以外のカラーテーマの色をまとめたファイル。
+
+  【仕組み】
+  設定画面でテーマを選ぶと、js/themes.js が
+      document.body.dataset.theme = "blue" のように
+  bodyタグに data-theme属性を付ける。
+  すると、このファイルの中の該当するブロック（例： [data-theme="blue"] ）が
+  css/variables.css の :root に書かれている値を上書きする。
+
+  「ダーク」テーマ自体はここには書かれていない。
+  ダークテーマの色を調整したい場合は css/variables.css の :root を直接編集すること
+  （ダークは初期値そのものなので、ここで上書きする必要が無いため）。
+
+  【新しいテーマを追加したいとき】
+  下のブロックを1つコピーして、body[data-theme="好きな名前"] にし、
+  色を好きに変更したら、js/themes.js の THEMES一覧にも
+  { id: '好きな名前', label: '画面に表示する名前', swatch: '代表色1つ' }
+  を1行追加すれば、設定画面に新しいテーマとして表示される。
+
+  【色を決める上でのルール】
+  各テーマとも、css/variables.css の「①テーマによって変わる色」に
+  対応する変数だけをすべて書き換えている。
+  「②役割で固定の色」（保存＝緑、削除＝赤など）はテーマに関わらず
+  共通のままにするため、ここには書かない。
+*/
+
+/* ==================== ブルー（深みのある青） ==================== */
+body[data-theme="blue"] {
+    --color-bg: #050b16;
+    --color-panel-bg: #0a1526;
+    --color-cell-bg: #0f1d33;
+    --color-input-bg: #13233d;
+    --color-modal-bg: #0c1930;
+    --color-modal-overlay: rgba(3, 8, 18, 0.94);
+    --color-input-bg-hover: #1a2e4d;
+    --color-selected-bg: #1d3a5e;
+
+    --color-text: #dbe8f5;
+
+    --color-border: #1f3a5c;
+    --color-border-input: #2f5f95;
+    --color-dashed-border: #2f5580;
+
+    --color-accent: #3d8bff;
+    --color-accent-2: #5aa0ff;
+    --color-accent-3: #6fc3ff;
+    --color-accent-4: #8fd0ff;
+    --color-accent-strong: #2f74e0;
+    --color-day-header-text: #7ab0ff;
+    --color-event-bg: rgba(61, 139, 255, 0.14);
+
+    --color-weekend: #ff6b6b;
+
+    --color-title-hover-glow: rgba(61, 139, 255, 0.1);
+    --color-date-hover-glow: rgba(90, 160, 255, 0.35);
+    --color-search-pulse-1: rgba(90, 160, 255, 0.3);
+    --color-search-pulse-2: rgba(90, 160, 255, 0.25);
+    --color-search-pulse-bg: #1c3252;
+    --color-status-bar-bg: #234166;
+}
+
+/* ==================== グリーン ==================== */
+body[data-theme="green"] {
+    --color-bg: #07120d;
+    --color-panel-bg: #0c1c15;
+    --color-cell-bg: #11271d;
+    --color-input-bg: #152e22;
+    --color-modal-bg: #0e2018;
+    --color-modal-overlay: rgba(4, 12, 9, 0.94);
+    --color-input-bg-hover: #183a2c;
+    --color-selected-bg: #1d4433;
+
+    --color-text: #dcf0e6;
+
+    --color-border: #25493a;
+    --color-border-input: #337a5c;
+    --color-dashed-border: #2f6b4f;
+
+    --color-accent: #3ecf8e;
+    --color-accent-2: #54dc9f;
+    --color-accent-3: #6fe8b2;
+    --color-accent-4: #8fefc3;
+    --color-accent-strong: #2fae76;
+    --color-day-header-text: #6fdba3;
+    --color-event-bg: rgba(62, 207, 142, 0.14);
+
+    --color-weekend: #ff8a65;
+
+    --color-title-hover-glow: rgba(62, 207, 142, 0.1);
+    --color-date-hover-glow: rgba(84, 220, 159, 0.35);
+    --color-search-pulse-1: rgba(84, 220, 159, 0.3);
+    --color-search-pulse-2: rgba(84, 220, 159, 0.25);
+    --color-search-pulse-bg: #16332a;
+    --color-status-bar-bg: #1f5943;
+}
+
+/* ==================== パープル ==================== */
+body[data-theme="purple"] {
+    --color-bg: #0d0714;
+    --color-panel-bg: #170c22;
+    --color-cell-bg: #20122f;
+    --color-input-bg: #28173a;
+    --color-modal-bg: #1a0f28;
+    --color-modal-overlay: rgba(8, 4, 14, 0.94);
+    --color-input-bg-hover: #301c46;
+    --color-selected-bg: #3a2358;
+
+    --color-text: #ecdcf5;
+
+    --color-border: #432a5c;
+    --color-border-input: #6b3fa0;
+    --color-dashed-border: #5a3580;
+
+    --color-accent: #b273ff;
+    --color-accent-2: #c28aff;
+    --color-accent-3: #d0a3ff;
+    --color-accent-4: #deb9ff;
+    --color-accent-strong: #9b52e8;
+    --color-day-header-text: #c48fff;
+    --color-event-bg: rgba(178, 115, 255, 0.14);
+
+    --color-weekend: #ff6fa3;
+
+    --color-title-hover-glow: rgba(178, 115, 255, 0.1);
+    --color-date-hover-glow: rgba(194, 138, 255, 0.35);
+    --color-search-pulse-1: rgba(194, 138, 255, 0.3);
+    --color-search-pulse-2: rgba(194, 138, 255, 0.25);
+    --color-search-pulse-bg: #2c1a40;
+    --color-status-bar-bg: #4a2d70;
+}
+
+/* ==================== ブラウン ==================== */
+body[data-theme="brown"] {
+    --color-bg: #120d08;
+    --color-panel-bg: #1e150d;
+    --color-cell-bg: #291c11;
+    --color-input-bg: #312116;
+    --color-modal-bg: #221810;
+    --color-modal-overlay: rgba(10, 7, 4, 0.94);
+    --color-input-bg-hover: #3a2818;
+    --color-selected-bg: #46301c;
+
+    --color-text: #f0e3d3;
+
+    --color-border: #4d3520;
+    --color-border-input: #8a5c30;
+    --color-dashed-border: #6e4a26;
+
+    --color-accent: #e0a458;
+    --color-accent-2: #e8b672;
+    --color-accent-3: #efc88d;
+    --color-accent-4: #f5d9ab;
+    --color-accent-strong: #c78a3d;
+    --color-day-header-text: #e6bd82;
+    --color-event-bg: rgba(224, 164, 88, 0.14);
+
+    --color-weekend: #ff7043;
+
+    --color-title-hover-glow: rgba(224, 164, 88, 0.1);
+    --color-date-hover-glow: rgba(232, 182, 114, 0.35);
+    --color-search-pulse-1: rgba(232, 182, 114, 0.3);
+    --color-search-pulse-2: rgba(232, 182, 114, 0.25);
+    --color-search-pulse-bg: #3d2c1a;
+    --color-status-bar-bg: #6b4726;
+}
+
+/* ==================== モノクロ ==================== */
+body[data-theme="mono"] {
+    --color-bg: #0a0a0a;
+    --color-panel-bg: #141414;
+    --color-cell-bg: #1c1c1c;
+    --color-input-bg: #222222;
+    --color-modal-bg: #171717;
+    --color-modal-overlay: rgba(4, 4, 4, 0.94);
+    --color-input-bg-hover: #2a2a2a;
+    --color-selected-bg: #333333;
+
+    --color-text: #e8e8e8;
+
+    --color-border: #3a3a3a;
+    --color-border-input: #666666;
+    --color-dashed-border: #555555;
+
+    --color-accent: #b0b0b0;
+    --color-accent-2: #c4c4c4;
+    --color-accent-3: #d6d6d6;
+    --color-accent-4: #e2e2e2;
+    --color-accent-strong: #999999;
+    --color-day-header-text: #c0c0c0;
+    --color-event-bg: rgba(180, 180, 180, 0.14);
+
+    --color-weekend: #e57373;
+
+    --color-title-hover-glow: rgba(176, 176, 176, 0.1);
+    --color-date-hover-glow: rgba(196, 196, 196, 0.35);
+    --color-search-pulse-1: rgba(196, 196, 196, 0.3);
+    --color-search-pulse-2: rgba(196, 196, 196, 0.25);
+    --color-search-pulse-bg: #2e2e2e;
+    --color-status-bar-bg: #4a4a4a;
+}

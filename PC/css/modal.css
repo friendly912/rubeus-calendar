@@ -1,0 +1,311 @@
+/*
+  modal.css
+  ------------------------------------------------------------
+  すべてのモーダル（ポップアップ画面）に関するスタイル。
+  年月選択・テンプレート編集・予定登録ウィザード・予定一覧・予定詳細・
+  時刻編集・削除確認・設定・検索結果、全部で9種類のモーダルが
+  この1つのCSSファイルの中の共通クラスを使い回している。
+*/
+
+/* ---- モーダルの土台（どのモーダルも共通） ---- */
+
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--color-modal-overlay); /* 画面全体を覆う暗い幕 */
+    display: none;         /* 普段は非表示。JSが表示するときに flex に変える */
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+}
+
+.modal-content {
+    background: var(--color-modal-bg);
+    border: 2px solid var(--color-border-input);
+    border-radius: 12px;
+    padding: 20px;
+    width: 90%;
+    max-width: 480px;
+    max-height: 92vh;
+    overflow-y: auto; /* 内容が長いモーダルは中だけスクロールする */
+}
+
+.color-input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    margin: 10px 0;
+    padding: 0;
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 7px;
+}
+
+#deleteConfirmModal {
+    z-index: 410;
+}
+
+#deleteConfirmModal .delete-confirm-box {
+    max-width: 400px;
+    max-height: none;
+    overflow: visible;
+    padding: 20px 20px 24px;
+    box-sizing: border-box;
+}
+
+.delete-confirm-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-ok {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-confirm-cancel {
+    background: var(--color-input-bg-hover);
+    color: white;
+    border: 1px solid var(--color-border-input);
+}
+
+.btn-confirm-ok {
+    border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--color-close-btn);
+    font-size: 28px;
+    cursor: pointer;
+}
+
+/* ---- テンプレート選択グリッド（予定登録・予定詳細で共通） ---- */
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+}
+.template-option {
+    padding: 16px 10px;
+    text-align: center;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.template-option.selected {
+    background: var(--color-selected-bg);
+    border: 2px solid var(--color-accent-2);
+}
+
+/* ---- 時刻入力（午前/午後 → 時 → 分）まわり ---- */
+
+.time-preview {
+    text-align: center;
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--color-accent-3);
+    margin: 20px 0;
+    padding: 15px;
+    background: var(--color-input-bg);
+    border-radius: 12px;
+}
+/* 開始時刻・終了時刻でプレビューの色を変え、見分けやすくしている */
+#startTimePreview, #editStartTimePreview { color: var(--color-start-time); }
+#endTimePreview, #editEndTimePreview { color: var(--color-end-time); }
+
+.ampm-grid, .hour-grid, .minute-section {
+    display: grid;
+    gap: 10px;
+}
+.ampm-grid { grid-template-columns: repeat(2, 1fr); }
+.hour-grid { grid-template-columns: repeat(6, 1fr); }
+
+.time-btn {
+    padding: 14px 8px;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 15px;
+}
+.time-btn:hover { background: var(--color-input-bg-hover); }
+.time-btn.selected {
+    background: var(--color-accent-strong);
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid var(--color-accent-4);
+}
+/* 選べない時刻ボタン（同日予定で開始時刻より前の終了時刻など）は薄くしてクリックできないようにする */
+.time-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.time-btn.disabled:hover { background: var(--color-input-bg); }
+
+.minute-section { margin-top: 20px; }
+.minute-row { margin-bottom: 12px; }
+.btn-group { display: flex; gap: 8px; }
+.time-edit-controls { display: flex; gap: 10px; margin-top: 15px; }
+
+/* ---- 終了日カレンダー（予定登録ウィザードの中で使う小さいカレンダー） ---- */
+
+.end-date-option {
+    padding: 16px;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+    margin: 8px 0;
+    cursor: pointer;
+    text-align: center;
+    font-size: 17px;
+}
+.end-date-option:hover { background: var(--color-input-bg-hover); }
+.end-date-option.selected {
+    background: var(--color-selected-bg);
+    border: 2px solid var(--color-accent-2);
+}
+
+#endDateCalendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin: 15px 0;
+}
+/*
+  【2026-08-05 追加】曜日の見出し行。カレンダー本体の .day-header と
+  同じ考え方（背景色・文字色）で揃えている。
+*/
+.end-date-day-header {
+    text-align: center;
+    padding: 6px 4px;
+    background: var(--color-input-bg);
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 13px;
+    color: var(--color-day-header-text);
+}
+.end-date-day {
+    padding: 10px 4px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+}
+/* 開始日より前の日付は選べないようにする（終了日 >= 開始日 を保証するため） */
+.end-date-day.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+.end-date-day.selected {
+    background: var(--color-accent-strong);
+    color: white;
+}
+/* 【2026-08-05 追加】カレンダー本体の日付マスと同じく、土日の数字を赤くする */
+.end-date-day.sunday,
+.end-date-day.saturday {
+    color: var(--color-weekend);
+}
+
+/*
+  【2026-08-05 追加】
+  日をまたぐ予定の「開始日」のマスを明滅させて目立たせる。
+  月をまたいで終了日を探しているうちに、そもそも開始日がどこだったか
+  見失いやすい、というご指摘への対応。
+  グレーアウト（.disabled）と併用されることは無い
+  （開始日自身は選択可能な日付のため）。
+*/
+.end-date-day.start-date {
+    font-weight: bold;
+    border: 2px solid var(--color-selected);
+    border-radius: 6px;
+    animation: end-date-start-blink 1s step-start infinite;
+}
+/*
+  【2026-08-05 修正】
+  最初は「うっすら黄色の背景⇄透明」という淡い明滅にしていたが、
+  見た目が地味すぎて気づきにくかった（「点滅が再現されない」というご指摘）。
+  背景を「はっきりした黄色（不透明）⇄枠だけ」に変え、文字色も黄色地の時だけ
+  黒に切り替えて、誰が見てもはっきり点滅と分かるようにした。
+  ease-in-out（じわっと変化）ではなく step-start（パッと切り替わる）に
+  変更しているのも、より「点滅」らしくはっきり気づけるようにするため。
+*/
+@keyframes end-date-start-blink {
+    0%, 49% { background: var(--color-selected); color: #1a1a22; }
+    50%, 100% { background: transparent; color: inherit; }
+}
+
+/* ---- 設定モーダル ---- */
+
+.settings-section {
+    margin: 20px 0;
+    padding: 16px;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+}
+.settings-section h4 {
+    margin: 0 0 12px 0;
+    color: var(--color-accent-2);
+}
+
+/* ---- 配色テーマ選択ボタン（設定モーダル内） ---- */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+}
+.theme-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: var(--color-input-bg);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 14px;
+}
+.theme-option-btn:hover {
+    background: var(--color-input-bg-hover);
+}
+/* 今選ばれているテーマのボタンを枠で強調する */
+.theme-option-btn.selected {
+    border-color: var(--color-accent-2);
+    background: var(--color-selected-bg);
+}
+/* テーマの代表色を丸で見せる色見本 */
+.theme-swatch {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}

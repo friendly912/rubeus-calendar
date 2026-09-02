@@ -1,0 +1,719 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カレンダー</title>
+<!--
+    viewportの指定について：
+    「initial-scale=1.0」だけを指定し、maximum-scale や user-scalable=no は
+    あえて付けていない。これにより、ピンチイン・ピンチアウトでの拡大縮小が
+    ブラウザの標準機能としてそのまま使える（クライアントがピンチ操作を
+    前提に考えていると話していたため、その操作を妨げないようにするための配慮）。
+-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<!--
+    ==================== 全画面（PWA）対応 2026-08-05 ====================
+    「スマホアプリのように全画面（URLバーが出ない状態）で使いたい」というご要望への対応。
+
+    【正直にお伝えしたい大事な注意点】
+    通常どおりSafari/Chromeでこのページをブラウザのタブとして開いている間は、
+    URLバーやタブの部分をコードで消すことはできない（これはブラウザ側の仕様で、
+    Webページ側からは変更できない領域）。
+    全画面にする唯一の方法は、「ホーム画面に追加」してから、
+    ホーム画面のアイコンから開くこと。この方法だと、URLバーが最初から表示されない
+    「アプリのような画面」で起動できる。以下の設定は、そのための準備。
+
+    ・viewport-fit=cover ＋ 下記のmeta ＋ manifest.json ＋ base.cssのセーフエリア対応
+      の組み合わせで、ホーム画面から開いた時に全画面表示になり、かつ
+      iPhoneのノッチ・丸い角・ホームインジケーターの部分に中身がかからないようにしている。
+-->
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<meta name="theme-color" content="#0d0d12">
+<!-- iOSでホーム画面に追加した時に全画面（standalone）で開くための指定 -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="カレンダー">
+<!-- Android/Chromeでの同様の指定（manifestのdisplay:standaloneと合わせて機能する） -->
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet" href="css/variables.css?v=20260825a">
+<link rel="stylesheet" href="css/themes.css?v=20260825a">
+<link rel="stylesheet" href="css/base.css?v=20260825a">
+<link rel="stylesheet" href="css/calendar.css?v=20260825a">
+<link rel="stylesheet" href="css/drawer.css?v=20260825a">
+<link rel="stylesheet" href="css/modal.css?v=20260825a">
+<link rel="stylesheet" href="css/listView.css?v=20260825a">
+<link rel="stylesheet" href="../js/login.css?v=20260825a">
+</head>
+<body class="auth-pending">
+<script>
+/*
+    このスクリプトだけ、他のJSファイルより先にここで実行している。
+    理由：表示方式（横画面表示／縦画面表示／自動、およびカレンダー形式／リスト形式）の
+    設定を反映するクラスをページの一番最初に付けておかないと、一瞬だけ違う見た目で
+    表示されてから正しい見た目に切り替わる「チラつき」が起きてしまう。
+    詳しい処理内容は js/displayMode.js・js/listView.js を参照。
+    ここではロジックを重複させず、最低限「保存されている設定を読んで、
+    最初のクラスを付けるだけ」に留めている。
+*/
+(function () {
+    var saved = localStorage.getItem('mobileDisplayMode') || 'auto';
+    var isPortrait = window.matchMedia('(orientation: portrait)').matches;
+    var mode = saved === 'auto' ? (isPortrait ? 'portrait' : 'landscape') : saved;
+    document.body.classList.add('mode-' + mode);
+
+    // 縦画面表示のときだけ意味を持つ「リスト形式」の設定も、同様に最初から反映する
+    var savedFormat = localStorage.getItem('mobilePortraitViewFormat') || 'calendar';
+    if (mode === 'portrait' && savedFormat === 'list') {
+        document.body.classList.add('list-view');
+    }
+})();
+</script>
+
+<div id="loginOverlay">
+    <div class="login-card">
+        <h1>カレンダー</h1>
+        <div id="loginError"></div>
+        <div id="loginPanelMain">
+            <p class="login-lead">メールアドレスまたは Google アカウントでログインすると、どの端末からでも同じ予定を開けます。</p>
+            <form id="loginEmailForm">
+                <input type="email" id="loginEmail" placeholder="メールアドレス" autocomplete="username" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en">
+                <input type="password" id="loginPassword" placeholder="パスワード（6文字以上）" autocomplete="current-password">
+                <div class="login-actions">
+                    <button type="button" class="login-btn-secondary" onclick="signUpWithEmail()">新規登録</button>
+                    <button type="submit" class="login-btn-primary">ログイン</button>
+                </div>
+            </form>
+            <div class="login-divider">または</div>
+            <button type="button" class="login-google" onclick="loginWithGoogle()">Google でログイン</button>
+            <button type="button" class="login-reset" onclick="showPasswordResetPanel()">パスワードを忘れた場合</button>
+        </div>
+        <div id="loginPanelReset">
+            <p class="login-lead">登録したメールアドレスを入力してください。再設定用のメールを送ります。</p>
+            <form id="loginResetForm">
+                <input type="email" id="resetEmail" placeholder="メールアドレス" autocomplete="username" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en">
+                <button type="submit" class="login-btn-primary login-btn-full">パスワードリセットを送信</button>
+            </form>
+            <button type="button" class="login-reset" onclick="showLoginPanel()">ログイン画面に戻る</button>
+        </div>
+    </div>
+</div>
+
+<div class="main">
+    <div class="calendar-area">
+        <!--
+            【クライアントからのフィードバックで修正した点 2026-08-05】
+            以前はここ（ヘッダーの一番右）にメニューを開くボタン（☰）を
+            置いていたが、下部に「メニューへ進む」タブを新設したことで
+            不要になったため撤去した。ボタンが無くなった分、
+            前月・年月・次月の3つがヘッダーの両端と中央に均等に並ぶようになる
+            （.title に flex:1 が指定されているため、ボタンを1つ減らすだけで
+            自然に左右対称なレイアウトになる）。
+        -->
+        <div class="header">
+            <button class="btn prev-btn" onclick="prevMonth()">← 前月</button>
+            <div class="title" id="monthTitle" onclick="showDatePicker()">2026年 8月</div>
+            <button class="btn next-btn" onclick="nextMonth()">次月 →</button>
+        </div>
+
+        <!--
+            新しいプロフィール（個人専用のデータ）が自動発行された時だけ表示される
+            お知らせバー。詳しい仕組みは js/profiles.js を参照。
+            表示されるのは「本当に初めてこの入口URLを開いた時」だけで、
+            2回目以降のアクセス（?p=... 付きのURLで開いた時）には出ない。
+        -->
+        <div id="newProfileNotice" class="status-bar" style="display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+            <span>専用のカレンダーを作成しました。今後はこのURLをお使いください。</span>
+            <div class="status-bar-actions">
+                <button onclick="copyCurrentUrl()" class="btn-cancel">URLをコピー</button>
+                <button onclick="dismissNewProfileNotice()" class="btn-cancel">閉じる</button>
+            </div>
+        </div>
+
+        <div id="copyStatus" class="status-bar">コピー中：貼り付ける日付を選択してください</div>
+
+        <div id="multiSelectStatus" class="status-bar multi-select">
+            <span id="selectedCount">0日選択中</span>
+            <div class="status-bar-actions">
+                <button onclick="cancelMultiSelect()" class="btn-cancel">キャンセル</button>
+                <button onclick="bulkDeleteSelected()" class="btn-danger" style="padding:5px 12px; border-radius:6px; font-size:13px;">一括削除</button>
+            </div>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+
+        <!--
+            縦画面表示で「リスト形式」を選んだ時に使う、一覧表示用のコンテナ。
+            普段（カレンダー形式の時、または横画面表示の時）は非表示になっており、
+            中身の描画・表示切り替えはすべて js/listView.js が担当する。
+        -->
+        <div class="calendar-list" id="calendarList"></div>
+
+        <!--
+            【2026-08-05】カレンダー下部のタブ列（縦画面表示の時だけ表示）。
+            曜日見出しの枠を文字の高さに固定したことで、月によっては
+            カレンダー下部に余白ができやすくなったため、その場所を
+            活かして3つの操作をここにまとめた。
+              ・カレンダー形式／リスト形式 … 以前はドロワーの中にあった切り替えボタンを
+                こちらに移動した（頻繁に使うものはドロワーを開かずに触れるようにするため）。
+              ・メニューへ … 検索・行動テンプレート・設定のドロワーを開く。
+
+            横画面表示の時はこのタブ列ごと非表示にする（drawer.css の
+            body.mode-landscape .mobile-bottom-bar 参照）。横画面は縦画面より
+            高さに余裕が無く、カレンダー本体をできるだけ広く使いたいというご要望に
+            合わせて、代わりに画面を左右にスワイプする操作でドロワーを開閉できるようにした
+            （js/drawer.js のスワイプ処理を参照）。
+        -->
+        <div class="mobile-bottom-bar" id="mobileBottomBar">
+            <button type="button" class="bottom-bar-btn view-format-btn" data-format="calendar">📅 カレンダー形式</button>
+            <button type="button" class="bottom-bar-btn view-format-btn" data-format="list">📋 リスト形式</button>
+            <button type="button" id="menuTabBtn" class="bottom-bar-btn" aria-label="メニューを開く">☰ メニューへ</button>
+        </div>
+    </div>
+</div>
+
+<!-- ドロワーの背景の暗い幕。ここをタップするとドロワーが閉じる -->
+<div id="drawerBackdrop" class="drawer-backdrop"></div>
+
+<!-- ドロワー本体。中身（検索・テンプレート一覧・設定）はPC版のサイドバーと同じ -->
+<div id="sidebarDrawer" class="sidebar-drawer">
+    <!--
+        【2026-08-05 廃止】以前はここに×の閉じるボタンがあったが、2つの理由で廃止した。
+          1. position:fixedのこのドロワーはbodyのセーフエリア対応を引き継がないため、
+             縦画面ではこの右上の×がノッチの真下に隠れてしまい、押せなくなっていた。
+          2. 片手操作の時、画面の右上は親指が届きにくく、無理に持ち替える必要があった
+             というご指摘があった。
+        代わりに、下部の「カレンダーに戻る」タブ（押しても届く位置）と、
+        画面を左右にスワイプする操作の、どちらでも閉じられるようにしている。
+        （スワイプは横画面では常時有効、縦画面では設定でON/OFFを選べる。
+         js/drawer.js を参照）
+    -->
+    <div class="drawer-header">
+        <h2>メニュー</h2>
+    </div>
+
+    <!--
+        drawer-body について：
+        検索欄・テンプレート一覧・設定ボタンをまとめて1つの
+        「スクロールできる箱」に入れている。
+        以前はテンプレート一覧（.templates-container）だけを
+        flex:1 + overflow-y:auto にしていたが、横画面の背の低いスマホ
+        （高さ400px未満の機種など）では、検索欄や下部ボタンに
+        高さを取られた結果、テンプレート一覧の取り分がほぼ0になり、
+        一覧が事実上表示されなくなる不具合があった。
+        検索欄からテンプレート一覧、設定ボタンまで全部をまとめて
+        1つの箱としてスクロールできるようにすることで、
+        画面がどれだけ低くても「スクロールすれば必ず全部たどり着ける」
+        状態を保証している。
+    -->
+    <div class="drawer-body">
+        <div style="margin-bottom: 12px;">
+            <div class="display-mode-label" style="margin:0 0 6px;">カレンダー</div>
+            <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)"></select>
+            <div class="search-drop-zone">
+                <div class="search-container">
+                    <input type="text" id="search" class="search" placeholder="検索（行動・時間・メモ）" oninput="handleSearchInput()" onkeyup="handleSearchKeyup(event)">
+                    <button id="clearBtn" class="clear-btn" onclick="clearSearch()">×</button>
+                </div>
+                <button onclick="performGlobalSearch()" class="search-btn">検索</button>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 2px; font-size:16px;">行動テンプレート</h2>
+        <div class="templates-container" id="templates"></div>
+        <div class="add-template" onclick="addNewTemplate()">＋ 新しいテンプレート</div>
+        <!--
+            【2026-08-05 追加】
+            最初から用意されていた8つのテンプレートのうち、削除してしまったものを
+            もう一度追加し直すためのボタン。押すたびに「今無いものだけ」を復活させる
+            （すでに全部揃っている場合はその旨をアラートで知らせる）。
+        -->
+        <div class="add-template" onclick="restoreDeletedDefaultTemplates()" style="border-style:solid; color:var(--color-muted);">↺ 初期テンプレートを復活</div>
+
+        <!--
+            表示方式の切り替え。
+            「自動」＝端末を回転させた向きに合わせる（これまで通りの動き）。
+            「横画面表示」「縦画面表示」＝端末の向きに関係なく、その見た目に固定する。
+            クライアントからの「回転ロックのオン/オフ、もしくは設定から見せ方を
+            選べるようにしたい」というご要望に応えた機能。実際の処理は js/displayMode.js。
+
+            【現在、一時的に非表示にしています】
+            style="display:none;" を付けて、ボタンだけを画面上から隠している。
+            中身（js/displayMode.js）や機能自体は削除しておらず、そのまま動いている。
+            「自動」判定（実際に端末を回転させると見た目が切り替わる動き）は
+            この状態でも引き続き有効。再度ボタンを表示したくなったら、
+            この style="display:none;" の１行を削除するだけで元に戻る。
+        -->
+        <div class="display-mode-switcher" style="display:none;">
+            <div class="display-mode-label">表示方式</div>
+            <div class="display-mode-buttons">
+                <button type="button" class="display-mode-btn" data-mode="auto">自動</button>
+                <button type="button" class="display-mode-btn" data-mode="landscape">横画面表示</button>
+                <button type="button" class="display-mode-btn" data-mode="portrait">縦画面表示</button>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <!--
+                「行動テンプレート」「縦画面での見せ方」と同じく、
+                画面下部が密集して見出しが分かりにくいというご指摘に合わせて、
+                同じスタイル（白字・太字）の見出しを追加している。
+            -->
+            <div class="display-mode-label" style="margin-bottom:0;">曜日始まり</div>
+            <select id="weekStart" class="select-weekstart" onchange="changeWeekStart()">
+                <option value="0">日曜始まり</option>
+                <option value="1">月曜始まり</option>
+            </select>
+            <button onclick="showSettingsModal()" class="btn-settings">設定</button>
+        </div>
+    </div>
+
+    <!--
+        【2026-08-05 新設】ドロワーを閉じてカレンダー（またはリスト）に戻るためのタブ。
+        メイン画面下部の「☰ メニューへ」タブと対になる存在で、常に押せる位置に
+        固定表示される（.drawer-body の外に置いているため、中身をスクロールしても
+        一緒に流れて消えたりしない）。
+    -->
+    <!--
+        【重要】.bottom-bar-btn は元々「横に並ぶ3つのタブが幅を均等に分け合う」
+        ための flex:1 を持っている。ここ（縦に並ぶドロワーの一番下）でそのまま
+        使うと、意図せず縦方向いっぱいに引き伸ばされてしまうため、
+        flex: 0 0 auto で打ち消し、中身の高さぴったりに戻している。
+    -->
+    <button id="drawerReturnTab" class="bottom-bar-btn" style="width:100%; flex:0 0 auto; margin-top:10px;">☰ カレンダーに戻る</button>
+</div>
+
+<!-- ==================== モーダル群 ====================
+     PC版と全く同じ9種類のモーダル。IDや構造はPC版のindex.htmlと共通にしてあるので、
+     中のJS（wizard.js, eventDetail.js 等）はPC版と1文字も変えずにそのまま動く。
+     見た目のサイズ調整だけ css/modal.css 側で行っている。 -->
+
+<div id="dateModal" class="modal" onclick="if(event.target===this) closeDateModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">年月を選択</h3>
+            <button class="close-btn" onclick="closeDateModal()">×</button>
+        </div>
+        <!--
+            【2026-08-05 修正】
+            以前はこの4つの年移動ボタンに色・背景などのスタイルが一切指定されておらず、
+            ブラウザ標準の白いボタンのまま表示されてしまっていた（アプリの暗い配色の中で
+            そこだけ浮いて見える「デザインが壊れている」ように見えた原因）。
+            ほかのボタンと同じ .btn クラスを使って見た目を揃えた。
+            あわせて、横幅の狭いスマホだと5つ全部が1行に収まらず「5年≫」だけ
+            次の行に一つだけ折り返されて浮いてしまっていたため、
+            「年の表示」を独立した行にして、4つの移動ボタンだけを1行に並べる
+            2段構成に変更し、中途半端な折り返しが起きないようにした。
+        -->
+        <div style="text-align:center; margin:16px 0;">
+            <div id="currentYearDisplay" style="font-size:20px; font-weight:bold; margin-bottom:10px;"></div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                <button onclick="changeYear(-5)" class="btn" style="padding:8px 10px;">≪5年</button>
+                <button onclick="changeYear(-1)" class="btn" style="padding:8px 10px;">＜1年</button>
+                <button onclick="changeYear(1)" class="btn" style="padding:8px 10px;">1年＞</button>
+                <button onclick="changeYear(5)" class="btn" style="padding:8px 10px;">5年≫</button>
+            </div>
+        </div>
+        <button onclick="goToToday()" style="width:100%; margin:12px 0; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">今日へ</button>
+        <div id="monthList" style="display:grid; grid-template-columns: repeat(4,1fr); gap:8px;"></div>
+    </div>
+</div>
+
+<!--
+    【2026-08-05 新設】リスト形式専用：「＋ 新しい予定を追加」から開始日を選ぶモーダル。
+    以前はリスト形式だと当日（表示中の月が今月でなければ1日）にしか予定を
+    追加できなかったため、日をまたぐ予定の終了日選択（#endDateCalendar、
+    js/wizard.js）と全く同じ見た目・仕組みの小さいカレンダーを、
+    テンプレートを選ぶ画面の前に挟んだ。中身の描画・操作は js/listView.js の
+    showStartDatePickerModal() / renderStartDateCalendar() が担当する。
+    「開始日より前は選べない」という制約が無い（すべての日付を選べる）点だけが
+    終了日選択と異なる。
+-->
+<div id="startDatePickerModal" class="modal" onclick="if(event.target===this) closeStartDatePickerModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">開始日を選択</h3>
+            <button class="close-btn" onclick="closeStartDatePickerModal()">×</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <button onclick="prevStartDateMonth()" class="btn" style="padding:8px 12px;">← 前月</button>
+            <div id="startDateCalendarHeader" style="font-weight:bold; font-size:16px;"></div>
+            <button onclick="nextStartDateMonth()" class="btn" style="padding:8px 12px;">次月 →</button>
+        </div>
+        <div id="startDateCalendar"></div>
+    </div>
+</div>
+
+<div id="editTemplateModal" class="modal" onclick="if(event.target===this) closeEditTemplateModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="editTitle" style="margin:0;">テンプレート編集</h3>
+            <button class="close-btn" onclick="closeEditTemplateModal()">×</button>
+        </div>
+        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px;">
+        <input type="color" id="editColor" class="color-input" value="#00ffcc">
+        <!--
+            【2026-08-05 追加】
+            最初から用意されている8つのテンプレートを編集している時だけ表示される、
+            「名前・色を初期状態に書き戻す」ボタン。
+            自分で追加したテンプレートの場合は、js側（templates.js の editTemplate）が
+            display:none にして隠す。
+            押しても【保存】を押すまでは確定しない（入力欄の中身が変わるだけ）。
+        -->
+        <button id="resetTemplateBtn" onclick="resetTemplateToDefault()" style="width:100%; margin-bottom:10px; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; display:none;">↺ 初期状態に戻す</button>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+            <button onclick="deleteTemplate()" class="btn-danger" style="flex:1; padding:12px; border-radius:8px;">削除</button>
+            <button onclick="saveTemplateEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<div id="addWizardModal" class="modal" onclick="if(event.target===this) closeWizardModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="wizardTitle" style="margin:0; color:var(--color-accent);">予定を追加</h3>
+            <button class="close-btn" onclick="closeWizardModal()">×</button>
+        </div>
+
+        <div id="step1">
+            <h4>テンプレートを選択</h4>
+            <div class="template-grid" id="wizardTemplateList"></div>
+        </div>
+
+        <div id="timeStepContainer" style="display:none;">
+            <div id="startTimeSection">
+                <h4>開始時刻</h4>
+                <div id="startTimePreview" class="time-preview"> --:--</div>
+                <div id="startTimeSteps"></div>
+                <button onclick="skipStartTime()" style="width:100%; margin-top:10px; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+            </div>
+
+            <div id="endDateSection" style="display:none; margin-top:18px;">
+                <h4>終了日は？</h4>
+                <div id="endDateOptions"></div>
+                <div style="display:flex; gap:10px; margin-top:16px;">
+                    <button onclick="backToStartTimeFromEndDate()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                </div>
+            </div>
+
+            <div id="endDatePickerSection" style="display:none; margin-top:18px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <button onclick="prevEndDateMonth()" class="btn" style="padding:8px 12px;">← 前月</button>
+                    <div id="endDateCalendarHeader" style="font-weight:bold; font-size:16px;"></div>
+                    <button onclick="nextEndDateMonth()" class="btn" style="padding:8px 12px;">次月 →</button>
+                </div>
+                <div id="endDateCalendar"></div>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <button onclick="backToEndDateOptions()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                </div>
+            </div>
+
+            <div id="endTimeSection" style="display:none; margin-top:18px;">
+                <h4>終了時刻</h4>
+                <div id="endTimePreview" class="time-preview"> --:--</div>
+                <div id="endTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="backToEndDateStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 終了日に戻る</button>
+                    <button onclick="skipEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="memoStep" style="display:none; margin-top:18px;">
+            <h4>メモ（任意）</h4>
+            <textarea id="wizardMemo" rows="4" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:18px;">
+                <button onclick="prevToTimeStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">戻る</button>
+                <button onclick="saveEventFromWizard()" style="flex:2; padding:12px; background:var(--color-success); color:white;">登録</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="eventListModal" class="modal" onclick="if(event.target===this) closeEventListModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="listDateTitle" style="margin:0; color:var(--color-accent);"></h3>
+            <button class="close-btn" onclick="closeEventListModal()">×</button>
+        </div>
+        <!--
+            【2026-08-05 並び順変更】
+            以前は下にあった「新しい予定を追加」「この日の予定をすべて削除」の
+            2つのボタンを、既存の予定一覧（#eventListContainer）より上に移動した。
+            すでに予定がある日をタップした時、まず最初にこの2つの操作が
+            目に入るようにしたいというご要望による。
+        -->
+        <button id="addEventFromListBtn" onclick="openAddWizardFromList()" style="width:100%; margin-top:8px; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">＋ 新しい予定を追加</button>
+        <button onclick="deleteAllEventsOnDate()" style="width:100%; margin-top:10px; padding:12px; background:var(--color-danger); border:none; color:white; border-radius:8px; font-weight:bold;">この日の予定をすべて削除</button>
+
+        <div id="eventListContainer" style="margin-top:14px;"></div>
+    </div>
+</div>
+
+<div id="eventDetailModal" class="modal" onclick="if(event.target===this) closeEventDetailModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="detailTitle" style="margin:0; color:var(--color-accent);"></h3>
+            <button class="close-btn" onclick="closeEventDetailModal()">×</button>
+        </div>
+        <div id="detailContent"></div>
+
+        <div style="margin:12px 0;">
+            <p>テンプレート</p>
+            <div class="template-grid" id="detailTemplateList"></div>
+        </div>
+
+        <div style="margin:12px 0;">
+            <p>メモ</p>
+            <textarea id="detailMemo" rows="3" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+        </div>
+
+        <div class="modal-actions">
+            <button onclick="openTimeEditFromDetail()" style="flex:1; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">時刻を編集</button>
+            <button onclick="copyEventFromDetail()" style="flex:1; padding:12px; background:var(--color-copy); border:none; color:white; border-radius:8px;">コピー</button>
+            <button onclick="saveDetailChanges()" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+            <button onclick="deleteFromDetail()" class="btn-danger" style="flex:1; padding:12px; border-radius:8px;">削除</button>
+        </div>
+    </div>
+</div>
+
+<div id="editEventModal" class="modal" onclick="if(event.target===this) closeEditEventModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0;">時刻を編集</h3>
+            <button class="close-btn" onclick="closeEditEventModal()">×</button>
+        </div>
+
+        <div id="editTimeStepContainer">
+            <div id="editStartTimeSection">
+                <h4>開始時刻</h4>
+                <div id="editStartTimePreview" class="time-preview"> --:--</div>
+                <div id="editStartTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="skipEditStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+                    <button onclick="proceedToEditEndTime()" style="flex:1; padding:12px; background:var(--color-accent-strong); color:white; border:none; border-radius:8px;">終了時刻へ進む</button>
+                </div>
+            </div>
+
+            <div id="editEndTimeSection" style="display:none; margin-top:18px;">
+                <h4>終了時刻</h4>
+                <div id="editEndTimePreview" class="time-preview"> --:--</div>
+                <div id="editEndTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="backToEditStartTimeFromEnd()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 開始時刻に戻る</button>
+                    <button onclick="skipEditEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="closeEditEventModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="saveTimeEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<div id="deleteConfirmModal" class="modal">
+    <div class="modal-content delete-confirm-box">
+        <h3 style="color:var(--color-danger-text); text-align:center;">削除確認</h3>
+        <p id="deleteConfirmText" style="text-align:center; margin:16px 0;"></p>
+        <div class="delete-confirm-actions">
+            <button type="button" id="deleteConfirmCancelBtn" class="btn-confirm-cancel" onclick="cancelDelete()">キャンセル</button>
+            <button type="button" id="deleteConfirmOkBtn" class="btn-danger btn-confirm-ok" onclick="confirmDelete()">削除する</button>
+        </div>
+    </div>
+</div>
+
+<div id="settingsModal" class="modal" onclick="if(event.target===this) closeSettingsModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0;">⚙ 設定</h3>
+            <button class="close-btn" onclick="closeSettingsModal()">×</button>
+        </div>
+
+        <!--
+            【2026-08-05 追加】
+            「今使っているこのカレンダーのURL」を、いつでもここで確認・コピーできる
+            ようにした。以前は初回にプロフィールが自動発行された時だけ表示される
+            案内バー（#newProfileNotice）にコピーボタンがあったが、それだと
+            初回にコピーし忘れると二度と出てこなかった。
+            別の端末に移りたい時は「新しく入口URLを開いて別のカレンダーが
+            できてしまう」のではなく、「ここでURLをコピーして移動する」のが
+            自然な導線になるよう、常設のボタンとして設定画面に置いている。
+            URLの中身は showSettingsModal() を開くたびに #currentCalendarUrl に
+            反映される（js/settings.js を参照）。
+        -->
+        <div class="settings-section">
+            <h4>■ アカウント</h4>
+            <p id="signedInEmail" style="font-size:14px; margin:0 0 10px 0; word-break:break-all;"></p>
+            <button type="button" onclick="logoutCurrentUser()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">ログアウト</button>
+        </div>
+        <div class="settings-section">
+            <h4>■ カレンダー</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 8px 0;">
+                同じログインの中で、仕事用・プライベート用などを切り替えられます。
+            </p>
+            <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)" style="width:100%; margin-bottom:8px;"></select>
+            <button type="button" onclick="createNewCalendar()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">＋ 新しいカレンダー</button>
+            <button type="button" onclick="renameCurrentCalendar()" style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">名前を変更</button>
+            <button type="button" onclick="deleteCurrentCalendar()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">このカレンダーを削除</button>
+        </div>
+        <div class="settings-section">
+            <h4>■ アプリの入口</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 8px 0;">
+                スマホでもPCでも、このURLを開いてログインすれば同じ予定が見られます。
+            </p>
+            <input type="text" id="currentCalendarUrl" readonly
+                onclick="this.select();"
+                style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; font-size:12px;">
+            <button onclick="copyAppEntryUrl()" class="btn" style="width:100%; padding:10px;">URLをコピー</button>
+        </div>
+
+        <div class="settings-section">
+            <h4>■ 削除</h4>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="confirmBulkDelete" checked>
+                <span>一括削除するときに確認する<br>
+                <small style="color:var(--color-muted);">まとめて予定を削除する前に確認します。</small></span>
+            </label>
+        </div>
+
+        <!--
+            【2026-08-05 追加】
+            縦画面でメニュー（ドロワー）をスワイプで開閉する機能のON/OFF切り替え。
+            下部の「メニューへ」「カレンダーに戻る」タブでも同じ開閉操作ができるため、
+            スワイプ操作が誤反応して煩わしいと感じる場合はここでOFFにできる。
+            横画面のスワイプ開閉は常時ONで、この設定の対象外
+            （横画面はそもそも下部タブが無いため、切ってしまうと閉じる手段が
+             無くなってしまうことを避けるため）。
+            チェックのON/OFFは他の設定と違い【保存】を押さなくてもその場で反映される
+            （js/drawer.js の setPortraitSwipeEnabled 参照）。
+        -->
+        <div class="settings-section">
+            <h4>■ 縦画面でのメニュー操作</h4>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="portraitSwipeToggle" checked onchange="setPortraitSwipeEnabled(this.checked)">
+                <span>スワイプでメニューを開閉する<br>
+                <small style="color:var(--color-muted);">画面を左右にスワイプしてメニューの開閉ができます（下部のタブでの開閉は常に使えます）。</small></span>
+            </label>
+        </div>
+
+
+        <!--
+            【2026-08-05 追加】バックアップ／復元。
+            Firebase保存（自動・継続的）とは別の、設定不要な手動スナップショット。
+            ・うっかり消してしまった時の保険
+            ・Firebaseを使わずに他の端末へ手軽に引っ越す手段
+            の2つの用途を想定している。
+            ファイル選択用の<input type="file">は画面上には出さず、
+            「バックアップから復元」ボタンをタップした時にJSで呼び出す
+            （htmlFileInput.click()）。中身の処理は js/storage.js を参照。
+        -->
+        <div class="settings-section">
+            <h4>■ バックアップ</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
+                テンプレート・予定・配色などをファイルに保存したり、保存したファイルから元に戻せます。
+            </p>
+            <button onclick="downloadBackup()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">バックアップをダウンロード</button>
+            <input type="file" id="restoreFileInput" accept="application/json" style="display:none" onchange="restoreBackupFromFile(this.files[0]); this.value='';">
+            <button onclick="document.getElementById('restoreFileInput').click()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">バックアップから復元</button>
+        </div>
+
+        <!--
+            配色テーマの選択。PC版と同じ js/themes.js が処理を担当しており、
+            テーマの一覧もPC版と全く同じ一覧から自動生成される。
+            【並び順】削除・データ保存は一度設定したらほとんど触らない項目のため、
+            配色テーマをこの位置（一番下＝保存/キャンセルボタンのすぐ上）に置くことで、
+            「テーマを選ぶ→すぐ下の保存ボタンをタップする」という操作の距離を短くしている。
+        -->
+        <div class="settings-section">
+            <h4>■ 配色テーマ</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
+                カレンダー全体の雰囲気をテーマからお選びいただけます。
+            </p>
+            <div id="themeSettingsContainer" class="theme-options"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <!--
+                【並び順・ラベルの変更】配色テーマが「保存」を押さなくても
+                即座に反映されてしまう問題を修正したのに合わせて、
+                ボタンも一般的な並び（キャンセルが左・保存が右）に変更している。
+                「キャンセル」を押すと、プレビュー中だったテーマは元に戻る。
+            -->
+            <button onclick="closeSettingsModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="saveSettings()" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<div id="calendarNameModal" class="modal" onclick="if(event.target===this) closeCalendarNameModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="calendarNameModalTitle" style="margin:0;">新しいカレンダー</h3>
+            <button class="close-btn" onclick="closeCalendarNameModal()">×</button>
+        </div>
+        <form id="calendarNameForm">
+            <input type="text" id="calendarNameInput" placeholder="例：仕事用、プライベート用" maxlength="40" autocomplete="off"
+                style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px; font-size:16px;">
+            <div id="calendarNameError" style="display:none; margin:0 0 8px; color:#ff8a8a; font-size:13px;"></div>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+                <button type="button" onclick="closeCalendarNameModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+                <button type="submit" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="searchResultsModal" class="modal" onclick="if(event.target===this) closeSearchResultsModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">検索結果（年月）</h3>
+            <button class="close-btn" onclick="closeSearchResultsModal()">×</button>
+        </div>
+        <div id="searchMonthList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:10px; max-height:60vh; overflow-y:auto; padding:8px 0;"></div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<!--
+    JSファイルの読み込み順。state.js → utils.js → storage.js の順は
+    PC版と揃えている（他のファイルが前提にしている変数・関数が
+    先に読み込まれている必要があるため）。
+    drawer.js はスマホ版だけの追加ファイルなので、main.js の直前に置いている。
+-->
+<script src="js/state.js?v=20260825a"></script>
+<script src="../js/firebase-config.js?v=20260825a"></script>
+<script src="js/utils.js?v=20260825a"></script>
+<script src="js/profiles.js?v=20260825a"></script>
+<script src="js/storage.js?v=20260825a"></script>
+<script src="../js/cloud.js?v=20260825a"></script>
+<script src="../js/debugLog.js?v=20260825a"></script>
+<script src="../js/calendars.js?v=20260825a"></script>
+<script src="../js/auth.js?v=20260825a"></script>
+<script src="js/templates.js?v=20260825a"></script>
+<script src="js/timeSelector.js?v=20260825a"></script>
+<script src="js/wizard.js?v=20260825a"></script>
+<script src="js/calendar.js?v=20260825a"></script>
+<script src="js/eventList.js?v=20260825a"></script>
+<script src="js/eventDetail.js?v=20260825a"></script>
+<script src="js/editTime.js?v=20260825a"></script>
+<script src="js/deleteConfirm.js?v=20260825a"></script>
+<script src="js/multiSelect.js?v=20260825a"></script>
+<script src="js/search.js?v=20260825a"></script>
+<script src="js/copyPaste.js?v=20260825a"></script>
+<script src="js/settings.js?v=20260825a"></script>
+<script src="js/themes.js?v=20260825a"></script>
+<script src="js/drawer.js?v=20260825a"></script>
+<script src="js/displayMode.js?v=20260825a"></script>
+<script src="js/listView.js?v=20260825a"></script>
+<script src="js/main.js?v=20260825a"></script>
+</body>
+</html>

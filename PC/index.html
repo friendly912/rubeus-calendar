@@ -1,0 +1,535 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カレンダー</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!--
+    CSSファイルの読み込み順について：
+    variables.css（色の定義）を必ず一番先に読み込む。
+    themes.css は、variables.css が定義した色を「テーマ選択時に上書きする」
+    役割のため、必ず variables.css より後に読み込む。
+    他のCSSファイルは中で var(--color-xxx) の形で色を参照しているため、
+    この2つより後であれば順番は前後してもよい。
+-->
+<link rel="stylesheet" href="css/variables.css?v=20260825a">
+<link rel="stylesheet" href="css/themes.css?v=20260825a">
+<link rel="stylesheet" href="css/base.css?v=20260825a">
+<link rel="stylesheet" href="css/calendar.css?v=20260825a">
+<link rel="stylesheet" href="css/sidebar.css?v=20260825a">
+<link rel="stylesheet" href="css/modal.css?v=20260825a">
+<link rel="stylesheet" href="../js/login.css?v=20260825a">
+</head>
+<body class="auth-pending">
+
+<div id="loginOverlay">
+    <div class="login-card">
+        <h1>カレンダー</h1>
+        <div id="loginError"></div>
+        <div id="loginPanelMain">
+            <p class="login-lead">メールアドレスまたは Google アカウントでログインすると、どの端末からでも同じ予定を開けます。</p>
+            <form id="loginEmailForm">
+                <input type="email" id="loginEmail" placeholder="メールアドレス" autocomplete="username" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en">
+                <input type="password" id="loginPassword" placeholder="パスワード（6文字以上）" autocomplete="current-password">
+                <div class="login-actions">
+                    <button type="button" class="login-btn-secondary" onclick="signUpWithEmail()">新規登録</button>
+                    <button type="submit" class="login-btn-primary">ログイン</button>
+                </div>
+            </form>
+            <div class="login-divider">または</div>
+            <button type="button" class="login-google" onclick="loginWithGoogle()">Google でログイン</button>
+            <button type="button" class="login-reset" onclick="showPasswordResetPanel()">パスワードを忘れた場合</button>
+        </div>
+        <div id="loginPanelReset">
+            <p class="login-lead">登録したメールアドレスを入力してください。再設定用のメールを送ります。</p>
+            <form id="loginResetForm">
+                <input type="email" id="resetEmail" placeholder="メールアドレス" autocomplete="username" inputmode="email" autocapitalize="off" autocorrect="off" spellcheck="false" lang="en">
+                <button type="submit" class="login-btn-primary login-btn-full">パスワードリセットを送信</button>
+            </form>
+            <button type="button" class="login-reset" onclick="showLoginPanel()">ログイン画面に戻る</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="main">
+    <div class="calendar-area">
+        <div class="header">
+            <button class="btn prev-btn" onclick="prevMonth()">← 前月</button>
+            <div class="title" id="monthTitle" onclick="showDatePicker()">2026年 8月</div>
+            <button class="btn next-btn" onclick="nextMonth()">次月 →</button>
+        </div>
+
+        <!--
+            新しいプロフィール（個人専用のデータ）が自動発行された時だけ表示される
+            お知らせバー。詳しい仕組みは js/profiles.js を参照。
+            表示されるのは「本当に初めてこの入口URLを開いた時」だけで、
+            2回目以降のアクセス（?p=... 付きのURLで開いた時）には出ない。
+        -->
+        <div id="newProfileNotice" class="status-bar" style="display:none; align-items:center; justify-content:space-between;">
+            <span>専用のカレンダーを新しく作成しました。今後はこのページのURLを開いてご利用ください。</span>
+            <div class="status-bar-actions">
+                <button onclick="copyCurrentUrl()" class="btn-cancel">URLをコピー</button>
+                <button onclick="dismissNewProfileNotice()" class="btn-cancel">閉じる</button>
+            </div>
+        </div>
+
+        <!-- コピー中に表示される案内バー。普段は非表示（JSが表示を切り替える） -->
+        <div id="copyStatus" class="status-bar">コピー中：貼り付ける日付を選択してください</div>
+
+        <!-- 複数選択モード中に表示される案内バー。普段は非表示（JSが表示を切り替える） -->
+        <div id="multiSelectStatus" class="status-bar multi-select">
+            <span id="selectedCount">0日選択中</span>
+            <div class="status-bar-actions">
+                <button onclick="cancelMultiSelect()" class="btn-cancel">キャンセル</button>
+                <button onclick="bulkDeleteSelected()" class="btn-danger" style="padding:6px 16px; border-radius:6px;">選択した日を一括削除</button>
+            </div>
+        </div>
+
+        <div class="calendar" id="calendar"></div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-search">
+            <label class="sidebar-label sidebar-calendar-select">カレンダー
+                <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)"></select>
+            </label>
+            <div class="search-drop-zone">
+                <div class="search-container">
+                    <input type="text" id="search" class="search" placeholder="検索（行動・時間・メモ）" oninput="handleSearchInput()" onkeyup="handleSearchKeyup(event)">
+                    <button id="clearBtn" class="clear-btn" onclick="clearSearch()">×</button>
+                </div>
+                <div class="search-row">
+                    <span class="search-hint">Enterまたは検索で当該月へ</span>
+                    <button onclick="performGlobalSearch()" class="search-btn">検索</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-templates">
+            <h2>行動テンプレート</h2>
+            <div class="templates-container" id="templates"></div>
+            <div class="template-actions">
+                <button type="button" class="template-action-btn" onclick="addNewTemplate()">＋ 追加</button>
+                <button type="button" class="template-action-btn" onclick="restoreDeletedDefaultTemplates()">初期を復活</button>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <label class="sidebar-label">週の始まり
+                <select id="weekStart" class="select-weekstart" onchange="changeWeekStart()">
+                    <option value="0">日曜始まり</option>
+                    <option value="1">月曜始まり</option>
+                </select>
+            </label>
+            <button onclick="showSettingsModal()" class="btn-settings">設定</button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== モーダル群 ====================
+     以下、9種類のモーダル（ポップアップ画面）をまとめて配置している。
+     どのモーダルも普段は .modal クラスの display:none で隠れており、
+     対応するJS（例：showDatePicker()）が display:flex にすることで表示される。 -->
+
+<!-- 1. 年月選択モーダル -->
+<div id="dateModal" class="modal" onclick="if(event.target===this) closeDateModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">年月を選択</h3>
+            <button class="close-btn" onclick="closeDateModal()">×</button>
+        </div>
+        <!--
+            【2026-08-05 修正】
+            以前はこの4つの年移動ボタンに色・背景などのスタイルが一切指定されておらず、
+            ブラウザ標準の白いボタンのまま表示されてしまっていた（アプリの暗い配色の中で
+            そこだけ浮いて見える「デザインが壊れている」ように見える原因になっていた。
+            スマホ版で先に発覚し、同じ問題がPC版にもあったため揃えて直している）。
+            ほかのボタンと同じ .btn クラスを使って見た目を揃え、
+            「年の表示」を独立した行にして、4つの移動ボタンだけを1行に並べる
+            2段構成にした。
+        -->
+        <div style="text-align:center; margin:20px 0;">
+            <div id="currentYearDisplay" style="font-size:22px; font-weight:bold; margin-bottom:12px;"></div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                <button onclick="changeYear(-5)" class="btn" style="padding:8px 12px;">≪5年</button>
+                <button onclick="changeYear(-1)" class="btn" style="padding:8px 12px;">＜1年</button>
+                <button onclick="changeYear(1)" class="btn" style="padding:8px 12px;">1年＞</button>
+                <button onclick="changeYear(5)" class="btn" style="padding:8px 12px;">5年≫</button>
+            </div>
+        </div>
+        <button onclick="goToToday()" style="width:100%; margin:15px 0; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">今日へ</button>
+        <div id="monthList" style="display:grid; grid-template-columns: repeat(4,1fr); gap:10px;"></div>
+    </div>
+</div>
+
+<!-- 2. テンプレート編集モーダル -->
+<div id="editTemplateModal" class="modal" onclick="if(event.target===this) closeEditTemplateModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="editTitle" style="margin:0;">テンプレート編集</h3>
+            <button class="close-btn" onclick="closeEditTemplateModal()">×</button>
+        </div>
+        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px;">
+        <input type="color" id="editColor" class="color-input" value="#00ffcc">
+        <!--
+            【2026-08-05 追加】
+            最初から用意されている8つのテンプレートを編集している時だけ表示される、
+            「名前・色を初期状態に書き戻す」ボタン。
+            自分で追加したテンプレートの場合は、js側（templates.js の editTemplate）が
+            display:none にして隠す。
+            押しても【保存】を押すまでは確定しない（入力欄の中身が変わるだけ）。
+        -->
+        <button id="resetTemplateBtn" onclick="resetTemplateToDefault()" style="width:100%; margin-bottom:10px; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; display:none;">↺ 初期状態に戻す</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button onclick="deleteTemplate()" class="btn-danger" style="flex:1; padding:12px; border-radius:8px;">削除</button>
+            <button onclick="saveTemplateEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 3. 予定登録ウィザードモーダル -->
+<div id="addWizardModal" class="modal" onclick="if(event.target===this) closeWizardModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="wizardTitle" style="margin:0; color:var(--color-accent);">予定を追加</h3>
+            <button class="close-btn" onclick="closeWizardModal()">×</button>
+        </div>
+
+        <!-- ステップ1：テンプレート選択 -->
+        <div id="step1">
+            <h4>テンプレートを選択</h4>
+            <div class="template-grid" id="wizardTemplateList"></div>
+        </div>
+
+        <!-- ステップ2〜4：開始時刻 → 終了日 → 終了時刻 -->
+        <div id="timeStepContainer" style="display:none;">
+            <div id="startTimeSection">
+                <h4>開始時刻</h4>
+                <div id="startTimePreview" class="time-preview"> --:--</div>
+                <div id="startTimeSteps"></div>
+                <button onclick="skipStartTime()" style="width:100%; margin-top:12px; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+            </div>
+
+            <div id="endDateSection" style="display:none; margin-top:25px;">
+                <h4>終了日は？</h4>
+                <div id="endDateOptions"></div>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button onclick="backToStartTimeFromEndDate()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                </div>
+            </div>
+
+            <div id="endDatePickerSection" style="display:none; margin-top:25px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <button onclick="prevEndDateMonth()" class="btn" style="padding:8px 12px;">← 前月</button>
+                    <div id="endDateCalendarHeader" style="font-weight:bold; font-size:18px;"></div>
+                    <button onclick="nextEndDateMonth()" class="btn" style="padding:8px 12px;">次月 →</button>
+                </div>
+                <div id="endDateCalendar"></div>
+                <div style="display:flex; gap:10px; margin-top:15px;">
+                    <button onclick="backToEndDateOptions()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                </div>
+            </div>
+
+            <div id="endTimeSection" style="display:none; margin-top:25px;">
+                <h4>終了時刻</h4>
+                <div id="endTimePreview" class="time-preview"> --:--</div>
+                <div id="endTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <button onclick="backToEndDateStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 終了日に戻る</button>
+                    <button onclick="skipEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ステップ5：メモ入力 → 登録 -->
+        <div id="memoStep" style="display:none; margin-top:25px;">
+            <h4>メモ（任意）</h4>
+            <textarea id="wizardMemo" rows="5" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:25px;">
+                <button onclick="prevToTimeStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">戻る</button>
+                <button onclick="saveEventFromWizard()" style="flex:2; padding:12px; background:var(--color-success); color:white;">登録</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. 予定一覧モーダル -->
+<div id="eventListModal" class="modal" onclick="if(event.target===this) closeEventListModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="listDateTitle" style="margin:0; color:var(--color-accent);"></h3>
+            <button class="close-btn" onclick="closeEventListModal()">×</button>
+        </div>
+        <!--
+            【2026-08-05 並び順変更】
+            以前は下にあった「新しい予定を追加」「この日の予定をすべて削除」の
+            2つのボタンを、既存の予定一覧（#eventListContainer）より上に移動した。
+            すでに予定がある日をタップした時、まず最初にこの2つの操作が
+            目に入るようにしたいというご要望による。
+        -->
+        <button id="addEventFromListBtn" onclick="openAddWizardFromList()" style="width:100%; margin-top:8px; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">＋ 新しい予定を追加</button>
+        <button onclick="deleteAllEventsOnDate()" style="width:100%; margin-top:10px; padding:12px; background:var(--color-danger); border:none; color:white; border-radius:8px; font-weight:bold;">この日の予定をすべて削除</button>
+
+        <div id="eventListContainer" style="margin-top:14px;"></div>
+    </div>
+</div>
+
+<!-- 5. 予定詳細モーダル -->
+<div id="eventDetailModal" class="modal" onclick="if(event.target===this) closeEventDetailModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="detailTitle" style="margin:0; color:var(--color-accent);"></h3>
+            <button class="close-btn" onclick="closeEventDetailModal()">×</button>
+        </div>
+        <div id="detailContent"></div>
+
+        <div style="margin:15px 0;">
+            <p>テンプレート</p>
+            <div class="template-grid" id="detailTemplateList"></div>
+        </div>
+
+        <div style="margin:15px 0;">
+            <p>メモ</p>
+            <textarea id="detailMemo" rows="4" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:25px; flex-wrap:wrap;">
+            <button onclick="openTimeEditFromDetail()" style="flex:1; padding:12px; background:var(--color-accent-strong); border:none; color:white; border-radius:8px;">時刻を編集</button>
+            <button onclick="copyEventFromDetail()" style="flex:1; padding:12px; background:var(--color-copy); border:none; color:white; border-radius:8px;">コピー</button>
+            <button onclick="saveDetailChanges()" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+            <button onclick="deleteFromDetail()" class="btn-danger" style="flex:1; padding:12px; border-radius:8px;">削除</button>
+        </div>
+    </div>
+</div>
+
+<!-- 6. 時刻編集モーダル -->
+<div id="editEventModal" class="modal" onclick="if(event.target===this) closeEditEventModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0;">時刻を編集</h3>
+            <button class="close-btn" onclick="closeEditEventModal()">×</button>
+        </div>
+
+        <div id="editTimeStepContainer">
+            <div id="editStartTimeSection">
+                <h4>開始時刻</h4>
+                <div id="editStartTimePreview" class="time-preview"> --:--</div>
+                <div id="editStartTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <button onclick="skipEditStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+                    <button onclick="proceedToEditEndTime()" style="flex:1; padding:12px; background:var(--color-accent-strong); color:white; border:none; border-radius:8px;">終了時刻へ進む</button>
+                </div>
+            </div>
+
+            <div id="editEndTimeSection" style="display:none; margin-top:25px;">
+                <h4>終了時刻</h4>
+                <div id="editEndTimePreview" class="time-preview"> --:--</div>
+                <div id="editEndTimeSteps"></div>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <button onclick="backToEditStartTimeFromEnd()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 開始時刻に戻る</button>
+                    <button onclick="skipEditEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:30px;">
+            <button onclick="closeEditEventModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="saveTimeEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<!-- 7. 削除確認モーダル -->
+<div id="deleteConfirmModal" class="modal">
+    <div class="modal-content delete-confirm-box">
+        <h3 style="color:var(--color-danger-text); text-align:center;">削除確認</h3>
+        <p id="deleteConfirmText" style="text-align:center; margin:20px 0;"></p>
+        <div class="delete-confirm-actions">
+            <button type="button" id="deleteConfirmCancelBtn" class="btn-confirm-cancel" onclick="cancelDelete()">キャンセル</button>
+            <button type="button" id="deleteConfirmOkBtn" class="btn-danger btn-confirm-ok" onclick="confirmDelete()">削除する</button>
+        </div>
+    </div>
+</div>
+
+<!-- 8. 設定モーダル -->
+<div id="settingsModal" class="modal" onclick="if(event.target===this) closeSettingsModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0;">⚙ 設定</h3>
+            <button class="close-btn" onclick="closeSettingsModal()">×</button>
+        </div>
+
+        <!--
+            【2026-08-05 追加】
+            「今使っているこのカレンダーのURL」を、いつでもここで確認・コピーできる
+            ようにした。以前は初回にプロフィールが自動発行された時だけ表示される
+            案内バー（#newProfileNotice）にコピーボタンがあったが、それだと
+            初回にコピーし忘れると二度と出てこなかった。
+            別の端末に移りたい時は「新しく入口URLを開いて別のカレンダーが
+            できてしまう」のではなく、「ここでURLをコピーして移動する」のが
+            自然な導線になるよう、常設のボタンとして設定画面に置いている。
+            URLの中身は showSettingsModal() を開くたびに #currentCalendarUrl に
+            反映される（js/settings.js を参照）。
+        -->
+        <div class="settings-section">
+            <h4>■ アカウント</h4>
+            <p id="signedInEmail" style="font-size:14px; margin:0 0 10px 0; word-break:break-all;"></p>
+            <button type="button" onclick="logoutCurrentUser()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">ログアウト</button>
+        </div>
+        <div class="settings-section">
+            <h4>■ カレンダー</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 8px 0;">
+                同じログインの中で、仕事用・プライベート用などを切り替えられます。
+            </p>
+            <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)" style="width:100%; margin-bottom:8px;"></select>
+            <button type="button" onclick="createNewCalendar()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">＋ 新しいカレンダー</button>
+            <button type="button" onclick="renameCurrentCalendar()" style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">名前を変更</button>
+            <button type="button" onclick="deleteCurrentCalendar()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">このカレンダーを削除</button>
+        </div>
+        <div class="settings-section">
+            <h4>■ アプリの入口</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 8px 0;">
+                スマホでもPCでも、このURLを開いてログインすれば同じ予定が見られます。
+            </p>
+            <input type="text" id="currentCalendarUrl" readonly
+                onclick="this.select();"
+                style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; font-size:12px;">
+            <button onclick="copyAppEntryUrl()" class="btn" style="width:100%; padding:10px;">URLをコピー</button>
+        </div>
+
+        <div class="settings-section">
+            <h4>■ 削除</h4>
+            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="confirmBulkDelete" checked>
+                <span>一括削除するときに確認する<br>
+                <small style="color:var(--color-muted);">まとめて予定を削除する前に確認します。</small></span>
+            </label>
+        </div>
+
+
+        <!--
+            【2026-08-05 追加】バックアップ／復元。
+            Firebase保存（自動・継続的）とは別の、設定不要な手動スナップショット。
+            ・うっかり消してしまった時の保険
+            ・Firebaseを使わずに他の端末へ手軽に引っ越す手段
+            の2つの用途を想定している。
+            ファイル選択用の<input type="file">は画面上には出さず、
+            「バックアップから復元」ボタンをクリックした時にJSで呼び出す
+            （htmlFileInput.click()）。中身の処理は js/storage.js を参照。
+        -->
+        <div class="settings-section">
+            <h4>■ バックアップ</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
+                テンプレート・予定・配色などをファイルに保存したり、保存したファイルから元に戻せます。
+            </p>
+            <button onclick="downloadBackup()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">バックアップをダウンロード</button>
+            <input type="file" id="restoreFileInput" accept="application/json" style="display:none" onchange="restoreBackupFromFile(this.files[0]); this.value='';">
+            <button onclick="document.getElementById('restoreFileInput').click()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">バックアップから復元</button>
+        </div>
+
+        <!--
+            配色テーマの選択。ここに並ぶボタンは js/themes.js の
+            THEMES一覧から自動で生成される（HTML側で1つ1つ書いているわけではない）。
+            以前は色を1つ1つ自由に選べる方式だったが、
+            「自由度が高すぎると組み合わせで見た目が崩れる」というご要望を受け、
+            あらかじめ配色バランスを整えた6種類のテーマから選ぶ方式に変更した。
+            テーマを選ぶと、カレンダー本体・曜日・日付・各モーダルなど、
+            アプリ全体の色が一括で切り替わる。
+
+            【並び順】削除・データ保存は一度設定したらほとんど触らない項目のため、
+            配色テーマをこの位置（一番下＝保存/キャンセルボタンのすぐ上）に置くことで、
+            「テーマを選ぶ→すぐ下の保存ボタンを押す」という操作の距離を短くしている。
+        -->
+        <div class="settings-section">
+            <h4>■ 配色テーマ</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
+                カレンダー全体の雰囲気をテーマからお選びいただけます。
+            </p>
+            <div id="themeSettingsContainer" class="theme-options"></div>
+        </div>
+
+        <!--
+            【並び順・ラベルの変更】以前は「保存」「閉じる」の順だったが、
+            配色テーマが「保存」を押さなくても即座に反映されてしまう
+            （＝「閉じる」を押しても選んだテーマがそのまま残ってしまう）という
+            指摘を受け、テーマも他の設定と同じく「保存」を押した時だけ
+            確定するように直した。それに合わせて、ボタンも一般的な並び
+            （キャンセルが左・保存が右）に変更している。
+            「キャンセル」を押すと、プレビュー中だったテーマは元に戻る
+            （仕組みは js/settings.js の closeSettingsModal を参照）。
+        -->
+        <div style="display:flex; gap:10px; margin-top:30px;">
+            <button onclick="closeSettingsModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="saveSettings()" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+        </div>
+    </div>
+</div>
+
+<div id="calendarNameModal" class="modal" onclick="if(event.target===this) closeCalendarNameModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 id="calendarNameModalTitle" style="margin:0;">新しいカレンダー</h3>
+            <button class="close-btn" onclick="closeCalendarNameModal()">×</button>
+        </div>
+        <form id="calendarNameForm">
+            <input type="text" id="calendarNameInput" placeholder="例：仕事用、プライベート用" maxlength="40" autocomplete="off"
+                style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px; font-size:16px;">
+            <div id="calendarNameError" style="display:none; margin:0 0 8px; color:#ff8a8a; font-size:13px;"></div>
+            <div style="display:flex; gap:10px; margin-top:16px;">
+                <button type="button" onclick="closeCalendarNameModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+                <button type="submit" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 9. 検索結果モーダル -->
+<div id="searchResultsModal" class="modal" onclick="if(event.target===this) closeSearchResultsModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">検索結果（年月）</h3>
+            <button class="close-btn" onclick="closeSearchResultsModal()">×</button>
+        </div>
+        <div id="searchMonthList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap:12px; max-height:65vh; overflow-y:auto; padding:10px 0;"></div>
+    </div>
+</div>
+
+<!-- Firebase保存を使う場合に必要なSDK（Firebaseを使わない設定でも読み込むだけなら害はない） -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<!--
+    自作JSファイルの読み込み順について：
+    state.js（変数の宣言）を必ず一番最初に読み込む。
+    それ以外は「使う側」が「使われる側」より後になるよう並べているが、
+    実際に処理が動き出すのは main.js の window.onload 以降なので、
+    多少前後しても大きな問題は起きにくい構成にしてある。
+-->
+<script src="js/state.js?v=20260825a"></script>
+<script src="../js/firebase-config.js?v=20260825a"></script>
+<script src="js/utils.js?v=20260825a"></script>
+<script src="js/profiles.js?v=20260825a"></script>
+<script src="js/storage.js?v=20260825a"></script>
+<script src="../js/cloud.js?v=20260825a"></script>
+<script src="../js/debugLog.js?v=20260825a"></script>
+<script src="../js/calendars.js?v=20260825a"></script>
+<script src="../js/auth.js?v=20260825a"></script>
+<script src="js/templates.js?v=20260825a"></script>
+<script src="js/timeSelector.js?v=20260825a"></script>
+<script src="js/wizard.js?v=20260825a"></script>
+<script src="js/calendar.js?v=20260825a"></script>
+<script src="js/eventList.js?v=20260825a"></script>
+<script src="js/eventDetail.js?v=20260825a"></script>
+<script src="js/editTime.js?v=20260825a"></script>
+<script src="js/deleteConfirm.js?v=20260825a"></script>
+<script src="js/multiSelect.js?v=20260825a"></script>
+<script src="js/search.js?v=20260825a"></script>
+<script src="js/copyPaste.js?v=20260825a"></script>
+<script src="js/settings.js?v=20260825a"></script>
+<script src="js/themes.js?v=20260825a"></script>
+<script src="js/main.js?v=20260825a"></script>
+</body>
+</html>

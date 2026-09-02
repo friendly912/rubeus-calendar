@@ -1,0 +1,444 @@
+/*
+  drawer.css（スマホ版だけに存在するファイル）
+  ------------------------------------------------------------
+  PC版の「サイドバー」に入っていた検索・行動テンプレート・設定を、
+  普段は画面の外に隠しておき、ボタンを押した時だけ
+  画面の右側から重なるように出てくる「ドロワー」にするためのスタイル。
+
+  クライアントが例えていた「カレンダーとテンプレートを2枚の紙と考えて、
+  呼び出した時だけ右端に重ねる」というイメージを、
+  position: fixed と transform（スライドアニメーション）で実現している。
+*/
+
+/* ---- カレンダー下部のタブ列（カレンダー形式／リスト形式／メニューへ）----
+   【修正履歴】
+   1回目：メニューを開くボタンは画面右下に position:fixed で浮かせて常時表示
+   していたが、カレンダー本体の日付マス（特に右下）に重なって予定の表示を
+   隠してしまうという指摘があり、ヘッダー右端に移動した。
+   2回目：曜日見出しの高さを固定したことでカレンダー下部に余白ができやすく
+   なったため、その余白を使う「メニューへ進む」タブに作り替え、ヘッダーからは撤去。
+   3回目（2026-08-05）：ドロワーの中にあった「カレンダー形式／リスト形式」の
+   切り替えボタンをここに合流させ、3つ並びのタブ列にした。よく使う操作を
+   ドロワーを開かずに触れるようにするため。横画面表示ではこの列ごと非表示にし、
+   代わりに画面を左右にスワイプしてメニューを開閉する（js/drawer.js 参照）。 */
+.mobile-bottom-bar {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0; /* カレンダー本体が伸び縮みしても、このタブ列の高さは変わらないようにする */
+}
+/* 横画面表示の時は非表示。カレンダー本体をできるだけ広く使うため。 */
+body.mode-landscape .mobile-bottom-bar {
+    display: none;
+}
+.bottom-bar-btn {
+    flex: 1;
+    min-width: 0; /* 文字が長くてもボタンの幅が均等を保てるように */
+    /*
+      【2026-08-05 調整】以前は行動テンプレートのボタン（約49px）に高さを
+      揃えていたが、「日付マスの帯が3個半見えるくらいがちょうど良い」という
+      ご要望を受けて、この高さも少し増やしている（増やした分だけ、
+      calendar.css の .day-header と合わせて日付マスの取り分が少し減る仕組み。
+      詳しい理屈は .day-header 側のコメントを参照）。
+    */
+    padding: 15px 4px;
+    font-size: 13px;
+    font-weight: bold;
+    background: var(--color-cell-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    color: var(--color-text);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bottom-bar-btn:hover { border-color: var(--color-accent-2); }
+/* 今選ばれている「見せ方」のボタンだけ強調する（カレンダー形式／リスト形式） */
+.bottom-bar-btn.active {
+    background: var(--color-accent-strong);
+    color: white;
+    border-color: var(--color-accent-4);
+}
+
+/* ---- ドロワーの背景の暗い幕 ----
+   ドロワーが開いている間だけ表示され、外側タップで閉じる操作も受け付ける。
+   display:none にせず opacity + pointer-events で制御しているのは、
+   閉じる時にふわっと消えるアニメーションを付けやすくするため。 */
+.drawer-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /*
+      【あえて --color-modal-overlay とは別にしている】
+      モーダルの暗幕（0.94、ほぼ真っ黒）と役割は似ているが、
+      ドロワーは画面の一部（右側）だけを覆う作りのため、
+      同じ濃さにすると左に見えているカレンダーまで暗くなりすぎてしまう。
+      そのため、あえて薄め（0.55）の固定値のままにしている。
+    */
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 220;
+}
+.drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---- ドロワー本体（検索・テンプレート一覧・設定） ---- */
+.sidebar-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    /*
+      【クライアントからのフィードバックで修正した点】
+      以前は幅を280pxの固定値にしていたが、「開いた時に画面の右側3分の1くらいまで
+      引き出されるイメージ」というご要望があったため、固定pxではなく
+      画面幅に対する割合（%）で指定する形に変更した。
+      端末の横幅が極端に狭い/広い場合の保険として、min-width と max-width で
+      下限・上限も設けている。
+    */
+    width: 34%;
+    min-width: 240px;
+    max-width: 340px;
+    background: var(--color-panel-bg);
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5);
+    /*
+      【2026-08-05 追加・重要バグ修正】
+      このドロワーは position:fixed で画面に直接重ねているため、
+      base.css の body に指定したセーフエリア対応（env(safe-area-inset-*)）の
+      余白を一切引き継がない（position:fixedの要素はbodyのpaddingの影響を受けない）。
+      そのため縦画面で「メニュー」の見出しと閉じるボタンがノッチの真下に隠れてしまい、
+      閉じるボタンを押せずカレンダーへ戻れなくなる不具合が起きていた。
+      ここで直接セーフエリア分の余白を確保している。
+      （なお、閉じるボタン自体はこの後の修正で廃止し、スワイプ操作と
+       下部の「カレンダーに戻る」タブに置き換えている。それでも見出し文字が
+       ノッチに掛かって読みにくくなる問題は残るため、この余白指定は必要）
+    */
+    padding: 14px;
+    padding-top: max(14px, env(safe-area-inset-top));
+    padding-right: max(14px, env(safe-area-inset-right), env(safe-area-inset-left));
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 230; /* 背景幕より手前 */
+
+    /* 普段は画面の右外に完全に追い出しておき、.open が付いたら中央へスライドさせる */
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+}
+.sidebar-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.drawer-header h2 {
+    margin: 0;
+    color: var(--color-accent-2);
+    font-size: 18px;
+}
+
+.drawer-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-close-btn);
+    font-size: 26px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/*
+  drawer-body について：
+  ドロワーの中身（検索欄〜テンプレート一覧〜設定ボタン）を
+  まとめて1つのスクロール領域にしている。
+  ヘッダー（drawer-header）だけは常に上に固定表示し、
+  それ以外は画面の高さに応じてまとめてスクロールする、という構成。
+  【この作りにした理由】
+  検索欄やテンプレート一覧、下部の設定ボタンをそれぞれ別々に
+  高さ配分しようとすると、横画面の背が低いスマホで
+  テンプレート一覧の取り分がほぼ無くなり、一覧が実質見えなくなる
+  不具合が起きていた（実機確認で発見・修正）。
+  全部をまとめてスクロールできる箱にすることで、
+  画面の高さに関わらず必ず最後までたどり着けるようにしている。
+*/
+.drawer-body {
+    flex: 1;
+    min-height: 0; /* flexアイテムの高さが潰れず、ちゃんとスクロールできるようにするための指定 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    /* 検索窓の枠と点滅の光が、箱の端で見切れないように少し余白を取る */
+    padding: 6px 8px 4px 4px;
+}
+
+/* ---- 検索欄（ドロワー内） ---- */
+.search-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 8px;
+}
+.search {
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border-input);
+    color: white;
+    padding: 9px 36px 9px 12px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 100%;
+    font-size: 15px;
+}
+.search.searching {
+    animation: searchFlash 0.9s infinite ease-in-out;
+}
+@keyframes searchingPulse {
+    0%, 100% {
+        border-color: var(--color-border-input);
+        box-shadow: 0 0 0 2px var(--color-search-pulse-1);
+        background: var(--color-input-bg);
+    }
+    50% {
+        border-color: var(--color-accent-3);
+        box-shadow: 0 0 0 8px var(--color-search-pulse-2);
+        background: var(--color-search-pulse-bg);
+    }
+}
+@keyframes searchFlash {
+    0%, 100% {
+        border-color: #ffcc33;
+        box-shadow: 0 0 0 2px rgba(255, 196, 40, 0.65), 0 0 10px rgba(255, 170, 0, 0.55);
+        background: #3a2a0c;
+    }
+    50% {
+        border-color: #fff3a8;
+        box-shadow: 0 0 0 4px rgba(255, 210, 60, 0.35), 0 0 16px rgba(255, 200, 40, 0.75);
+        background: #5a4010;
+    }
+}
+.clear-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-muted);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 2px 6px;
+    line-height: 1;
+    display: none;
+}
+.clear-btn:hover { color: var(--color-muted-hover); }
+.clear-btn.visible { display: block; }
+
+.search-hint {
+    font-size: 12px;
+    color: var(--color-muted);
+    margin-top: 4px;
+    padding-left: 4px;
+}
+.search-btn {
+    margin-top: 6px;
+    padding: 8px 16px;
+    background: var(--color-input-bg);
+    color: var(--color-accent-4);
+    border: 1px solid var(--color-border-input);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    align-self: flex-end;
+}
+.search-drop-zone.search-drop-ready .search {
+    border-color: var(--color-accent-3);
+    box-shadow: 0 0 0 3px var(--color-search-pulse-1);
+}
+.drawer-body .calendar-switcher {
+    margin-bottom: 10px;
+}
+
+/* ---- 行動テンプレート一覧（ドロワー内） ----
+   スクロール自体は親の .drawer-body がまとめて担当するため、
+   ここでは flex:1 / overflow-y:auto は指定せず、中身の分だけ
+   自然に高さを取る（content-based sizing）ようにしている。 */
+.templates-container {
+    padding-right: 4px;
+}
+.template {
+    background: var(--color-input-bg);
+    padding: 12px 14px; /* PC版よりタップしやすいよう上下を少し広めにしている */
+    margin: 6px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    touch-action: pan-y;
+}
+.template-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 右端の点が2列ある取っ手。スマホにマウスの手アイコンは出ないため、
+   ここが「つかんで動かせる」目印になる。 */
+.template-handle {
+    width: 14px;
+    height: 18px;
+    flex-shrink: 0;
+    position: relative;
+    opacity: 0.42;
+}
+.template-handle::before,
+.template-handle::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    width: 3.5px;
+    height: 3.5px;
+    border-radius: 50%;
+    background: var(--color-muted);
+    box-shadow: 0 6px 0 var(--color-muted), 0 12px 0 var(--color-muted);
+}
+.template-handle::before { left: 1px; }
+.template-handle::after { right: 1px; }
+.template.template-holding {
+    transform: scale(0.97);
+    background: var(--color-input-bg-hover);
+    box-shadow: 0 0 0 2px var(--color-accent-2);
+}
+.template.template-dragging {
+    opacity: 1;
+    background: var(--color-input-bg-hover);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.55), 0 0 0 2px var(--color-accent);
+    transform: scale(1.04) rotate(-0.6deg);
+    touch-action: none;
+}
+.template.template-dragging .template-handle {
+    opacity: 1;
+}
+.template.template-dragging .template-handle::before,
+.template.template-dragging .template-handle::after {
+    background: var(--color-accent-4);
+    box-shadow: 0 6px 0 var(--color-accent-4), 0 12px 0 var(--color-accent-4);
+}
+.template-placeholder {
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 2px dashed var(--color-dashed-border);
+    background: var(--color-cell-bg);
+    box-sizing: border-box;
+}
+body.template-reordering {
+    overscroll-behavior: none;
+}
+.template:hover {
+    background: var(--color-input-bg-hover);
+    border-left: 5px solid var(--color-accent-2);
+}
+.add-template {
+    background: var(--color-cell-bg);
+    border: 2px dashed var(--color-dashed-border);
+    color: var(--color-muted);
+    text-align: center;
+    font-size: 15px;
+    margin: 12px 0;
+    cursor: pointer;
+    padding: 12px;
+}
+
+/* ---- ドロワー下部（週の開始曜日・設定ボタン） ---- */
+.sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.select-weekstart {
+    padding: 15px 10px;
+    background: var(--color-input-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    width: 100%;
+}
+.btn-settings {
+    padding: 14px 10px;
+    background: var(--color-input-bg);
+    color: var(--color-accent-4);
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+}
+
+/*
+  縦画面表示では横幅そのものが狭いため、
+  ドロワーは画面幅の34%ではなく画面幅いっぱいに広げて、
+  中身（テンプレート等）が窮屈にならないようにする。
+  （calendar.cssと同様、実際の向きではなく body.mode-portrait クラスで判定する）
+*/
+body.mode-portrait .sidebar-drawer {
+    width: 100%;
+    max-width: 100vw;
+}
+
+/* ==================== 表示方式の切り替えUI（ドロワー下部） ==================== */
+
+.display-mode-switcher {
+    margin-top: 4px;
+}
+
+/*
+  【修正】以前はグレーの小さい文字（補足情報のような見た目）にしていたが、
+  画面下部に「行動テンプレート／縦画面での見せ方／日曜始まり・設定」の
+  3つが並んで密集しており、見出しとして選びにくいというご指摘があった。
+  「行動テンプレート」の見出し（h2、白字・太字）と合わせることで、
+  同じように目立つ見出しとして認識しやすくしている。
+*/
+.display-mode-label {
+    font-size: 15px;
+    font-weight: bold;
+    color: var(--color-text);
+    margin-bottom: 6px;
+}
+.display-mode-buttons {
+    display: flex;
+    gap: 6px;
+}
+/*
+  【修正】「見せ方」「曜日始まり」「設定」の枠を、「＋新しいテンプレート」と
+  同じ高さ（49px）に揃えている（ここも密集して見えるというご指摘のため）。
+*/
+.display-mode-btn {
+    flex: 1;
+    padding: 15px 4px;
+    font-size: 12px;
+    background: var(--color-input-bg);
+    color: var(--color-accent-4);
+    border: 1px solid var(--color-border-input);
+    border-radius: 6px;
+    cursor: pointer;
+}
+/* 今選ばれている表示方式のボタンだけ強調する */
+.display-mode-btn.active {
+    background: var(--color-accent-strong);
+    color: white;
+    border-color: var(--color-accent-4);
+    font-weight: bold;
+}

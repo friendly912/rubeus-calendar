@@ -1,0 +1,119 @@
+/*
+  base.css（スマホ版）
+  ------------------------------------------------------------
+  画面全体のレイアウトを担当する。PC版との一番の違いは、
+  PC版が「カレンダー」と「サイドバー」を横に並べる2カラム構成だったのに対し、
+  スマホ版は基本的に「カレンダーだけが画面いっぱいに表示され、
+  テンプレート等はドロワー（引き出し）として上に重なる」1カラム構成にしている点。
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    overscroll-behavior: none; /* 画面を引っ張った時にブラウザ自体がバウンドするのを防ぐ（アプリらしい操作感にするため） */
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: sans-serif;
+    margin: 0;
+    /*
+      【2026-08-05 追加、同日中に修正】
+      iPhoneのノッチ（ダイナミックアイランド）や丸い角、ホームインジケーターの
+      部分に画面の中身がかかってしまわないようにする「安全な余白（セーフエリア）」の指定。
+
+      【訂正】追加した当初「通常のブラウザタブで見ている時はenv()の値は0になる」と
+      考えていたが誤りだった。viewport-fit=cover を指定した時点で、ホーム画面に
+      追加していない通常のSafariタブでも安全な余白の値が有効になる。
+
+      【実際に起きた不具合と直し方】
+      横画面表示にすると、ノッチ（ダイナミックアイランド）は物理的には画面の
+      左右どちらかの端に来る。そのため safe-area-inset-left と
+      safe-area-inset-right は「片方だけ大きく、もう片方はほぼ0」という
+      左右非対称の値になる。これをそのまま左右別々に使うと、画面の中身全体が
+      左または右に偏ってしまい、本来まん中に来るはずの「年月」表示が
+      中央からズレて見える＝「レイアウトが崩れている」という不具合につながっていた。
+
+      対策として、左右どちらの余白にも「左右のenv()のうち大きい方」を使うようにし、
+      あえて左右対称になるようにしている（ノッチが無い側は少し余分に余白ができるが、
+      見た目が崩れるより安全な方を優先した）。
+    */
+    padding: 6px;
+    padding-top: max(6px, env(safe-area-inset-top));
+    padding-right: max(6px, env(safe-area-inset-right), env(safe-area-inset-left));
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    padding-left: max(6px, env(safe-area-inset-left), env(safe-area-inset-right));
+    /*
+      【2026-08-05 追加、同日中に修正】
+      当初は 100vh ではなく 100dvh（動的ビューポート高さ。URLバーの
+      出入りにあわせてその時々の実際の高さに追従する単位）を使っていた。
+
+      【発覚した不具合】
+      横画面から縦画面に戻した直後、画面が小刻みに上下に揺れ続ける現象が
+      発生した。原因は「100dvhの値が変わる→ページの高さが変わる→
+      それに反応してブラウザのツールバー（URLバー）の表示状態が変わる→
+      ツールバーが変わるとdvhの値がまた変わる」という悪循環（フィードバック
+      ループ）で、特に画面回転の直後はツールバーの状態が不安定なため
+      起こりやすい。
+
+      【対策】
+      100dvh の代わりに 100svh（小さい方のビューポート高さ。
+      ツールバーが常に表示されている前提の、変動しない固定値）に変更した。
+      ツールバーが引っ込んだ時に生まれる数十pxの余白を活かせなくなる
+      デメリットはあるが、揺れ続ける不具合の方が明らかに実害が大きいため、
+      安定して揺れない方を優先した。
+      対応していない古いブラウザのために、まず100vhを書いてから
+      上書きする形にしている（非対応ブラウザは単に無視して100vhのまま動く）。
+    */
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* ドロワーやその背景幕を position:fixed で重ねるための基準にする */
+}
+
+/* カレンダー本体だけの1カラム構成。
+   PC版の .main は calendar-area と sidebar を横に並べていたが、
+   スマホ版はサイドバーの中身をドロワー（drawer.css）として画面の外に追い出しているため、
+   ここでは calendar-area だけで画面いっぱいに広げている。
+
+   【2026-08-05 変更】以前は height: calc(100vh - 12px) と、bodyのpadding(6px×2)を
+   決め打ちで引き算していたが、上記のセーフエリア対応でbodyのpaddingが
+   端末によって変わるようになったため、この引き算が合わなくなってしまう。
+   body側が display:flex; flex-direction:column; になっており、.main は
+   その唯一の通常配置の子要素なので、flex:1 だけで「bodyの残り高さいっぱい」に
+   自動で広がる。min-height:0 は、flexアイテムの中身（カレンダー本体）が
+   スクロールしきれず全体がはみ出してしまうのを防ぐための定番の保険。 */
+.main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* ==================== 共通ボタン ==================== */
+
+.btn {
+    background: var(--color-input-bg);
+    color: var(--color-accent-4);
+    border: 1px solid var(--color-border-input);
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.btn-danger {
+    background: var(--color-danger);
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+}
+.btn-danger:hover {
+    background: var(--color-danger-hover);
+    color: white;
+}

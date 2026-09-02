@@ -1,0 +1,112 @@
+/*
+  listView.css（スマホ版・縦画面表示だけに存在する機能のスタイル）
+  ------------------------------------------------------------
+  縦画面表示のときだけ選べる「リスト形式」の見た目を担当する。
+  普段（カレンダー形式の時、または横画面表示の時）は
+  body に .list-view クラスが付かないため、このファイルの中身は
+  何も表示に影響しない。
+*/
+
+/* リスト表示のコンテナ本体。普段は隠しておく */
+.calendar-list {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding: 4px 2px;
+}
+
+/*
+  body.list-view が付いている間だけ、
+  カレンダー（マス目）を隠して、リストを表示する。
+  カレンダー形式に戻すと自動的に元に戻る。
+*/
+body.list-view #calendar { display: none; }
+body.list-view .calendar-list { display: flex; }
+
+/* ---- 1日分のまとまり（日付見出し＋その日の予定） ---- */
+.list-day-group {
+    background: var(--color-cell-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    position: relative;
+}
+
+/*
+  今日の日付のまとまりを強調する（カレンダー形式の .date.today と同じ考え方）。
+  【2026-08-05 追加】検索欄に文字が入っている時と同じ明滅アニメーション
+  （searchingPulse、drawer.css で定義）を、カレンダー形式の .date.today と
+  揃えて付けている。
+*/
+.list-day-group.today {
+    border: 2px solid var(--color-accent-3);
+    animation: searchingPulse 2.4s infinite ease-in-out;
+}
+
+/* 複数選択モードで選択されている日付のまとまり（カレンダー形式と同じ黄色の強調） */
+.list-day-group.selected-multi {
+    border: 2px solid var(--color-selected) !important;
+    background: var(--color-selected-glow) !important;
+}
+.list-day-group.selected-multi::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    color: var(--color-selected);
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 0 3px #000;
+}
+
+.list-day-header {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: var(--color-text);
+}
+.list-day-header.sunday,
+.list-day-header.saturday {
+    color: var(--color-weekend);
+}
+
+/* ---- 1件分の予定（日付のまとまりの中に複数並ぶ） ---- */
+.list-event {
+    font-size: 13px;
+    padding: 6px 8px;
+    margin: 4px 0;
+    border-radius: 6px;
+    background: var(--color-event-bg);
+    border-left: 4px solid;
+    cursor: pointer;
+    /* リスト形式は横幅に余裕があるため、カレンダー形式のマス目内表示と違い、
+       文字を省略せずそのまま折り返して表示する（読みやすさを優先） */
+    white-space: normal;
+    word-break: break-word;
+}
+.list-event-time {
+    color: var(--color-accent-4);
+    margin-right: 6px;
+}
+
+/* 予定が1件も無い月の表示 */
+.list-empty {
+    text-align: center;
+    color: var(--color-muted);
+    padding: 40px 0;
+}
+
+/* リストの一番下にある「＋ 新しい予定を追加」ボタン */
+.list-add-btn {
+    margin-top: 4px;
+    padding: 12px;
+    background: var(--color-accent-strong);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}

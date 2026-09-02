@@ -1,0 +1,354 @@
+/*
+  modal.css（スマホ版）
+  ------------------------------------------------------------
+  年月選択・予定登録ウィザード・予定詳細・時刻編集など、
+  9種類のモーダル共通のスタイル。中身の構造・IDはPC版と全く同じ
+  （index.htmlのマークアップも同じ）で、ここではスマホの画面に合わせて
+  余白・文字サイズ・タップ領域だけを調整している。
+
+  【方針】
+  ・タップミスを防ぐため、ボタン等の高さはPC版より少し大きめを維持する
+  ・横画面は高さが少ないため、余白と行間を詰めて情報を1画面に収まりやすくする
+*/
+
+.modal {
+    position: fixed;
+    inset: 0;
+    width: auto;
+    height: auto;
+    background: var(--color-modal-overlay);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    box-sizing: border-box;
+    /* 余白は中身側に付ける。オーバーレイ自体に padding すると、
+       iPhoneのホーム画面では見た目とタップ位置がずれ、
+       「削除する」を押したつもりが外側扱いになって消えないことがある。 */
+}
+
+.modal-content {
+    background: var(--color-modal-bg);
+    border: 2px solid var(--color-border-input);
+    border-radius: 12px;
+    padding: 16px;
+    width: 94%;
+    max-width: 480px;
+    min-height: 0;
+    max-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    margin-top: env(safe-area-inset-top, 0px);
+    margin-right: max(env(safe-area-inset-right, 0px), env(safe-area-inset-left, 0px));
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+    margin-left: max(env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
+}
+
+/* iPhoneの色選択は、幅いっぱいに伸ばすと円が潰れて楕円になる。
+   見た目だけ角丸の色帯にして、タップで出る色パレットはOSのまま使う。 */
+.color-input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 50px;
+    margin: 10px 0;
+    padding: 0;
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+.color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 7px;
+}
+
+/* 削除確認は、下に残っている予定一覧より手前に出す */
+#deleteConfirmModal {
+    z-index: 410;
+}
+
+#deleteConfirmModal .delete-confirm-box {
+    max-width: 400px;
+    max-height: none;
+    overflow: visible;
+    padding: 20px 20px 24px;
+    box-sizing: border-box;
+}
+
+.delete-confirm-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 4px;
+}
+
+.btn-confirm-cancel,
+.btn-confirm-ok {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-confirm-cancel {
+    background: var(--color-input-bg-hover);
+    color: white;
+    border: 1px solid var(--color-border-input);
+}
+
+.btn-confirm-ok {
+    border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.modal-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    padding-top: 12px;
+    background: var(--color-modal-bg);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--color-close-btn);
+    font-size: 26px;
+    cursor: pointer;
+    /* ノッチ際でも押しやすいよう、見た目より広いタップ領域にする */
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px;
+    margin: -8px -8px -8px 0;
+    line-height: 1;
+}
+
+/* ---- テンプレート選択グリッド ---- */
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 8px;
+}
+.template-option {
+    padding: 14px 8px;
+    text-align: center;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+    cursor: pointer;
+}
+.template-option.selected {
+    background: var(--color-selected-bg);
+    border: 2px solid var(--color-accent-2);
+}
+
+/* ---- 時刻入力（午前/午後 → 時 → 分） ---- */
+.time-preview {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: var(--color-accent-3);
+    margin: 12px 0;
+    padding: 12px;
+    background: var(--color-input-bg);
+    border-radius: 12px;
+}
+#startTimePreview, #editStartTimePreview { color: var(--color-start-time); }
+#endTimePreview, #editEndTimePreview { color: var(--color-end-time); }
+
+.ampm-grid, .hour-grid, .minute-section {
+    display: grid;
+    gap: 8px;
+}
+.ampm-grid { grid-template-columns: repeat(2, 1fr); }
+.hour-grid { grid-template-columns: repeat(6, 1fr); }
+
+.time-btn {
+    /* タップ領域を確保するため、PC版より上下を少し広めにしている */
+    padding: 13px 6px;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border-input);
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+}
+.time-btn:hover { background: var(--color-input-bg-hover); }
+.time-btn.selected {
+    background: var(--color-accent-strong);
+    color: #fff;
+    font-weight: bold;
+    border: 2px solid var(--color-accent-4);
+}
+.time-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.time-btn.disabled:hover { background: var(--color-input-bg); }
+
+.minute-section { margin-top: 14px; }
+.minute-row { margin-bottom: 8px; }
+.btn-group { display: flex; gap: 6px; }
+.time-edit-controls { display: flex; gap: 10px; margin-top: 12px; }
+
+/* ---- 終了日カレンダー ---- */
+.end-date-option {
+    padding: 14px;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+    margin: 6px 0;
+    cursor: pointer;
+    text-align: center;
+    font-size: 16px;
+}
+.end-date-option:hover { background: var(--color-input-bg-hover); }
+.end-date-option.selected {
+    background: var(--color-selected-bg);
+    border: 2px solid var(--color-accent-2);
+}
+
+/* 【2026-08-05】#startDateCalendar（リスト形式の開始日選択）も同じグリッド構成 */
+#endDateCalendar,
+#startDateCalendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    margin: 10px 0;
+}
+/*
+  【2026-08-05 追加】曜日の見出し行。カレンダー本体の .day-header と
+  同じ考え方（背景色・文字色）で揃えている。
+*/
+.end-date-day-header {
+    text-align: center;
+    padding: 5px 2px;
+    background: var(--color-input-bg);
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 11px;
+    color: var(--color-day-header-text);
+}
+.end-date-day {
+    padding: 8px 2px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.end-date-day.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+.end-date-day.selected {
+    background: var(--color-accent-strong);
+    color: white;
+}
+/* 【2026-08-05 追加】カレンダー本体の日付マスと同じく、土日の数字を赤くする */
+.end-date-day.sunday,
+.end-date-day.saturday {
+    color: var(--color-weekend);
+}
+
+/*
+  【2026-08-05 追加】
+  日をまたぐ予定の「開始日」のマスを明滅させて目立たせる。
+  月をまたいで終了日を探しているうちに、そもそも開始日がどこだったか
+  見失いやすい、というご指摘への対応。
+*/
+.end-date-day.start-date {
+    font-weight: bold;
+    border: 2px solid var(--color-selected);
+    border-radius: 6px;
+    animation: end-date-start-blink 1s step-start infinite;
+}
+/*
+  【2026-08-05 修正】
+  最初は「うっすら黄色の背景⇄透明」という淡い明滅にしていたが、
+  見た目が地味すぎて気づきにくかった（「点滅が再現されない」というご指摘）。
+  背景を「はっきりした黄色（不透明）⇄枠だけ」に変え、文字色も黄色地の時だけ
+  黒に切り替えて、誰が見てもはっきり点滅と分かるようにした。
+  ease-in-out（じわっと変化）ではなく step-start（パッと切り替わる）に
+  変更しているのも、より「点滅」らしくはっきり気づけるようにするため。
+*/
+@keyframes end-date-start-blink {
+    0%, 49% { background: var(--color-selected); color: #1a1a22; }
+    50%, 100% { background: transparent; color: inherit; }
+}
+
+/* ---- 設定モーダル ---- */
+.settings-section {
+    margin: 14px 0;
+    padding: 14px;
+    background: var(--color-input-bg);
+    border-radius: 10px;
+}
+.settings-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--color-accent-2);
+}
+
+/*
+  高さの少ない横画面表示の端末向けに、
+  モーダルの余白・時刻プレビューの文字サイズをさらに詰める。
+  （モーダルの中身自体はPC版と同じ内容を全部表示しつつ、
+    なるべくスクロールなしで収まることを狙った調整）
+  実際の画面の高さで判定するため、body.mode-landscape と組み合わせている
+  （設定で「横画面表示」を選んでいる時だけが対象。縦画面表示の時は高さに
+   余裕があるのでこの調整は不要）。
+*/
+@media (max-height: 500px) {
+    body.mode-landscape .modal-content { padding: 10px; max-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 16px); }
+    body.mode-landscape .time-preview { font-size: 24px; margin: 8px 0; padding: 8px; }
+    body.mode-landscape .time-btn { padding: 9px 6px; font-size: 13px; }
+    body.mode-landscape .template-option { padding: 10px 6px; }
+}
+
+/* ---- 配色テーマ選択ボタン（設定モーダル内）。PC版と同じスタイル ---- */
+.theme-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+}
+.theme-option-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--color-input-bg);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 13px;
+}
+.theme-option-btn:hover {
+    background: var(--color-input-bg-hover);
+}
+.theme-option-btn.selected {
+    border-color: var(--color-accent-2);
+    background: var(--color-selected-bg);
+}
+.theme-swatch {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+}

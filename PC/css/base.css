@@ -1,0 +1,63 @@
+/*
+  base.css
+  ------------------------------------------------------------
+  アプリ全体の土台となるスタイル。
+  「画面全体のレイアウト」と「どこでも使う共通パーツ（ボタンなど）」だけを置いています。
+  カレンダー本体・サイドバー・モーダルなど、個別の見た目は
+  それぞれ calendar.css / sidebar.css / modal.css に分けています。
+*/
+
+/* 全要素のサイズ計算方法を統一する。
+   padding や border を width/height に含めて計算するようにすることで、
+   「paddingを足したら思ったよりサイズが大きくなった」という事故を防ぐ。 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: sans-serif;
+    margin: 0;
+    padding: 10px;
+    height: 100vh;
+    overflow: hidden; /* ページ自体はスクロールさせず、中の要素（カレンダー欄など）だけをスクロールさせる */
+    display: flex;
+    flex-direction: column;
+}
+
+/* カレンダー本体（左）とサイドバー（右）を横に並べる大枠。
+   PC版はここが左右2カラム構成になっている。
+   スマホ版でレイアウトを1カラムに変える場合は、
+   この .main の flex-direction を切り替えることになる。 */
+.main {
+    display: flex;
+    flex: 1;
+    gap: 14px;
+    overflow: hidden;
+    height: calc(100vh - 20px);
+}
+
+/* ==================== 共通ボタン ==================== */
+
+.btn {
+    background: var(--color-input-bg);
+    color: var(--color-accent-4);
+    border: 1px solid var(--color-border-input);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* 削除など「取り返しのつかない操作」に使う赤いボタン */
+.btn-danger {
+    background: var(--color-danger);
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+.btn-danger:hover {
+    background: var(--color-danger-hover);
+    color: white;
+}

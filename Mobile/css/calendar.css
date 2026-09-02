@@ -1,0 +1,331 @@
+/*
+  calendar.css（スマホ版）
+  ------------------------------------------------------------
+  カレンダー本体のスタイル。PC版との違いは主に「小さい画面に合わせて
+  各パーツを縮小していること」「横画面(landscape)と縦画面(portrait)で
+  余白や高さの基準を変えていること」の2点。
+
+  考え方の基本方針：
+  「カレンダー部分をできるだけ広く使いたい」というご要望に合わせて、
+  ヘッダーや余白はできるだけ薄く・小さくし、日付グリッドに高さを回している。
+*/
+
+.calendar-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    width: 100%;
+}
+
+/* ---- 月移動ヘッダー ----
+   PC版は7列グリッドで曜日の列と位置を揃える作りだったが、
+   スマホは横幅が貴重なので、シンプルな横並び(flex)にして、
+   ヘッダー自体の高さも詰めている。
+   【2026-08-05】以前はここにメニューを開くボタン（drawerToggleBtn）を
+   置いていたが、カレンダー下部の「メニューへ進む」タブに役目を譲って撤去した
+   （経緯は drawer.css の .menu-tab-btn 側のコメントを参照）。
+   ボタンが無くなったことで、.title の flex:1 が効き、
+   前月・年月・次月が両端と中央に均等に並ぶようになっている。 */
+.header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    background: var(--color-panel-bg);
+    border-radius: 8px;
+}
+
+.title {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+    color: var(--color-accent);
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.title:hover { background: var(--color-title-hover-glow); }
+
+.prev-btn, .next-btn {
+    padding: 8px 10px;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ---- 状態バー（コピー中 / 複数選択中） ---- */
+
+.status-bar {
+    display: none;
+    background: var(--color-status-bar-bg);
+    color: var(--color-selected);
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 0;
+    font-weight: bold;
+    font-size: 13px;
+}
+.status-bar.multi-select {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+}
+.status-bar-actions {
+    display: flex;
+    gap: 6px;
+}
+.btn-cancel {
+    background: var(--color-cancel-bg);
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* ---- カレンダーのマス目 ---- */
+
+.calendar {
+    flex: 1;
+    background: var(--color-panel-bg);
+    border-radius: 8px;
+    padding: 4px;
+    display: grid;
+    /*
+      【重要】単純に "repeat(7, 1fr)" と書くと、実は7列が同じ幅になる保証がない。
+      CSS Gridでは、1fr の列の最小幅は初期値で「中身が必要とする最小サイズ（auto）」
+      になっており、日付マスの中に長い予定名が1行で収まらない場合、
+      そのマス（＝その列）だけ他より幅が広がってしまう。
+      これが「セルの幅が可変的に変化する」不具合の原因だった。
+      "minmax(0, 1fr)" と書くことで、列の最小幅を0に固定し、
+      中身の長さに関係なく7列が必ず同じ幅になるようにしている。
+      （はみ出す文字は .event 側の overflow:hidden で省略表示にする）
+    */
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    /*
+      【重要・バグ修正 2026-08-05】
+      これらの行を指定する前は、曜日見出し（1行目）と日付マス（2行目以降）の
+      行の高さがすべて「auto」の初期値のままだった。この場合、グリッド全体の
+      高さ（.calendarはflex:1で画面の余った縦幅いっぱいに広がる）に対して
+      中身の行の合計が足りないと、余った分の高さが全ての行に均等に
+      引き伸ばされてしまう（ブラウザの初期設定で align-content が
+      実質 stretch と同じ扱いになるため）。
+
+      特に「日曜始まりの2026年2月」のように、必要な日付の行数が
+      少ない月では、余りの高さが大きくなり、曜日見出しの枠まで
+      不自然に縦長になってしまっていた（文字は上に寄ったまま、
+      下にだけ大きな余白ができる）。
+
+      対策として、1行目（曜日見出し）だけを "auto"（中身の高さぴったり）に固定し、
+      2行目以降（日付マス）は "1fr" にして、余った高さは日付マスの方だけで
+      吸収するようにした。これにより、曜日見出しの枠は月や週の開始曜日設定に
+      関係なく常に文字とほぼ同じ高さになる。
+    */
+    grid-template-rows: auto; /* 1行目（曜日見出し）は中身の高さぴったりに固定 */
+    grid-auto-rows: 1fr;      /* 2行目以降（日付マス）で残りの高さを均等に分け合う */
+    gap: 3px;
+    overflow-y: auto;
+    /*
+      【2026-08-05 追加・重要】
+      日付マスの高さを固定値（曜日見出し×2.5、下の body.mode-portrait 側を参照）に
+      変更した際、思わぬ形で上のバグ修正が再発した。
+      日付マスが 1fr（残りの高さを全部使い切る）ではなく固定pxになったことで、
+      「グリッド全体の高さ」と「曜日見出し＋日付マスの合計」の間に余りが
+      生まれるケースが出てきて、その余りが再び曜日見出し（唯一のautoの行）に
+      吸収され、見出しがどんどん引き伸ばされてしまっていた
+      （しかも見出しの高さを毎回測り直して次の日付マスの高さ計算に使っている
+       ため、測るたびに膨らんでいく悪循環になっていた）。
+      align-content: start を指定することで、「余った高さは全部グリッドの
+      下に空白として残す（どの行も引き伸ばさない）」という動きに変え、
+      悪循環そのものを断ち切っている。
+    */
+    align-content: start;
+}
+
+/*
+  【2026-08-05 追加】
+  「曜日の見出しを1マス分とした時、日付マスは2.5マス分の高さがちょうど良い」
+  というご要望への対応。
+  --day-header-height は js/calendar.js の generateCalendar() が、実際に
+  描画された曜日見出しの高さを測って毎回セットしているCSS変数。
+  ここではその値を使って、日付マスの高さを「曜日見出しの高さ × 2.5」に
+  固定している（横画面は今まで通り、余った高さを均等に分け合う 1fr のまま。
+  横画面は縦画面よりずっと高さが少なく、固定値にすると窮屈になりやすいため）。
+
+  【この変更に伴うトレードオフ】
+  以前は1frで「画面の高さぴったりに自動調整」していたが、固定の高さにする
+  以上、日付の行数が多い月（6行になる月）では、まれに画面に収まりきらず
+  縦スクロールが必要になることがある（.calendar の overflow-y: auto が
+  その受け皿になる）。
+*/
+body.mode-portrait .calendar {
+    grid-auto-rows: calc(var(--day-header-height, 33px) * 2.5);
+}
+
+/*
+  【2026-08-05 調整】縦画面表示で、予定が多い日の帯が「3個半」くらい見える
+  高さが一番見やすい、というご要望を受けて、曜日見出しの上下の余白を
+  少し増やしている。
+
+  【重要・仕組みの補足】
+  .calendar は grid-template-rows: auto（曜日の行）+ grid-auto-rows: 1fr
+  （日付の行）という作りのため、曜日見出しの高さを増やすと、その分だけ
+  日付マスの取り分（1frで分け合っている残りの高さ）が自動的に少し減る。
+  下部タブ列（.bottom-bar-btn）の高さを増やした場合も同じ仕組みで
+  日付マスが少し縮む。この2箇所をあわせて調整することで、
+  「曜日と下のタブを少し高く、日付マスを少し低く」を実現している。
+*/
+.day-header {
+    text-align: center;
+    padding: 8px 2px;
+    background: var(--color-input-bg);
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 12px;
+    color: var(--color-day-header-text);
+}
+
+.date {
+    background: var(--color-cell-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 3px;
+    /* PC版は min-height:112px と余裕があったが、スマホの横画面は縦の高さが
+       非常に限られているため、大幅に縮小している。
+       縦画面(portrait)用の値は下の @media で別途調整する。 */
+    min-height: 46px;
+    min-width: 0; /* 中の予定テキストの長さに引っ張られてマス自体が広がらないようにする */
+    cursor: pointer;
+    position: relative;
+    overflow: hidden; /* マスからはみ出す内容を確実に切り取り、列幅に影響させない */
+}
+.date:hover { border-color: var(--color-accent-2); }
+
+/*
+  【2026-08-05 追加】
+  今日の日付のマスを、検索欄に文字が入っている時と同じ明滅アニメーション
+  （searchingPulse、drawer.css で定義）で目立たせるようにした。
+  枠線の色だけでは気づきにくい、というご指摘への対応。
+*/
+.date.today {
+    border: 2px solid var(--color-accent-3);
+    animation: searchingPulse 2.4s infinite ease-in-out;
+}
+
+.date.selected-multi {
+    border: 2px solid var(--color-selected) !important;
+    background: var(--color-selected-glow) !important;
+}
+.date.selected-multi::after {
+    content: '✓';
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    color: var(--color-selected);
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow: 0 0 3px #000;
+}
+
+.date-num {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 1px;
+}
+
+.date.sunday .date-num,
+.date.saturday .date-num { color: var(--color-weekend); }
+
+/* ---- 予定表示 ---- */
+
+.event {
+    font-size: 10px;
+    padding: 1px 3px;
+    margin: 1px 0;
+    border-radius: 4px;
+    max-width: 100%;
+    background: var(--color-event-bg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: block;
+    border-left: 3px solid;
+    border-right: 3px solid transparent;
+}
+.event-single { border-left-width: 3px; border-right-width: 3px; }
+.event-start  { border-left-width: 3px; border-right-width: 0; }
+.event-middle { border-left-width: 0;   border-right-width: 0; }
+.event-end    { border-left-width: 0;   border-right-width: 3px; }
+
+/*
+  【2026-08-05 追加、同日中に仕様変更】
+  「時刻＋テンプレ名」を表示せず、テンプレートに振った番号だけを示す
+  小さいマーカー。js/calendar.js の useCompactEventBars がtrueの時
+  （Mobile版のみ）に .event へ追加で付くクラス。
+  日をまたぐ予定は、event-start/middle/end の枠線指定と組み合わさって、
+  複数日にまたがる1本のバーに見えるのはこれまで通り（テキストの方も
+  【①①①①①】のように前後だけ【】が付く形で繋がって見える。
+  詳しくは js/calendar.js を参照）。
+  何の予定かは、リスト形式で確認するか、カレンダー形式のままその日を
+  タップして一覧画面で確認する（js/calendar.js のクリック処理を参照）。
+
+  【調整】以前はテンプレートの色で背景を塗りつぶし、白文字にしていたが、
+  「塗りつぶしではなく【】の表現のまま」というご要望があったため、
+  文字の色をテンプレートの色にする形に変更した。
+  【2026-08-05 さらに調整】その後、「PC版と同様に背景色も少し付けてほしい」
+  というご要望があったため、PC版の予定と同じ薄い色付き背景（テンプレート色＋
+  透明度22）を敷くようにした（色の指定自体は js/calendar.js が
+  e.style.color / e.style.backgroundColor に直接セットしている。
+  このCSSでは背景色そのものは指定していない）。
+
+  高さ21pxは、日付マス1つに「2.5個分」（2個はっきり見えて3個目が半分だけ
+  見える＝続きがあると分かる状態）が収まるよう、実測しながら調整した値。
+*/
+.event-compact {
+    height: 21px;
+    padding: 0;
+    margin: 2px 0;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 21px;
+    text-align: center;
+    letter-spacing: -1px; /* 【①】のような記号+文字の組み合わせが間延びしないように */
+}
+
+/*
+  ---- 表示方式（横画面表示／縦画面表示）による調整 ----
+  横画面表示：高さが特に少ないので、日付マスの最低高さをさらに詰める。
+  縦画面表示：横幅は狭いが高さには余裕があるので、マスをやや高くする。
+  （縦画面のレイアウトは現時点ではクライアントの明確なご要望がまだ無いため、
+    「とりあえず崩れずに使える」ことを優先した第一案という位置づけ）
+
+  【重要】以前はここを `@media (orientation: landscape/portrait)` にしており、
+  実際に端末を回転させた向きだけで自動的に切り替わる仕組みだった。
+  今回、設定から手動で「横画面表示」「縦画面表示」「自動」を選べる機能を
+  追加したため、CSSの判定基準を「実際の向き」ではなく
+  「bodyタグに付いているクラス（mode-landscape / mode-portrait）」に変更した。
+  このクラスの付け外しは js/displayMode.js が担当している。
+  「自動」を選んでいる場合は、displayMode.js が実際の向きを見て
+  同じクラスを自動で付け替えるので、見た目の結果はこれまでと変わらない。
+*/
+body.mode-landscape .date { min-height: 40px; }
+body.mode-landscape .calendar { gap: 2px; padding: 3px; }
+
+body.mode-portrait .date { min-height: 64px; }
+
+/* 特に高さが少ない端末向けの追加調整。
+   これは「実際の画面の高さ」で判定する物理的な制約の話なので、
+   横画面表示を選んでいて、なおかつ実際の画面が低い場合にだけ適用する。 */
+@media (max-height: 400px) {
+    body.mode-landscape .header { padding: 4px 6px; }
+    body.mode-landscape .title { font-size: 15px; }
+    body.mode-landscape .date { min-height: 32px; }
+    body.mode-landscape .date-num { font-size: 11px; }
+}

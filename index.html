@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>カレンダー</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--
+    index.html（サイトの入口・振り分け専用ページ）
+    ==============================================================
+    【これは何のファイルか】
+    以前は「PC版のURL」と「スマホ版のURL」の2つを、それぞれの利用者に
+    別々にお伝えする必要があった。この2つの入口があることで、
+    ・URLを貼り間違えたり、間違った方の入口を開いてしまったりしやすい
+    ・特に個人専用URL（?p=...）が付いていない「まっさらな入口」を
+      誤って開いてしまうと、そのたびに新しいカレンダーが自動で
+      作られてしまい、テストや確認を繰り返すうちに使われない
+      カレンダーがどんどん増えてしまう
+    という問題があった（2026-08-05にクライアントからご指摘があった内容）。
+
+    このファイルは、サイトの一番外側の入口（例：
+    https://発行されたURL/ ）として使うための「振り分けページ」。
+    開いた端末がスマホかパソコンかを自動で判定し、
+    それぞれの本体（Mobile/index.html または PC/index.html）へ
+    そのまま送り届ける。これにより、案内するURLが1つで済むようになる。
+
+    【重要・安全に作ってある点】
+    ・個人専用URLの合言葉（?p=...の部分）は、そのまま送り先のURLにも
+      引き継がれる（window.location.search をそのまま付け足しているため）。
+      以前あった「Firebaseのリダイレクト機能を経由すると合言葉が消える」
+      不具合とは仕組みが違い（あちらはサーバー側の設定、こちらは
+      このページ自身のJavaScriptによる振り分け）、同じ不具合は起こらない。
+    ・以前からある PC/index.html・Mobile/index.html への直接アクセスは
+      今まで通りそのまま使える（このページは「追加された近道」であり、
+      既に配っている個人専用URLを無効にするものではない）。
+
+    【判定方法】
+    「画面の主な操作方法が指（タッチ）かどうか」で判定している
+    （CSSの pointer:coarse メディアクエリと同じ考え方）。
+    横幅だけで判定すると、スマホを横向きにした時に画面が広くなり
+    誤ってPC版と判定してしまうことがあるため、幅ではなく
+    「指で操作する端末かどうか」を基準にしている方が確実。
+    万が一この判定に対応していない古いブラウザの場合は、
+    保険として画面の横幅で判定する。
+-->
+<style>
+    /* リダイレクトするまでのごく一瞬だけ表示される背景色。
+       アプリ本体（PC/Mobile）と同じ暗い背景色に揃えて、
+       白い画面が一瞬光るような見え方を防いでいる。 */
+    html, body {
+        background: #0a0a0f;
+        margin: 0;
+        height: 100%;
+    }
+</style>
+<script>
+(function () {
+    // ログインでアカウントを分けるため、古い ?p=... は付けない
+    var url = new URL(window.location.href);
+    url.searchParams.delete('p');
+    var query = url.search;
+
+    var isTouchPrimary;
+    if (window.matchMedia) {
+        isTouchPrimary = window.matchMedia('(pointer: coarse)').matches;
+    } else {
+        // matchMedia自体に対応していない、非常に古いブラウザ向けの保険。
+        // 画面の横幅が768px未満ならスマホとみなす。
+        isTouchPrimary = window.innerWidth < 768;
+    }
+
+    var destination = isTouchPrimary ? 'Mobile/index.html' : 'PC/index.html';
+
+    // location.replace を使うことで、「振り分けページを開いた」という履歴を
+    // 残さない（ブラウザの「戻る」を押した時に、この振り分けページへは
+    // 戻らず、その前に見ていたページへ直接戻れるようにするため）。
+    window.location.replace(destination + query);
+})();
+</script>
+</head>
+<body></body>
+</html>

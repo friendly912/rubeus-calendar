@@ -1,0 +1,146 @@
+/*
+  ログイン画面。未ログイン中はカレンダー本体を隠し、この画面だけ出す。
+*/
+body.auth-pending .main,
+body.logged-out .main {
+    display: none;
+}
+
+#loginOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg, #0a0a0f);
+    padding: 24px;
+}
+
+body.logged-in #loginOverlay {
+    display: none !important;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--color-input-bg, #16161f);
+    border: 1px solid var(--color-border-input, #333);
+    border-radius: 12px;
+    padding: 28px 24px;
+}
+
+.login-card h1 {
+    margin: 0 0 8px;
+    font-size: 22px;
+    color: var(--color-accent, #4488dd);
+    text-align: center;
+}
+
+.login-card .login-lead {
+    margin: 0 0 20px;
+    font-size: 13px;
+    color: var(--color-muted, #888);
+    text-align: center;
+    line-height: 1.6;
+    text-wrap: pretty;
+}
+
+.login-card input[type="email"] {
+    ime-mode: disabled;
+}
+
+.login-card input[type="email"],
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 0 0 10px;
+    background: var(--color-cell-bg, #0d0d12);
+    border: 1px solid var(--color-border-input, #333);
+    color: var(--color-text, #fff);
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.login-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.login-actions button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login-btn-primary {
+    background: var(--color-success, #2fae76);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login-btn-secondary {
+    background: var(--color-input-bg-hover, #2a2a36);
+    color: white;
+}
+
+.login-divider {
+    text-align: center;
+    color: var(--color-muted, #888);
+    font-size: 12px;
+    margin: 16px 0;
+}
+
+.login-google {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--color-border-input, #333);
+    background: var(--color-cell-bg, #0d0d12);
+    color: var(--color-text, #fff);
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.login-reset {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    color: var(--color-muted, #888);
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#loginOverlay.reset-mode #loginPanelMain {
+    display: none;
+}
+
+#loginOverlay:not(.reset-mode) #loginPanelReset {
+    display: none;
+}
+
+.login-btn-full {
+    width: 100%;
+    margin-top: 6px;
+}
+
+#loginError {
+    display: none;
+    margin: 0 0 12px;
+    padding: 10px;
+    background: rgba(220, 60, 60, 0.15);
+    color: #ff8a8a;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+}

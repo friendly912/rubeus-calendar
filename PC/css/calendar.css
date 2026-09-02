@@ -1,0 +1,221 @@
+/*
+  calendar.css
+  ------------------------------------------------------------
+  カレンダー本体（左側のエリア）に関するスタイル。
+  ・月移動ヘッダー
+  ・「コピー中」「○日選択中」の状態バー
+  ・日付マス目（グリッド）と、その中の予定表示
+  を担当している。
+*/
+
+.calendar-area {
+    flex: 1;              /* サイドバーの残りの横幅をすべて使う */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;          /* flexコンテナ内で中身がはみ出さないようにするための指定 */
+}
+
+/* ---- 月移動ヘッダー（← 前月 / 年月 / 次月 →） ---- */
+
+.header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr); /* 7列にしておき、1列目=前月ボタン, 4列目=タイトル, 7列目=次月ボタン に配置する */
+    gap: 6px;
+    padding: 12px 12px;
+    background: var(--color-panel-bg);
+    border-radius: 10px;
+    align-items: center;
+}
+
+.prev-btn { grid-column: 1; justify-self: start; }
+.next-btn { grid-column: 7; justify-self: end; }
+
+.title {
+    grid-column: 2 / 7;
+    justify-self: center;
+    font-size: 23px;
+    font-weight: bold;
+    color: var(--color-accent);
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 8px;
+    white-space: nowrap;
+}
+.title:hover { background: var(--color-title-hover-glow); }
+
+/* ---- 状態バー（コピー中 / 複数選択中） ----
+   通常は非表示（display:none）で、JavaScript側が
+   状況に応じて表示・非表示を切り替える。 */
+
+.status-bar {
+    display: none;
+    background: var(--color-status-bar-bg);
+    color: var(--color-selected);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 0 0 8px 0;
+    font-weight: bold;
+}
+
+.status-bar.multi-select {
+    display: none; /* JSが表示するときは flex に切り替える */
+    align-items: center;
+    justify-content: space-between;
+}
+
+.status-bar-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-cancel {
+    background: var(--color-cancel-bg);
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ---- カレンダーのマス目（グリッド） ---- */
+
+.calendar {
+    flex: 1;
+    background: var(--color-panel-bg);
+    border-radius: 10px;
+    padding: 12px;
+    display: grid;
+    /*
+      【重要】"repeat(7, 1fr)" だけでは7列の幅が同じになる保証がない。
+      1frの最小幅は初期値では中身の最小サイズ（auto）になっており、
+      非常に長いテンプレート名やメモを1行で表示しようとする予定があると、
+      その列だけ他より幅が広がってしまう不具合が起きる
+      （スマホ版で実際に発生し、修正した際にPC版にも同じ作りが
+        残っていたため、念のためこちらも合わせて直している）。
+      "minmax(0, 1fr)" にすることで、中身の長さに関係なく
+      7列が必ず同じ幅になるようにしている。
+    */
+    grid-template-columns: repeat(7, minmax(0, 1fr)); /* 7列 = 日〜土 */
+    /*
+      【重要・バグ修正 2026-08-05】
+      これらの行を指定する前は、曜日見出し（1行目）と日付マス（2行目以降）の
+      行の高さがすべて「auto」の初期値のままだった。この場合、グリッド全体の
+      高さ（.calendarはflex:1で画面の余った縦幅いっぱいに広がる）に対して
+      中身の行の合計が足りないと、余った分の高さが全ての行に均等に
+      引き伸ばされてしまう（ブラウザの初期設定で align-content が
+      実質 stretch と同じ扱いになるため）。
+
+      特に「日曜始まりの2026年2月」のように、必要な日付の行数が
+      少ない月では、余りの高さが大きくなり、曜日見出しの枠まで
+      不自然に縦長になってしまっていた（文字は上に寄ったまま、
+      下にだけ大きな余白ができる）。
+
+      対策として、1行目（曜日見出し）だけを "auto"（中身の高さぴったり）に固定し、
+      2行目以降（日付マス）は "1fr" にして、余った高さは日付マスの方だけで
+      吸収するようにした。これにより、曜日見出しの枠は月や週の開始曜日設定に
+      関係なく常に文字とほぼ同じ高さになる。
+    */
+    grid-template-rows: auto; /* 1行目（曜日見出し）は中身の高さぴったりに固定 */
+    grid-auto-rows: 1fr;      /* 2行目以降（日付マス）で残りの高さを均等に分け合う */
+    gap: 6px;
+    overflow-y: auto; /* マスが画面高さに収まらない場合は縦スクロール */
+}
+
+.day-header {
+    text-align: center;
+    padding: 11px 4px;
+    background: var(--color-input-bg);
+    border-radius: 6px;
+    font-weight: bold;
+    color: var(--color-day-header-text);
+}
+
+.date {
+    background: var(--color-cell-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 112px;
+    min-width: 0; /* 中の予定テキストの長さに引っ張られてマス自体が広がらないようにする */
+    cursor: pointer;
+    position: relative;
+    overflow: hidden; /* マスからはみ出す内容を確実に切り取り、列幅に影響させない */
+}
+.date:hover {
+    border-color: var(--color-accent-2);
+    box-shadow: 0 0 12px var(--color-date-hover-glow);
+}
+
+/* 今日の日付マスの強調表示 */
+/*
+  【2026-08-05 追加】
+  今日の日付のマスを、検索欄に文字が入っている時と同じ明滅アニメーション
+  （searchingPulse、sidebar.css で定義）で目立たせるようにした。
+  枠線の色だけでは気づきにくい、というご指摘への対応。
+*/
+.date.today {
+    border: 2px solid var(--color-accent-3);
+    animation: searchingPulse 2.4s infinite ease-in-out;
+}
+
+/* 複数選択モードで選択されているマスの強調表示（黄色） */
+.date.selected-multi {
+    border: 3px solid var(--color-selected) !important;
+    background: var(--color-selected-glow) !important;
+}
+/* 選択中のマスの右上にチェックマークを重ねて表示する */
+.date.selected-multi::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    color: var(--color-selected);
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 4px #000;
+}
+
+.date-num {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* 土日の日付番号だけ赤くする */
+.date.sunday .date-num,
+.date.saturday .date-num { color: var(--color-weekend); }
+
+/* ---- 日付マスの中に表示される「予定」1件分 ---- */
+
+.event {
+    font-size: 13px;
+    padding: 4px 6px;
+    margin: 3px 0;
+    border-radius: 5px;
+    background: var(--color-event-bg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-left: 4px solid;
+    border-right: 4px solid transparent; /* 色はJS側で予定ごとに指定する（下の event-* クラスで表示有無を切り替え） */
+}
+
+/*
+  連日予定（例：8/5〜8/10）は、開始日・中間日・終了日で見た目を変える。
+  ・event-single … 開始日 = 終了日（単日の予定）。左右に枠線を出す。
+  ・event-start  … 連日予定の「開始日」。左側だけ枠線を出す。
+  ・event-middle … 連日予定の「中間の日」。左右とも枠線なし。
+  ・event-end    … 連日予定の「終了日」。右側だけ枠線を出す。
+  枠線の色そのもの（テンプレートの色）はJS側で1箇所にまとめて指定している。
+  以前のバージョンは右側の枠線色をCSSの inherit 任せにしていたため、
+  テンプレート本来の色にならない不具合があった。ここでは
+  「表示するかしないか」だけをCSSで切り替え、色は必ずJSが指定する方式にして修正している。
+*/
+.event-single { border-left-width: 4px; border-right-width: 4px; }
+.event-start  { border-left-width: 4px; border-right-width: 0; }
+.event-middle { border-left-width: 0;   border-right-width: 0; }
+.event-end    { border-left-width: 0;   border-right-width: 4px; }
