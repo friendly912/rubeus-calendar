@@ -79,6 +79,69 @@ function createTimeSelector(isEnd = false, isEdit = false, startTimeStr = null) 
         previewEl.textContent = str;
     };
 
+    /*
+      setStartTimeNav(stage)
+      --------------------------------------------------------------
+      予定登録ウィザードの「開始時刻」選択中だけ、画面下の「← 戻る」「スキップ」
+      ボタンの文言・行き先を、今どのステップ（午前/午後・時・分）にいるかに
+      合わせて切り替える。
+      （終了時刻の選択や、時刻編集モーダルからの呼び出しでは対象外＝isEnd/isEditが
+        trueなら何もしない。startTimeBackBtn自体が存在しないため）
+
+      【この機能を入れた理由】
+      以前は「戻る」ボタンが無く、テンプレートを選び間違えた場合に
+      気づいても日付選択からやり直すしかなかった。段階ごとに1つ前の
+      画面へ戻れるようにして、その手間を無くしている。
+
+      【「時」「分」の段階のスキップだけ挙動を変えている理由】
+      以前はどの段階でスキップを押しても開始時刻が丸ごと空になっていた。
+      しかし「時」「分」の段階まで進んでいる＝そこまでの選択（午前/午後、
+      さらに時）はすでに決まっているのに、スキップを押すとその選択も
+      失われてしまうのは不便、という指摘を受けた。
+      そのため、開始時刻のスキップは進んだ段階に応じて次の3段階になる：
+        ・午前/午後の段階でスキップ … 開始時刻を完全に空にする（従来通り）
+        ・時の段階でスキップ       … 午前/午後だけ確定（時・分は00扱い。
+                                      午前→00:00、午後→12:00）
+        ・分の段階でスキップ       … 午前/午後・時まで確定（分だけ00扱い）
+    */
+    function setStartTimeNav(stage) {
+        if (isEnd || isEdit) return;
+        const backBtn = document.getElementById('startTimeBackBtn');
+        const skipBtn = document.getElementById('startTimeSkipBtn');
+        if (!backBtn || !skipBtn) return;
+
+        if (stage === 'ampm') {
+            backBtn.textContent = '← テンプレートに戻る';
+            backBtn.onclick = () => {
+                document.getElementById('timeStepContainer').style.display = 'none';
+                document.getElementById('step1').style.display = 'block';
+            };
+            skipBtn.textContent = '開始時刻なし（スキップ）';
+            skipBtn.onclick = () => skipStartTime();
+        } else if (stage === 'hour') {
+            backBtn.textContent = '← 午前/午後に戻る';
+            backBtn.onclick = () => {
+                step2.style.display = 'none';
+                step1.style.display = 'block';
+                setStartTimeNav('ampm');
+            };
+            skipBtn.textContent = '時刻は午前/午後のみ確定（時・分は00扱い）';
+            skipBtn.onclick = () => {
+                const defaultHour = ampmVal === 'AM' ? 0 : 12;
+                confirmTimeSelection(false, false, defaultHour, '00');
+            };
+        } else if (stage === 'minute') {
+            backBtn.textContent = '← 時に戻る';
+            backBtn.onclick = () => {
+                step3.style.display = 'none';
+                step2.style.display = 'block';
+                setStartTimeNav('hour');
+            };
+            skipBtn.textContent = '分は00分にする';
+            skipBtn.onclick = () => confirmTimeSelection(false, false, internalHour, '00');
+        }
+    }
+
     // ---- ステップ1：午前 / 午後 ----
     const step1 = document.createElement('div');
     step1.innerHTML = `<h4>午前 / 午後</h4>`;
@@ -109,12 +172,14 @@ function createTimeSelector(isEnd = false, isEdit = false, startTimeStr = null) 
                 step2.style.display = 'block';
                 renderHourButtons();
                 updatePreview();
+                setStartTimeNav('hour');
             };
         }
         ampmDiv.appendChild(btn);
     });
     step1.appendChild(ampmDiv);
     container.appendChild(step1);
+    setStartTimeNav('ampm');
 
     // ---- ステップ2：時 ----
     const step2 = document.createElement('div');
@@ -158,6 +223,7 @@ function createTimeSelector(isEnd = false, isEdit = false, startTimeStr = null) 
                     step3.style.display = 'block';
                     renderMinuteButtons();
                     updatePreview();
+                    setStartTimeNav('minute');
                 };
             }
             hourDiv.appendChild(btn);
@@ -262,8 +328,8 @@ window.confirmTimeSelection = function (isEnd, isEdit, internalHour, minVal) {
         if (!isEnd) {
             wizardData.startTime = timeStr;
             document.getElementById('startTimeSection').style.display = 'none';
-            document.getElementById('endDateSection').style.display = 'block';
-            renderEndDateOptions();
+            document.getElementById('endDatePickerSection').style.display = 'block';
+            renderEndDateCalendar();
         } else {
             wizardData.endTime = timeStr;
             document.getElementById('timeStepContainer').style.display = 'none';

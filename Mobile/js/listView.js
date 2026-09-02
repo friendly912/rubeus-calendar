@@ -286,6 +286,8 @@ function renderStartDateCalendar() {
         container.appendChild(empty);
     }
 
+    const today = new Date();
+
     for (let d = 1; d <= daysInMonth; d++) {
         const cell = document.createElement('div');
         cell.className = 'end-date-day';
@@ -294,6 +296,13 @@ function renderStartDateCalendar() {
         const weekday = new Date(startDatePickerYear, startDatePickerMonth, d).getDay();
         if (weekday === 0) cell.classList.add('sunday');
         if (weekday === 6) cell.classList.add('saturday');
+
+        const thisDate = new Date(startDatePickerYear, startDatePickerMonth, d);
+        if (thisDate.toDateString() === today.toDateString()) {
+            // 終了日カレンダーの「開始日」と同じ黄色明滅CSS(.start-date)を再利用し、
+            // 今日がひと目で分かるようにしている。
+            cell.classList.add('start-date');
+        }
 
         cell.onclick = () => {
             const dateKey = formatDateKey(startDatePickerYear, startDatePickerMonth, d);

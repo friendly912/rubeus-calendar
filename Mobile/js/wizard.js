@@ -14,7 +14,7 @@
   画面が進む順番：
     ① テンプレートを選ぶ
     ② 開始時刻を選ぶ（時刻の入力UI自体は timeSelector.js が担当）
-    ③ 終了日を選ぶ（同じ日 / 翌日 / 日付を指定）
+    ③ 終了日を選ぶ（ミニカレンダーで直接指定。開始日と同じ日を選べば単日予定になる）
     ④ 終了時刻を選ぶ
     ⑤ メモを入力する
     ⑥ 登録する
@@ -53,7 +53,6 @@ function openAddWizard(dateKey) {
     // モーダル内の各ステップの表示状態を、最初の状態（ステップ1のみ表示）にリセットする
     document.getElementById('timeStepContainer').style.display = 'none';
     document.getElementById('startTimeSection').style.display = 'block';
-    document.getElementById('endDateSection').style.display = 'none';
     document.getElementById('endDatePickerSection').style.display = 'none';
     document.getElementById('endTimeSection').style.display = 'none';
     document.getElementById('memoStep').style.display = 'none';
@@ -94,49 +93,6 @@ function renderWizardTemplates() {
                     showStartTimeSelector();
                 }
             }, 180);
-        };
-        container.appendChild(div);
-    });
-}
-
-/*
-  renderEndDateOptions()
-  --------------------------------------------------------------
-  「終了日は？」の選択肢（日付を指定 / 翌日 / 同じ日）を描画する。
-*/
-function renderEndDateOptions() {
-    const container = document.getElementById('endDateOptions');
-    container.innerHTML = '';
-
-    const options = [
-        { label: "日付を指定", isCustom: true },
-        { label: "翌日", isNext: true },
-        { label: "同じ日", isSame: true }
-    ];
-
-    options.forEach(opt => {
-        const div = document.createElement('div');
-        div.className = `end-date-option`;
-        div.textContent = opt.label;
-        div.onclick = () => {
-            if (opt.isSame) {
-                wizardData.endDate = wizardData.startDate;
-                document.getElementById('endDateSection').style.display = 'none';
-                document.getElementById('endTimeSection').style.display = 'block';
-                showEndTimeSelector();
-            } else if (opt.isNext) {
-                const d = new Date(wizardData.startDate);
-                d.setDate(d.getDate() + 1);
-                wizardData.endDate = d.toISOString().slice(0, 10);
-                document.getElementById('endDateSection').style.display = 'none';
-                document.getElementById('endTimeSection').style.display = 'block';
-                showEndTimeSelector();
-            } else {
-                // 「日付を指定」を選んだ場合は、終了日専用の小さいカレンダーを表示する
-                document.getElementById('endDateSection').style.display = 'none';
-                document.getElementById('endDatePickerSection').style.display = 'block';
-                renderEndDateCalendar();
-            }
         };
         container.appendChild(div);
     });
@@ -263,20 +219,16 @@ function nextEndDateMonth() {
 
 // ---- ウィザード内の「戻る」ボタン群 ----
 
-function backToEndDateOptions() {
+function backToStartTimeFromEndDatePicker() {
     document.getElementById('endDatePickerSection').style.display = 'none';
-    document.getElementById('endDateSection').style.display = 'block';
-}
-
-function backToStartTimeFromEndDate() {
-    document.getElementById('endDateSection').style.display = 'none';
     document.getElementById('startTimeSection').style.display = 'block';
     showStartTimeSelector();
 }
 
-function backToEndDateStep() {
+function backToEndDatePickerFromEndTime() {
     document.getElementById('endTimeSection').style.display = 'none';
-    document.getElementById('endDateSection').style.display = 'block';
+    document.getElementById('endDatePickerSection').style.display = 'block';
+    renderEndDateCalendar();
 }
 
 function prevToTimeStep() {
@@ -291,8 +243,8 @@ function prevToTimeStep() {
 function skipStartTime() {
     wizardData.startTime = "";
     document.getElementById('startTimeSection').style.display = 'none';
-    document.getElementById('endDateSection').style.display = 'block';
-    renderEndDateOptions();
+    document.getElementById('endDatePickerSection').style.display = 'block';
+    renderEndDateCalendar();
 }
 
 function skipEndTime() {

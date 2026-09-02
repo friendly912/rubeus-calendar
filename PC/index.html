@@ -209,14 +209,9 @@
                 <h4>開始時刻</h4>
                 <div id="startTimePreview" class="time-preview"> --:--</div>
                 <div id="startTimeSteps"></div>
-                <button onclick="skipStartTime()" style="width:100%; margin-top:12px; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
-            </div>
-
-            <div id="endDateSection" style="display:none; margin-top:25px;">
-                <h4>終了日は？</h4>
-                <div id="endDateOptions"></div>
-                <div style="display:flex; gap:10px; margin-top:20px;">
-                    <button onclick="backToStartTimeFromEndDate()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                <div style="display:flex; gap:10px; margin-top:12px;">
+                    <button id="startTimeBackBtn" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                    <button id="startTimeSkipBtn" onclick="skipStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
                 </div>
             </div>
 
@@ -228,7 +223,7 @@
                 </div>
                 <div id="endDateCalendar"></div>
                 <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button onclick="backToEndDateOptions()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                    <button onclick="backToStartTimeFromEndDatePicker()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
                 </div>
             </div>
 
@@ -237,7 +232,7 @@
                 <div id="endTimePreview" class="time-preview"> --:--</div>
                 <div id="endTimeSteps"></div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button onclick="backToEndDateStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 終了日に戻る</button>
+                    <button onclick="backToEndDatePickerFromEndTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 終了日に戻る</button>
                     <button onclick="skipEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
                 </div>
             </div>
