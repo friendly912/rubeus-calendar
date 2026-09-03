@@ -52,10 +52,10 @@ const THEME_STYLES = [
         id: 'pastel',
         label: 'パステル',
         tones: [
-            { id: 'pastel-rose', label: 'ローズ', swatch: '#d68fa0' },
-            { id: 'pastel-green', label: 'セージ', swatch: '#8fae7a' },
-            { id: 'pastel-yellow', label: 'バター', swatch: '#cf9f3f' },
-            { id: 'pastel-lavender', label: 'ラベンダー', swatch: '#a6a0e0' }
+            { id: 'pastel-rose', label: 'ローズ', swatch: '#c9688a' },
+            { id: 'pastel-green', label: 'セージ', swatch: '#6f9a5c' },
+            { id: 'pastel-yellow', label: 'バター', swatch: '#bf8f2e' },
+            { id: 'pastel-lavender', label: 'ラベンダー', swatch: '#8a78cc' }
         ]
     },
     {
