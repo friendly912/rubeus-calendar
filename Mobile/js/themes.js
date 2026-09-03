@@ -21,42 +21,69 @@
   選ぶだけの方式に変更した。
 
   【仕組みの考え方】
-  css/variables.css に、色の初期値（ダークテーマ）が定義されている。
-  css/themes.css に、それ以外のテーマ（ブルー・グリーン等）の
+  css/variables.css に、色の基本の初期値が定義されている。
+  css/themes.css に、8種類のテーマ（パステル4トーン＋アナスイ4トーン）の
   上書き用の色がまとめて定義されている。
   このファイルは、選ばれたテーマのIDを
-      document.body.dataset.theme = 'blue'
+      document.body.dataset.theme = 'pastel-rose'
   のようにbodyタグへ設定するだけで、実際の色の切り替えはCSS側の
-  仕組み（[data-theme="blue"] のようなセレクタ）に任せている。
+  仕組み（[data-theme="pastel-rose"] のようなセレクタ）に任せている。
 
   【テーマの色そのものを調整・追加したい場合】
-  ・現行の「ダーク」の色を直したい     → css/variables.css の :root
-  ・他のテーマの色を直したい／増やしたい → css/themes.css
-  を編集し、テーマを追加した場合は下の THEMES一覧にも1行追加すること。
+  css/themes.css を編集し、トーンを追加した場合は下の THEME_STYLES一覧の
+  該当スタイルの tones配列にも1行追加すること。
+
+  【2026-09-03 テーマ体系を刷新】
+  以前は「ダーク」「ブルー」のような単色テーマを7つ並べる方式だったが、
+  クライアントより「パステルスタイル」「アナスイスタイル」という2つの
+  大きなスタイルに分け、それぞれ4トーンから選べるようにしたいという
+  ご要望があり、単色テーマは全廃してこの2スタイル×4トーン＝8種類に
+  置き換えた。THEMES（フラットな一覧）だった変数を THEME_STYLES
+  （スタイル→トーンの2階層）に変更している。
 */
 
 // テーマの設定を保存しておくlocalStorageのキー名
 const THEME_STORAGE_KEY = 'calendarTheme';
 
 /*
-  THEMES
+  THEME_STYLES
   --------------------------------------------------------------
-  設定画面に表示するテーマの一覧。
-  ・id      … css/themes.css の [data-theme="id"] と対応させる名前
-  ・label   … 設定画面に表示する日本語名
-  ・swatch  … 設定画面のボタンに表示する、そのテーマを代表する色見本
+  設定画面に表示するテーマの一覧。「スタイル」の中に「トーン」が
+  4つずつ入っている2階層構造。
+  ・style.id / style.label … スタイルの区分（見出しとして表示）
+  ・tone.id     … css/themes.css の [data-theme="id"] と対応させる名前
+  ・tone.label  … 設定画面に表示する日本語名
+  ・tone.swatch … 設定画面のボタンに表示する、そのトーンを代表する色見本
 */
-const THEMES = [
-    { id: 'dark', label: 'ダーク（現行）', swatch: '#4488dd' },
-    { id: 'blue', label: 'ブルー', swatch: '#2f74e0' },
-    { id: 'green', label: 'グリーン', swatch: '#2fae76' },
-    { id: 'purple', label: 'パープル', swatch: '#9b52e8' },
-    { id: 'brown', label: 'ブラウン', swatch: '#c78a3d' },
-    { id: 'mono', label: 'モノクロ', swatch: '#999999' }
+const THEME_STYLES = [
+    {
+        id: 'pastel',
+        label: 'パステル',
+        tones: [
+            { id: 'pastel-rose', label: 'ローズ', swatch: '#d68fa0' },
+            { id: 'pastel-green', label: 'セージ', swatch: '#8fae7a' },
+            { id: 'pastel-yellow', label: 'バター', swatch: '#cf9f3f' },
+            { id: 'pastel-lavender', label: 'ラベンダー', swatch: '#a6a0e0' }
+        ]
+    },
+    {
+        id: 'annasui',
+        label: 'アナスイ',
+        tones: [
+            { id: 'annasui-gold', label: 'ゴールド', swatch: '#d9a54a' },
+            { id: 'annasui-rose', label: 'ローズ', swatch: '#e0949c' },
+            { id: 'annasui-green', label: 'エメラルド', swatch: '#7ecb96' },
+            { id: 'annasui-purple', label: 'パープル', swatch: '#a08cd6' }
+        ]
+    }
 ];
 
+// THEME_STYLES から、有効なテーマIDだけを取り出したフラットな一覧
+// （保存されている値が今も選べるテーマかどうかの確認に使う）
+const THEME_IDS = THEME_STYLES.flatMap(style => style.tones.map(tone => tone.id));
+
 // 今選ばれているテーマのID
-let currentTheme = 'dark';
+let currentTheme = 'pastel-rose';
 
 // 設定モーダルを開いた時点でのテーマを覚えておく変数。
 // 「キャンセル」で元に戻すために使う（詳しくは snapshotTheme / revertThemeIfNeeded を参照）。
@@ -69,8 +96,14 @@ let themeSnapshotBeforeEdit = null;
   保存されていなければ "dark"（現行のダークテーマ）のままにする。
 */
 function loadTheme() {
+    // 【2026-08-03 プロフィール機能に対応】
+    // テーマの好みは人によって違う（パートナーと自分で違う色を使いたい、という
+    // ご要望がそもそもの出発点だったため）、プロフィールごとに別々に保存する。
+    //
+    // 【2026-09-03】以前の単色テーマ（dark/blue等）のIDが保存されたままの場合、
+    // THEME_IDSに含まれず無効な値になるため、その場合も既定の 'pastel-rose' に戻す。
     const saved = localStorage.getItem(getProfileScopedKey(THEME_STORAGE_KEY));
-    currentTheme = saved && THEMES.some(t => t.id === saved) ? saved : 'dark';
+    currentTheme = saved && THEME_IDS.includes(saved) ? saved : 'pastel-rose';
 }
 
 /*
@@ -148,30 +181,46 @@ function revertThemeIfNeeded() {
 /*
   renderThemeSettingsUI()
   --------------------------------------------------------------
-  設定モーダルの中の「配色テーマ」欄に、THEMES の項目分だけ
-  テーマ選択ボタンを並べて表示する。
-  今選ばれているテーマには枠を付けて分かるようにする。
+  設定モーダルの中の「配色テーマ」欄に、THEME_STYLES の内容を
+  「スタイル見出し＋4トーンのボタン」のグループとして並べて表示する。
+  今選ばれているトーンには枠を付けて分かるようにする。
 */
 function renderThemeSettingsUI() {
     const container = document.getElementById('themeSettingsContainer');
     if (!container) return;
     container.innerHTML = '';
 
-    THEMES.forEach(theme => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'theme-option-btn' + (theme.id === currentTheme ? ' selected' : '');
-        btn.onclick = () => setTheme(theme.id);
+    THEME_STYLES.forEach(style => {
+        const group = document.createElement('div');
+        group.className = 'theme-style-group';
 
-        const swatch = document.createElement('span');
-        swatch.className = 'theme-swatch';
-        swatch.style.background = theme.swatch;
+        const heading = document.createElement('div');
+        heading.className = 'theme-style-heading';
+        heading.textContent = style.label;
+        group.appendChild(heading);
 
-        const label = document.createElement('span');
-        label.textContent = theme.label;
+        const grid = document.createElement('div');
+        grid.className = 'theme-options';
 
-        btn.appendChild(swatch);
-        btn.appendChild(label);
-        container.appendChild(btn);
+        style.tones.forEach(tone => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'theme-option-btn' + (tone.id === currentTheme ? ' selected' : '');
+            btn.onclick = () => setTheme(tone.id);
+
+            const swatch = document.createElement('span');
+            swatch.className = 'theme-swatch';
+            swatch.style.background = tone.swatch;
+
+            const label = document.createElement('span');
+            label.textContent = tone.label;
+
+            btn.appendChild(swatch);
+            btn.appendChild(label);
+            grid.appendChild(btn);
+        });
+
+        group.appendChild(grid);
+        container.appendChild(group);
     });
 }

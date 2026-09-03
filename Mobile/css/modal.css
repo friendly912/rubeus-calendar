@@ -100,7 +100,7 @@
 
 .btn-confirm-cancel {
     background: var(--color-input-bg-hover);
-    color: white;
+    color: var(--color-text);
     border: 1px solid var(--color-border-input);
 }
 
@@ -319,7 +319,21 @@
     body.mode-landscape .template-option { padding: 10px 6px; }
 }
 
-/* ---- 配色テーマ選択ボタン（設定モーダル内）。PC版と同じスタイル ---- */
+/* ---- 配色テーマ選択ボタン（設定モーダル内）。PC版と同じスタイル ----
+   2026-09-03: 「パステル」「アナスイ」の2スタイル×4トーンに変更したのに合わせ、
+   スタイルごとに見出し＋4トーンのボタン列をグループ化して表示する。 */
+.theme-style-group {
+    margin-bottom: 14px;
+}
+.theme-style-group:last-child {
+    margin-bottom: 0;
+}
+.theme-style-heading {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--color-muted);
+    margin-bottom: 6px;
+}
 .theme-options {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -350,5 +364,5 @@
     height: 20px;
     border-radius: 50%;
     flex-shrink: 0;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px var(--color-border);
 }

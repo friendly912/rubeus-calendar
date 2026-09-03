@@ -171,7 +171,7 @@
             <h3 id="editTitle" style="margin:0;">テンプレート編集</h3>
             <button class="close-btn" onclick="closeEditTemplateModal()">×</button>
         </div>
-        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px;">
+        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px;">
         <input type="color" id="editColor" class="color-input" value="#00ffcc">
         <!--
             【2026-08-05 追加】
@@ -210,8 +210,8 @@
                 <div id="startTimePreview" class="time-preview"> --:--</div>
                 <div id="startTimeSteps"></div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button id="startTimeBackBtn" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
-                    <button id="startTimeSkipBtn" onclick="skipStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+                    <button id="startTimeBackBtn" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">← 戻る</button>
+                    <button id="startTimeSkipBtn" onclick="skipStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
                 </div>
             </div>
 
@@ -223,7 +223,7 @@
                 </div>
                 <div id="endDateCalendar"></div>
                 <div style="display:flex; gap:10px; margin-top:15px;">
-                    <button onclick="backToStartTimeFromEndDatePicker()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 戻る</button>
+                    <button onclick="backToStartTimeFromEndDatePicker()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">← 戻る</button>
                 </div>
             </div>
 
@@ -232,7 +232,7 @@
                 <div id="endTimePreview" class="time-preview"> --:--</div>
                 <div id="endTimeSteps"></div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button onclick="backToEndDatePickerFromEndTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 終了日に戻る</button>
+                    <button onclick="backToEndDatePickerFromEndTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">← 終了日に戻る</button>
                     <button onclick="skipEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
                 </div>
             </div>
@@ -241,9 +241,9 @@
         <!-- ステップ5：メモ入力 → 登録 -->
         <div id="memoStep" style="display:none; margin-top:25px;">
             <h4>メモ（任意）</h4>
-            <textarea id="wizardMemo" rows="5" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <textarea id="wizardMemo" rows="5" style="width:100%; padding:12px; background:var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
             <div style="display:flex; gap:10px; margin-top:25px;">
-                <button onclick="prevToTimeStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">戻る</button>
+                <button onclick="prevToTimeStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">戻る</button>
                 <button onclick="saveEventFromWizard()" style="flex:2; padding:12px; background:var(--color-success); color:white;">登録</button>
             </div>
         </div>
@@ -287,7 +287,7 @@
 
         <div style="margin:15px 0;">
             <p>メモ</p>
-            <textarea id="detailMemo" rows="4" style="width:100%; padding:12px; background:var(--color-input-bg); color:white; border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <textarea id="detailMemo" rows="4" style="width:100%; padding:12px; background:var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
         </div>
 
         <div style="display:flex; gap:10px; margin-top:25px; flex-wrap:wrap;">
@@ -313,7 +313,7 @@
                 <div id="editStartTimePreview" class="time-preview"> --:--</div>
                 <div id="editStartTimeSteps"></div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button onclick="skipEditStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
+                    <button onclick="skipEditStartTime()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">開始時刻なし（スキップ）</button>
                     <button onclick="proceedToEditEndTime()" style="flex:1; padding:12px; background:var(--color-accent-strong); color:white; border:none; border-radius:8px;">終了時刻へ進む</button>
                 </div>
             </div>
@@ -323,14 +323,14 @@
                 <div id="editEndTimePreview" class="time-preview"> --:--</div>
                 <div id="editEndTimeSteps"></div>
                 <div style="display:flex; gap:10px; margin-top:12px;">
-                    <button onclick="backToEditStartTimeFromEnd()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border:none; border-radius:8px;">← 開始時刻に戻る</button>
+                    <button onclick="backToEditStartTimeFromEnd()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">← 開始時刻に戻る</button>
                     <button onclick="skipEditEndTime()" style="flex:1; padding:12px; background:var(--color-success); color:white; border:none; border-radius:8px;">終了時刻なし（保存）</button>
                 </div>
             </div>
         </div>
 
         <div style="display:flex; gap:10px; margin-top:30px;">
-            <button onclick="closeEditEventModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="closeEditEventModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border-radius:8px;">キャンセル</button>
             <button onclick="saveTimeEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
         </div>
     </div>
@@ -456,7 +456,7 @@
             （仕組みは js/settings.js の closeSettingsModal を参照）。
         -->
         <div style="display:flex; gap:10px; margin-top:30px;">
-            <button onclick="closeSettingsModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+            <button onclick="closeSettingsModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:var(--color-text); border-radius:8px;">キャンセル</button>
             <button onclick="saveSettings()" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
         </div>
     </div>
@@ -470,10 +470,10 @@
         </div>
         <form id="calendarNameForm">
             <input type="text" id="calendarNameInput" placeholder="例：仕事用、プライベート用" maxlength="40" autocomplete="off"
-                style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:white; border-radius:8px; font-size:16px;">
+                style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px; font-size:16px;">
             <div id="calendarNameError" style="display:none; margin:0 0 8px; color:#ff8a8a; font-size:13px;"></div>
             <div style="display:flex; gap:10px; margin-top:16px;">
-                <button type="button" onclick="closeCalendarNameModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:white; border-radius:8px;">キャンセル</button>
+                <button type="button" onclick="closeCalendarNameModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:var(--color-text); border-radius:8px;">キャンセル</button>
                 <button type="submit" style="flex:1; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
             </div>
         </form>

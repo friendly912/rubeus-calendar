@@ -83,7 +83,7 @@
 
 .btn-confirm-cancel {
     background: var(--color-input-bg-hover);
-    color: white;
+    color: var(--color-text);
     border: 1px solid var(--color-border-input);
 }
 
@@ -274,7 +274,21 @@
     color: var(--color-accent-2);
 }
 
-/* ---- 配色テーマ選択ボタン（設定モーダル内） ---- */
+/* ---- 配色テーマ選択ボタン（設定モーダル内） ----
+   2026-09-03: 「パステル」「アナスイ」の2スタイル×4トーンに変更したのに合わせ、
+   スタイルごとに見出し＋4トーンのボタン列をグループ化して表示する。 */
+.theme-style-group {
+    margin-bottom: 16px;
+}
+.theme-style-group:last-child {
+    margin-bottom: 0;
+}
+.theme-style-heading {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--color-muted);
+    margin-bottom: 8px;
+}
 .theme-options {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -300,12 +314,14 @@
     border-color: var(--color-accent-2);
     background: var(--color-selected-bg);
 }
-/* テーマの代表色を丸で見せる色見本 */
+/* テーマの代表色を丸で見せる色見本
+   2026-09-03: パステルのような明るいテーマの設定画面でも見えるよう、
+   固定の白い縁取りではなく、その時点のテーマの境界線色を使うようにした。 */
 .theme-swatch {
     display: inline-block;
     width: 22px;
     height: 22px;
     border-radius: 50%;
     flex-shrink: 0;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 2px var(--color-border);
 }

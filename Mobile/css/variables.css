@@ -63,6 +63,7 @@
     --color-accent-4: #77ccff;        /* ボタンの文字色・曜日ヘッダーの文字 */
     --color-accent-strong: #4488dd;   /* 見出しや強調表示など、主要アクセントの背景色 */
     --color-day-header-text: #77aaff; /* 曜日（日 月 火...）の文字色 */
+    --color-day-header-bg: var(--color-input-bg); /* 曜日見出しの背景（初期値は他のボタン類と同じ） */
     --color-event-bg: rgba(68, 170, 255, 0.12); /* 予定表示の薄い背景色のベース */
 
     /* ---- 土日の色（テーマに合わせて色味を調整する） ---- */

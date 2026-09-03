@@ -125,7 +125,7 @@
 .day-header {
     text-align: center;
     padding: 11px 4px;
-    background: var(--color-input-bg);
+    background: var(--color-day-header-bg);
     border-radius: 6px;
     font-weight: bold;
     color: var(--color-day-header-text);
