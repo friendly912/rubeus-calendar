@@ -153,10 +153,28 @@
   今日の日付のマスを、検索欄に文字が入っている時と同じ明滅アニメーション
   （searchingPulse、sidebar.css で定義）で目立たせるようにした。
   枠線の色だけでは気づきにくい、というご指摘への対応。
+
+  【2026-09-03 追加】
+  パステル／アナスイのテーマ参考画像で、選択中（今日）のマスに
+  斜め方向のグラデーションが掛かっていたため、それを再現した。
+  searchingPulse は background も一緒に明滅させてしまい、下のグラデーションを
+  上書きしてしまうため、今日のマス専用に todayPulse という、
+  枠線と光彩（box-shadow）だけを明滅させるアニメーションを別途用意している。
 */
 .date.today {
     border: 2px solid var(--color-accent-3);
-    animation: searchingPulse 2.4s infinite ease-in-out;
+    background: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%), var(--color-cell-bg);
+    animation: todayPulse 2.4s infinite ease-in-out;
+}
+@keyframes todayPulse {
+    0%, 100% {
+        border-color: var(--color-border-input);
+        box-shadow: 0 0 0 2px var(--color-search-pulse-1);
+    }
+    50% {
+        border-color: var(--color-accent-3);
+        box-shadow: 0 0 0 8px var(--color-search-pulse-2);
+    }
 }
 
 /* 複数選択モードで選択されているマスの強調表示（黄色） */
