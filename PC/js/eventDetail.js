@@ -72,6 +72,11 @@ function saveDetailChanges() {
     rebuildAllEventsCache();
     closeEventDetailModal();
     generateCalendar();
+    // 【2026-09-06 追加】詳細モーダルは「その日の予定一覧」から開かれることが多く、
+    // 一覧側は開いた時点の内容のまま残るため、保存しても一覧に反映されず
+    // 「閉じてから見ないと直っていない」ように見えていた。裏に一覧が残っていれば
+    // ここで作り直し、保存した内容がすぐ見えるようにする。
+    if (typeof refreshOpenEventListAfterChange === 'function') refreshOpenEventListAfterChange();
 }
 
 function closeEventDetailModal() {

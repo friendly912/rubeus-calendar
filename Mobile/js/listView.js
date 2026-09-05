@@ -166,9 +166,16 @@ function renderCalendarList() {
             // showEventDetail()（編集画面）ではなく showEventList()（追加・削除を
             // 先頭に表示する一覧画面）を開くようにした。予定本体をタップした時は、
             // 日付のまとまり側のクリック処理より優先して開く点は変わらない。
+            //
+            // 【2026-09-06 修正】コピー中は、カレンダー形式と同じくどこをタップしても
+            // 貼り付けを優先する（既存の予定をタップして一覧が開いてしまわないように）。
             row.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (multiSelectMode) return;
+                if (copiedEventData) {
+                    pasteCopiedEvent(dateKey);
+                    return;
+                }
                 showEventList(dateKey, day);
             });
             group.appendChild(row);

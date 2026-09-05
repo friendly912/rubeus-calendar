@@ -47,7 +47,7 @@ function showEventList(dateKey, day) {
                 <div style="flex:1">
                     <div style="font-weight:bold;">${escapeHtml(ev.template)}</div>
                     <div style="color:#77ccff;font-size:14px;">${escapeHtml(getTimeDisplay(ev))}</div>
-                    ${ev.memo ? `<div style="margin-top:6px;font-size:13px;color:#bbb;">${escapeHtml(ev.memo)}</div>` : ''}
+                    ${ev.memo ? `<div style="margin-top:6px;font-size:13px;color:#bbb;">${linkifyMemo(ev.memo)}</div>` : ''}
                 </div>
             `;
             div.onclick = () => {

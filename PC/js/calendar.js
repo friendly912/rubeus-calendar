@@ -257,9 +257,17 @@ function generateCalendar(hitDates = null) {
             // 日付マスの何もない部分をタップした時と同じ showEventList()（追加・削除を
             // 先頭に表示する一覧画面）を開くようにし、特定の予定を編集したい場合は
             // その一覧からもう一段階選んでもらう形に統一した。
+            //
+            // 【2026-09-06 修正】コピー中に、既存の予定が詰まっている日をタップすると
+            // ここが優先されてしまい、貼り付けたいのに一覧が開いてしまう不具合があった。
+            // 日付マスそのものと同じく、コピー中はどこをタップしても貼り付けを優先する。
             e.onclick = (evnt) => {
                 evnt.stopImmediatePropagation();
                 if (multiSelectMode) return;
+                if (copiedEventData) {
+                    pasteCopiedEvent(dateKey);
+                    return;
+                }
                 showEventList(dateKey, day);
             };
             div.appendChild(e);

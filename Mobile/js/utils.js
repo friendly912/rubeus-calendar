@@ -45,6 +45,32 @@ function escapeHtml(text) {
 }
 
 /*
+  linkifyMemo(text)
+  --------------------------------------------------------------
+  メモ本文中のURL（http:// / https:// で始まる部分）を、タップ・クリックすると
+  新しいタブで開けるリンクに変換する。
+
+  【安全性について】
+  まず escapeHtml() で文字列全体を無害化してから、URLらしき部分だけを
+  <a>タグに置き換えている。そのためURL以外の部分に <, > 等が含まれていても
+  escapeHtml と同じ安全性のまま、そのままの文字として表示される。
+  リンクは target="_blank" + rel="noopener noreferrer" で開き、
+  リンクをタップした時に親要素のクリック処理（予定詳細を開く等）が
+  一緒に発火しないよう、リンク自身に stopPropagation を仕込んでいる。
+*/
+function linkifyMemo(text) {
+    const escaped = escapeHtml(text);
+    return escaped.replace(/(https?:\/\/[^\s<]+)/g, (url) => {
+        // 文末の句読点・閉じ括弧がURLに巻き込まれた場合は、リンクの範囲から外す
+        const trailingMatch = url.match(/[)\]」』、。.,!?]+$/);
+        const trailing = trailingMatch ? trailingMatch[0] : '';
+        const cleanUrl = trailing ? url.slice(0, -trailing.length) : url;
+        if (!cleanUrl) return url;
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${cleanUrl}</a>${trailing}`;
+    });
+}
+
+/*
   timeToMinutes(timeStr)
   --------------------------------------------------------------
   "10:30" のような時刻文字列を「0時0分からの経過分数」に変換する。

@@ -92,6 +92,10 @@ function saveTimeEdit() {
     rebuildAllEventsCache();
     closeEditEventModal();
     generateCalendar();
+    // 【2026-09-06 追加】時刻編集も詳細モーダルと同じく「その日の予定一覧」の
+    // 裏で行われることが多いため、保存直後に一覧を作り直して反映する
+    // （deleteConfirm.js の refreshOpenEventListAfterChange を参照）。
+    if (typeof refreshOpenEventListAfterChange === 'function') refreshOpenEventListAfterChange();
 }
 
 function closeEditEventModal() {

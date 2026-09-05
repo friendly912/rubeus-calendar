@@ -93,7 +93,7 @@ function confirmDelete() {
             generateCalendar();
             renderTemplates();
             if (modal) modal.style.display = 'none';
-            if (deletedEvent) refreshOpenEventListAfterDelete();
+            if (deletedEvent) refreshOpenEventListAfterChange();
             return;
         }
 
@@ -121,13 +121,19 @@ function confirmDelete() {
 }
 
 /*
-  refreshOpenEventListAfterDelete()
+  refreshOpenEventListAfterChange()
   --------------------------------------------------------------
-  予定1件を消したあと、裏側に残っている「その日の予定一覧」を
-  作り直す（または予定が0件なら閉じる）。
-  これをしないと、消した予定が一覧に残って見え、削除できていないように見える。
+  予定を削除・編集（メモ/テンプレート変更・時刻変更）した直後に、
+  裏側に残っている「その日の予定一覧」モーダルを作り直す
+  （削除で0件になった場合は一覧ごと閉じる）。
+
+  【2026-09-06 適用範囲を拡大】
+  もともとは削除専用（refreshOpenEventListAfterDelete という名前）だったが、
+  「予定の詳細を編集して保存した直後、閉じるまで一覧に変更が反映されない」
+  というご指摘を受け、saveDetailChanges() / saveTimeEdit() からも
+  呼ぶようにしたため、削除に限らない汎用的な名前に変更した。
 */
-function refreshOpenEventListAfterDelete() {
+function refreshOpenEventListAfterChange() {
     const listModal = document.getElementById('eventListModal');
     if (!listModal || listModal.style.display !== 'flex' || !currentListDateKey) return;
     const events = (typeof getEventsForDate === 'function') ? getEventsForDate(currentListDateKey) : [];

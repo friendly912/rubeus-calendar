@@ -70,6 +70,20 @@
     font-weight: bold;
     font-size: 13px;
 }
+
+/* 「コピー中」表示の文末に置く、コピーそのものを取りやめるためのリンク。
+   2026-09-06追加：コピーモードに入った後にキャンセルする手段が無かった、
+   というご指摘への対応（cancelCopy() は js/copyPaste.js 参照）。 */
+.copy-cancel-link {
+    margin-left: 10px;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: normal;
+    opacity: 0.85;
+}
+.copy-cancel-link:hover {
+    opacity: 1;
+}
 .status-bar.multi-select {
     display: none;
     align-items: center;

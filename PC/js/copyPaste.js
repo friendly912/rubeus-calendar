@@ -30,8 +30,33 @@ function copyEventFromDetail() {
         memo: ev.memo
     };
     closeEventDetailModal();
+    // 【2026-09-06 修正】予定詳細は「その日の予定一覧」モーダルから開かれることが
+    // 多く、詳細モーダルを閉じただけでは裏に残っていた一覧モーダルが再び見えてしまい、
+    // 「コピーしたのにカレンダーへ戻らない」という状態になっていた。
+    // コピー中はカレンダー上の日付をタップして貼り付ける操作に進みたいため、
+    // 一覧モーダルが開いていれば一緒に閉じてカレンダーへ戻す。
+    const listModal = document.getElementById('eventListModal');
+    if (listModal) listModal.style.display = 'none';
+    // スマホの縦画面「リスト形式」で予定を開いてコピーした場合も、そのままでは
+    // 貼り付け先を選べないため、コピーした時点で「カレンダー形式」へ切り替える。
+    // （setPortraitViewFormatはMobile版にしか存在しないため、PC版では何もしない）
+    if (typeof portraitViewFormat !== 'undefined' && portraitViewFormat === 'list'
+        && typeof setPortraitViewFormat === 'function') {
+        setPortraitViewFormat('calendar');
+    }
     document.getElementById('copyStatus').style.display = 'block';
     generateCalendar();
+}
+
+/*
+  cancelCopy()
+  --------------------------------------------------------------
+  「コピー中」表示の末尾にある「キャンセル」を押した時の処理。
+  どこにも貼り付けず、コピー中の状態だけを解除する。
+*/
+function cancelCopy() {
+    copiedEventData = null;
+    document.getElementById('copyStatus').style.display = 'none';
 }
 
 /*
