@@ -255,7 +255,12 @@ body[data-theme="pastel-mono"] {
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== アナスイ：ゴールド ==================== */
+/* ==================== アナスイ：ゴールド ====================
+   2026-09-06追加: 日付マス・リストの日付グループに乗る光沢グラデーション
+   （--color-cell-gloss）を none にし、面をフラットな塗りに戻している。
+   パステル系のような明るい背景では光沢が馴染むが、アナスイ系のような
+   暗い背景では「グラデーションがかかっている」ように見えてしまう、
+   というご指摘への対応（4トーンすべて同様）。 */
 body[data-theme="annasui-gold"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
@@ -290,6 +295,7 @@ body[data-theme="annasui-gold"] {
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(217, 165, 74, 0.18);
     --color-today-overlay: none;
+    --color-cell-gloss: none;
 }
 
 /* ==================== アナスイ：ローズ ==================== */
@@ -327,6 +333,7 @@ body[data-theme="annasui-rose"] {
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(224, 148, 156, 0.18);
     --color-today-overlay: none;
+    --color-cell-gloss: none;
 }
 
 /* ==================== アナスイ：エメラルド ==================== */
@@ -364,6 +371,7 @@ body[data-theme="annasui-green"] {
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(126, 203, 150, 0.18);
     --color-today-overlay: none;
+    --color-cell-gloss: none;
 }
 
 /* ==================== アナスイ：パープル ==================== */
@@ -401,4 +409,5 @@ body[data-theme="annasui-purple"] {
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(160, 140, 214, 0.18);
     --color-today-overlay: none;
+    --color-cell-gloss: none;
 }

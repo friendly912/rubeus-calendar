@@ -27,9 +27,11 @@ body.list-view .calendar-list { display: flex; }
 
 /* ---- 1日分のまとまり（日付見出し＋その日の予定） ----
    2026-09-05: カレンダー形式の .date と同じ光沢レイヤー・影を付けて、
-   カレンダー形式⇄リスト形式で見た目のトーンが揃うようにしている。 */
+   カレンダー形式⇄リスト形式で見た目のトーンが揃うようにしている。
+   2026-09-06: 光沢（--color-cell-gloss）はアナスイ系では none になる
+   （カレンダー形式の .date と同じ。css/themes.css 参照）。 */
 .list-day-group {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+    background: var(--color-cell-gloss), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -47,7 +49,7 @@ body.list-view .calendar-list { display: flex; }
 */
 .list-day-group.today {
     border: 1px solid var(--color-accent-3);
-    background: var(--color-today-overlay), linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+    background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
     box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     animation: todayPulse 2.4s infinite ease-in-out;
 }

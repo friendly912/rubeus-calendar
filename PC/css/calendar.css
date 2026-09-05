@@ -151,8 +151,11 @@
     /* 2026-09-05: 単なる「背景色のベタ塗り」だと質感が平坦に見える、
        というご指摘を受け、上から下へごく薄い光を乗せて、柔らかい光沢・
        立体感を出している（ガラスや紙のカードが上から光を受けているような
-       イメージ）。下地の色（--color-cell-bg）自体は変えていない。 */
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+       イメージ）。下地の色（--color-cell-bg）自体は変えていない。
+       2026-09-06: この光沢（--color-cell-gloss）は、暗いアナスイ系では
+       「グラデーションがかかって見える」というご指摘を受けテーマ側でnoneに
+       しており、パステル系だけに掛かるようになっている。 */
+    background: var(--color-cell-gloss), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
     /* 2026-09-03: マス同士の隙間（.calendarのgap）と枠線だけでは、
@@ -203,8 +206,10 @@
 .date.today {
     border: 1px solid var(--color-accent-3);
     /* 2026-09-05: 通常のマスと同じ光沢レイヤーを残しつつ、
-       一番上に today-overlay（アクセント色へのグラデーション）を重ねる。 */
-    background: var(--color-today-overlay), linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+       一番上に today-overlay（アクセント色へのグラデーション）を重ねる。
+       2026-09-06: 光沢レイヤーもテーマ側で出し分ける --color-cell-gloss に変更
+       （アナスイ系は today-overlay・cell-gloss とも none になる）。 */
+    background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
     box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
