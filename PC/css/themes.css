@@ -260,14 +260,20 @@ body[data-theme="pastel-mono"] {
    （--color-cell-gloss）を none にし、面をフラットな塗りに戻している。
    パステル系のような明るい背景では光沢が馴染むが、アナスイ系のような
    暗い背景では「グラデーションがかかっている」ように見えてしまう、
-   というご指摘への対応（4トーンすべて同様）。 */
+   というご指摘への対応（4トーンすべて同様）。
+
+   2026-09-06追加: --color-modal-overlay（設定などモーダルを開いた時に
+   背後を覆う幕）の不透明度を、パステル系と同じ0.4に統一した。
+   以前はアナスイ系だけ0.94（ほぼ不透明）にしていたため、パステルでは
+   背後のカレンダーがうっすら透けて見えるのに対し、アナスイではほぼ
+   見えなくなってしまい、印象が揃っていなかった（4トーンすべて同様）。 */
 body[data-theme="annasui-gold"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
     --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.94);
+    --color-modal-overlay: rgba(4, 4, 4, 0.4);
     --color-input-bg-hover: #1d1b19;
     --color-selected-bg: rgba(217, 165, 74, 0.16);
 
@@ -305,7 +311,7 @@ body[data-theme="annasui-rose"] {
     --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.94);
+    --color-modal-overlay: rgba(4, 4, 4, 0.4);
     --color-input-bg-hover: #1d1b19;
     --color-selected-bg: rgba(224, 148, 156, 0.16);
 
@@ -343,7 +349,7 @@ body[data-theme="annasui-green"] {
     --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.94);
+    --color-modal-overlay: rgba(4, 4, 4, 0.4);
     --color-input-bg-hover: #1d1b19;
     --color-selected-bg: rgba(126, 203, 150, 0.16);
 
@@ -381,7 +387,7 @@ body[data-theme="annasui-purple"] {
     --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.94);
+    --color-modal-overlay: rgba(4, 4, 4, 0.4);
     --color-input-bg-hover: #1d1b19;
     --color-selected-bg: rgba(160, 140, 214, 0.16);
 
