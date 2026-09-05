@@ -34,7 +34,8 @@
 .title {
     grid-column: 2 / 7;
     justify-self: center;
-    font-size: 23px;
+    font-family: var(--font-heading);
+    font-size: 24px;
     font-weight: bold;
     color: var(--color-accent);
     cursor: pointer;
@@ -126,6 +127,7 @@
     text-align: center;
     padding: 11px 4px;
     background: var(--color-day-header-bg);
+    border: 1px solid var(--color-border-input);
     border-radius: 6px;
     font-weight: bold;
     color: var(--color-day-header-text);
@@ -135,6 +137,10 @@
     background: var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
+    /* 2026-09-03: マス同士の隙間（.calendarのgap）と枠線だけでは、
+       暗い配色の時に隣のマスとの境目が沈んで見えにくくなることがあるため、
+       ごく薄い影を足して「1マス＝1枚の独立したカード」感を補強している。 */
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     padding: 8px;
     min-height: 112px;
     min-width: 0; /* 中の予定テキストの長さに引っ張られてマス自体が広がらないようにする */
@@ -154,26 +160,30 @@
   （searchingPulse、sidebar.css で定義）で目立たせるようにした。
   枠線の色だけでは気づきにくい、というご指摘への対応。
 
-  【2026-09-03 追加】
-  パステル／アナスイのテーマ参考画像で、選択中（今日）のマスに
-  斜め方向のグラデーションが掛かっていたため、それを再現した。
-  searchingPulse は background も一緒に明滅させてしまい、下のグラデーションを
-  上書きしてしまうため、今日のマス専用に todayPulse という、
-  枠線と光彩（box-shadow）だけを明滅させるアニメーションを別途用意している。
+  【2026-09-03 変更】
+  一度は斜めグラデーションで塗る形にしたが、暗い配色（アナスイ系）だと
+  マスの中が重い黒っぽいグラデーションに見えてしまい、上品さに欠ける
+  というご指摘をいただいた。
+  そのため面（マスの中身）はベースの色のまま変えず、代わりに
+  ①極細（1px）の光る枠線 と ②枠の外側へ柔らかく広がるグロー（box-shadow）
+  だけで「今日」を目立たせる方式に変更している。
+  searchingPulse は background も一緒に明滅させてしまい、面を変えない
+  という今回の方針と合わないため、今日のマス専用に todayPulse という、
+  枠線とグローだけを明滅させるアニメーションを別途用意している。
 */
 .date.today {
-    border: 2px solid var(--color-accent-3);
-    background: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%), var(--color-cell-bg);
+    border: 1px solid var(--color-accent-3);
+    box-shadow: 0 0 14px var(--color-date-hover-glow);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
 @keyframes todayPulse {
     0%, 100% {
         border-color: var(--color-border-input);
-        box-shadow: 0 0 0 2px var(--color-search-pulse-1);
+        box-shadow: 0 0 8px var(--color-search-pulse-1);
     }
     50% {
         border-color: var(--color-accent-3);
-        box-shadow: 0 0 0 8px var(--color-search-pulse-2);
+        box-shadow: 0 0 16px var(--color-search-pulse-2);
     }
 }
 

@@ -17,7 +17,7 @@
 body {
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: sans-serif;
+    font-family: var(--font-body);
     margin: 0;
     padding: 10px;
     height: 100vh;

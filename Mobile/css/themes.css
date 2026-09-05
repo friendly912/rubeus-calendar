@@ -183,7 +183,7 @@ body[data-theme="pastel-lavender"] {
 body[data-theme="annasui-gold"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #0d0c0b;
+    --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
     --color-modal-overlay: rgba(4, 4, 4, 0.94);
@@ -192,7 +192,7 @@ body[data-theme="annasui-gold"] {
 
     --color-text: #ece7e2;
 
-    --color-border: #2a2725;
+    --color-border: #3d3835;
     --color-border-input: #8a6a30;
     --color-dashed-border: #8a6a30;
 
@@ -219,7 +219,7 @@ body[data-theme="annasui-gold"] {
 body[data-theme="annasui-rose"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #0d0c0b;
+    --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
     --color-modal-overlay: rgba(4, 4, 4, 0.94);
@@ -228,7 +228,7 @@ body[data-theme="annasui-rose"] {
 
     --color-text: #ece7e2;
 
-    --color-border: #2a2725;
+    --color-border: #3d3835;
     --color-border-input: #7a3f46;
     --color-dashed-border: #7a3f46;
 
@@ -255,7 +255,7 @@ body[data-theme="annasui-rose"] {
 body[data-theme="annasui-green"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #0d0c0b;
+    --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
     --color-modal-overlay: rgba(4, 4, 4, 0.94);
@@ -264,7 +264,7 @@ body[data-theme="annasui-green"] {
 
     --color-text: #ece7e2;
 
-    --color-border: #2a2725;
+    --color-border: #3d3835;
     --color-border-input: #2f5c40;
     --color-dashed-border: #2f5c40;
 
@@ -291,7 +291,7 @@ body[data-theme="annasui-green"] {
 body[data-theme="annasui-purple"] {
     --color-bg: #0a0908;
     --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #0d0c0b;
+    --color-cell-bg: #141210;
     --color-input-bg: #131211;
     --color-modal-bg: #100f0e;
     --color-modal-overlay: rgba(4, 4, 4, 0.94);
@@ -300,7 +300,7 @@ body[data-theme="annasui-purple"] {
 
     --color-text: #ece7e2;
 
-    --color-border: #2a2725;
+    --color-border: #3d3835;
     --color-border-input: #4a3d73;
     --color-dashed-border: #4a3d73;
 

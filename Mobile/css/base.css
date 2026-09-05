@@ -19,7 +19,7 @@ html, body {
 body {
     background: var(--color-bg);
     color: var(--color-text);
-    font-family: sans-serif;
+    font-family: var(--font-body);
     margin: 0;
     /*
       【2026-08-05 追加、同日中に修正】
