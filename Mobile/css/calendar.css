@@ -228,9 +228,20 @@ body.mode-portrait .calendar {
   searchingPulse は background も一緒に明滅させてしまい、面を変えない
   という今回の方針と合わないため、今日のマス専用に todayPulse という、
   枠線とグローだけを明滅させるアニメーションを別途用意している。
+
+  【2026-09-05 変更】
+  上の変更は暗いアナスイ系には合っていたが、明るいパステル系では
+  隅から溶けるような柔らかいグラデーションがあった方が「カード感・抜け感」が
+  出て良い、という参考画像をいただいた。
+  そのため --color-today-overlay という変数を新設し、
+  css/themes.css 側でテーマごとに値を出し分けるようにした
+  （パステル系: linear-gradient(...) / アナスイ系: none）。
+  ここではその変数を、通常のセル背景（--color-cell-bg）の上に
+  重ねて描画しているだけで、面自体を変えない元の方針は崩していない。
 */
 .date.today {
     border: 1px solid var(--color-accent-3);
+    background: var(--color-today-overlay), var(--color-cell-bg);
     box-shadow: 0 0 14px var(--color-date-hover-glow);
     animation: todayPulse 2.4s infinite ease-in-out;
 }

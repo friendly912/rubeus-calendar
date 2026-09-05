@@ -37,18 +37,20 @@
 
 /* ==================== パステル：ローズ ==================== */
 body[data-theme="pastel-rose"] {
-    --color-bg: #fdf2f0;
-    --color-panel-bg: #fffaf9;
-    --color-cell-bg: #fffcfc;
-    --color-input-bg: #fbe4e1;
-    --color-modal-bg: #fffaf9;
+    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
+       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
+    --color-bg: #f8dfe3;
+    --color-panel-bg: #fce8eb;
+    --color-cell-bg: #fdf0f2;
+    --color-input-bg: #f3d0d6;
+    --color-modal-bg: #fce8eb;
     --color-modal-overlay: rgba(60, 30, 35, 0.4);
-    --color-input-bg-hover: #f7d5d1;
-    --color-selected-bg: #f6cdc8;
+    --color-input-bg-hover: #eebfc7;
+    --color-selected-bg: #f2c9d0;
 
     --color-text: #4a3a3a;
 
-    --color-border: #f3d9d6;
+    --color-border: #f0d3d8;
     --color-border-input: #d68fa0;
     --color-dashed-border: #d68fa0;
 
@@ -69,22 +71,27 @@ body[data-theme="pastel-rose"] {
     --color-search-pulse-2: rgba(201, 104, 138, 0.28);
     --color-search-pulse-bg: #f8dede;
     --color-status-bar-bg: #f3d3d3;
+    /* パステルは明るい面に淡いグラデーションが乗っても重く見えないため、
+       「今日」のマスにだけ、隅から溶けるような柔らかい発光を残している。 */
+    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
 }
 
 /* ==================== パステル：セージグリーン ==================== */
 body[data-theme="pastel-green"] {
-    --color-bg: #f2f7f0;
-    --color-panel-bg: #fbfdfa;
-    --color-cell-bg: #fdfefb;
-    --color-input-bg: #e5efe0;
-    --color-modal-bg: #fbfdfa;
+    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
+       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
+    --color-bg: #dcefe1;
+    --color-panel-bg: #e8f6ec;
+    --color-cell-bg: #f0faf2;
+    --color-input-bg: #cbe6d3;
+    --color-modal-bg: #e8f6ec;
     --color-modal-overlay: rgba(30, 45, 25, 0.4);
-    --color-input-bg-hover: #d7e7cf;
-    --color-selected-bg: #cfe4c4;
+    --color-input-bg-hover: #b9dcc4;
+    --color-selected-bg: #c3ddc9;
 
     --color-text: #3c4436;
 
-    --color-border: #dde9d6;
+    --color-border: #d5ecda;
     --color-border-input: #8fae7a;
     --color-dashed-border: #8fae7a;
 
@@ -105,22 +112,25 @@ body[data-theme="pastel-green"] {
     --color-search-pulse-2: rgba(111, 154, 92, 0.28);
     --color-search-pulse-bg: #e3edda;
     --color-status-bar-bg: #dbe8d2;
+    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
 }
 
 /* ==================== パステル：バターイエロー ==================== */
 body[data-theme="pastel-yellow"] {
-    --color-bg: #fdf6e8;
-    --color-panel-bg: #fffcf3;
-    --color-cell-bg: #fffdf6;
-    --color-input-bg: #f7e9c9;
-    --color-modal-bg: #fffcf3;
+    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
+       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
+    --color-bg: #f7edc7;
+    --color-panel-bg: #faf3d6;
+    --color-cell-bg: #fcf7e2;
+    --color-input-bg: #f0e0a3;
+    --color-modal-bg: #faf3d6;
     --color-modal-overlay: rgba(55, 42, 15, 0.4);
-    --color-input-bg-hover: #f2ddac;
-    --color-selected-bg: #eed89e;
+    --color-input-bg-hover: #ead38d;
+    --color-selected-bg: #ecd992;
 
     --color-text: #4a4130;
 
-    --color-border: #f0e2bd;
+    --color-border: #f2e6bd;
     --color-border-input: #cf9f3f;
     --color-dashed-border: #cf9f3f;
 
@@ -141,22 +151,25 @@ body[data-theme="pastel-yellow"] {
     --color-search-pulse-2: rgba(191, 143, 46, 0.28);
     --color-search-pulse-bg: #f4e7bf;
     --color-status-bar-bg: #ecd99a;
+    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
 }
 
 /* ==================== パステル：ラベンダー ==================== */
 body[data-theme="pastel-lavender"] {
-    --color-bg: #f3f1fb;
-    --color-panel-bg: #fbfaff;
-    --color-cell-bg: #fdfcff;
-    --color-input-bg: #e6e2f7;
-    --color-modal-bg: #fbfaff;
+    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
+       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
+    --color-bg: #e3e2f6;
+    --color-panel-bg: #ebeaf9;
+    --color-cell-bg: #f2f1fb;
+    --color-input-bg: #d5d3f0;
+    --color-modal-bg: #ebeaf9;
     --color-modal-overlay: rgba(35, 30, 55, 0.4);
-    --color-input-bg-hover: #d8d1f2;
-    --color-selected-bg: #d2c9ef;
+    --color-input-bg-hover: #c6c4e9;
+    --color-selected-bg: #cac7e8;
 
     --color-text: #3d3a4a;
 
-    --color-border: #ded8f5;
+    --color-border: #ddd9f3;
     --color-border-input: #a6a0e0;
     --color-dashed-border: #a6a0e0;
 
@@ -177,6 +190,7 @@ body[data-theme="pastel-lavender"] {
     --color-search-pulse-2: rgba(138, 120, 204, 0.28);
     --color-search-pulse-bg: #e8e4f7;
     --color-status-bar-bg: #ddd6f2;
+    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
 }
 
 /* ==================== アナスイ：ゴールド ==================== */
@@ -213,6 +227,7 @@ body[data-theme="annasui-gold"] {
     --color-search-pulse-2: rgba(217, 165, 74, 0.24);
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(217, 165, 74, 0.18);
+    --color-today-overlay: none;
 }
 
 /* ==================== アナスイ：ローズ ==================== */
@@ -249,6 +264,7 @@ body[data-theme="annasui-rose"] {
     --color-search-pulse-2: rgba(224, 148, 156, 0.24);
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(224, 148, 156, 0.18);
+    --color-today-overlay: none;
 }
 
 /* ==================== アナスイ：エメラルド ==================== */
@@ -285,6 +301,7 @@ body[data-theme="annasui-green"] {
     --color-search-pulse-2: rgba(126, 203, 150, 0.24);
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(126, 203, 150, 0.18);
+    --color-today-overlay: none;
 }
 
 /* ==================== アナスイ：パープル ==================== */
@@ -321,4 +338,5 @@ body[data-theme="annasui-purple"] {
     --color-search-pulse-2: rgba(160, 140, 214, 0.24);
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(160, 140, 214, 0.18);
+    --color-today-overlay: none;
 }
