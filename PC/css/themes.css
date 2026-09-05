@@ -66,22 +66,20 @@
 */
 
 /* ==================== パステル：ニュアンスブルー ==================== */
-/* 水色をベースに、選択日など差し色として薄紫を効かせた2色使いのトーン
-   2026-09-05: 参考画像より背景の彩度が高く「濃い」というご指摘を受け、
-   白により近い、淡い水色に調整した（差し色の薄紫やアクセントは変更なし）。 */
+/* 水色をベースに、選択日など差し色として薄紫を効かせた2色使いのトーン */
 body[data-theme="pastel-blue"] {
-    --color-bg: #e4f2f5;
-    --color-panel-bg: #eef8fa;
-    --color-cell-bg: #f7fcfd;
-    --color-input-bg: #d5eaf0;
-    --color-modal-bg: #eef8fa;
+    --color-bg: #cfe7ee;
+    --color-panel-bg: #d8ecf1;
+    --color-cell-bg: #e9f5f8;
+    --color-input-bg: #bfe0e8;
+    --color-modal-bg: #d8ecf1;
     --color-modal-overlay: rgba(30, 45, 55, 0.4);
-    --color-input-bg-hover: #bfdde4;
-    --color-selected-bg: #d3e4f0;
+    --color-input-bg-hover: #a9d3de;
+    --color-selected-bg: #c7d9ea;
 
     --color-text: #2f4a52;
 
-    --color-border: #d8ecf0;
+    --color-border: #bfe0e6;
     --color-border-input: #a98cc9;
     --color-dashed-border: #a98cc9;
 
