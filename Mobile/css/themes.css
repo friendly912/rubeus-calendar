@@ -5,20 +5,33 @@
 
   【仕組み】
   設定画面でテーマを選ぶと、js/themes.js が
-      document.body.dataset.theme = "pastel-rose" のように
+      document.body.dataset.theme = "pastel-blue" のように
   bodyタグに data-theme属性を付ける。
-  すると、このファイルの中の該当するブロック（例： [data-theme="pastel-rose"] ）が
+  すると、このファイルの中の該当するブロック（例： [data-theme="pastel-blue"] ）が
   css/variables.css の :root に書かれている値を上書きする。
 
   【2026-09-03 テーマ体系を刷新】
   以前は「ダーク」「ブルー」「グリーン」のような単色テーマを7つ並べる方式だったが、
   クライアントより「パステルスタイル」「アナスイスタイル」という2つの大きな
-  スタイルに分け、それぞれ4トーンから選べるようにしたい、というご要望があった。
-  そのため単色テーマは全廃し、下記の8テーマに置き換えている。
-    ・パステル系（明るい配色。背景は白に近く、文字は濃い色）
-        pastel-rose / pastel-green / pastel-yellow / pastel-lavender
+  スタイルに分け、それぞれ複数トーンから選べるようにしたいというご要望があり、
+  単色テーマは全廃してこの2スタイルに置き換えている。
+    ・パステル系（明るい配色。背景は白ではなく、同系統でトーンを変えた色）
+        pastel-blue / pastel-green / pastel-pink / pastel-beige / pastel-mono
     ・アナスイ系（黒背景に、光るような縁取りのアクセントを効かせた配色）
         annasui-gold / annasui-rose / annasui-green / annasui-purple
+
+  【2026-09-05 パステルの配色を刷新】
+  初期のパステルは背景がほぼ白に近く「色が飛んで見える」というご指摘と、
+  次に背景の彩度を上げすぎて「重い」というご指摘の、両方をいただいた。
+  そのため、①背景・パネル・カードを同系統の色で「背景よりカードを明るく」
+  という適度な明度差をつけつつ、②各色のコンセプトをより具体的な
+  ニュアンス（水色×薄紫のニュアンスブルー、セージグリーン、
+  スモーキーピンク、カフェオレベージュ）に寄せ、③新たに彩度ゼロの
+  「モノトーン」を1色追加した。
+  モノトーンは背景・パネル・見出し・枠線などUIの骨格だけを白黒グレーで
+  まとめ、行動テンプレートの色（茶/緑/青など）はそのまま鮮やかに残る
+  （テンプレートの色はここではなく別の場所で管理されているため、
+    このテーマ切り替えでは変化しない＝意図した仕様）。
 
   【新しいトーンを追加したいとき】
   下のブロックを1つコピーして、body[data-theme="好きな名前"] にし、
@@ -31,76 +44,80 @@
   対応する変数だけをすべて書き換えている。
   「②役割で固定の色」（保存＝緑、削除＝赤など）はテーマに関わらず
   共通のままにするため、ここには書かない。
-  土日の色（--color-weekend）は、同じスタイル内の4トーンで統一し、
-  トーンを切り替えても「どれが土日か」がすぐ分かるようにしている。
+  土日の色（--color-weekend）は、パステル全トーン・アナスイ全トーンで
+  それぞれ統一し、トーンを切り替えても「どれが土日か」がすぐ分かるように
+  している。
+
+  【「今日」のマスのグラデーションについて（--color-today-overlay）】
+  2026-09-05の参考画像で「日付カードの色から、各テーマのアクセント色へ
+  優しく馴染む微グラデーション」というご指摘をいただいたため、
+  カード自身の色（--color-cell-bg）を起点に、テーマのアクセント色
+  （--color-accent-strong）へ向かってごく淡く伸びるグラデーションに
+  している。グラデーションの終点を100%より先（160%）に置くことで、
+  マスの中では最後まで混ざりきらない「淡い」見え方に調整している。
 */
 
-/* ==================== パステル：ローズ ==================== */
-body[data-theme="pastel-rose"] {
-    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
-       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
-    --color-bg: #f8dfe3;
-    --color-panel-bg: #fce8eb;
-    --color-cell-bg: #fdf0f2;
-    --color-input-bg: #f3d0d6;
-    --color-modal-bg: #fce8eb;
-    --color-modal-overlay: rgba(60, 30, 35, 0.4);
-    --color-input-bg-hover: #eebfc7;
-    --color-selected-bg: #f2c9d0;
+/* ==================== パステル：ニュアンスブルー ==================== */
+/* 水色をベースに、選択日など差し色として薄紫を効かせた2色使いのトーン */
+body[data-theme="pastel-blue"] {
+    --color-bg: #cfe7ee;
+    --color-panel-bg: #d8ecf1;
+    --color-cell-bg: #e9f5f8;
+    --color-input-bg: #bfe0e8;
+    --color-modal-bg: #d8ecf1;
+    --color-modal-overlay: rgba(30, 45, 55, 0.4);
+    --color-input-bg-hover: #a9d3de;
+    --color-selected-bg: #c7d9ea;
 
-    --color-text: #4a3a3a;
+    --color-text: #2f4a52;
 
-    --color-border: #f0d3d8;
-    --color-border-input: #d68fa0;
-    --color-dashed-border: #d68fa0;
+    --color-border: #bfe0e6;
+    --color-border-input: #a98cc9;
+    --color-dashed-border: #a98cc9;
 
-    --color-accent: #a8496a;
-    --color-accent-2: #c25c78;
-    --color-accent-3: #d1487a;
-    --color-accent-4: #a8496a;
-    --color-accent-strong: #c9688a;
-    --color-day-header-bg: #c9688a;
+    --color-accent: #6d5391;
+    --color-accent-2: #8a6fb0;
+    --color-accent-3: #9a7ec2;
+    --color-accent-4: #6d5391;
+    --color-accent-strong: #a98cc9;
+    --color-day-header-bg: #a98cc9;
     --color-day-header-text: #ffffff;
-    --color-event-bg: rgba(184, 103, 126, 0.14);
+    --color-event-bg: rgba(109, 83, 145, 0.14);
 
     --color-weekend: #d15f78;
 
-    --color-title-hover-glow: rgba(184, 103, 126, 0.12);
-    --color-date-hover-glow: rgba(201, 104, 138, 0.42);
-    --color-search-pulse-1: rgba(201, 104, 138, 0.36);
-    --color-search-pulse-2: rgba(201, 104, 138, 0.28);
-    --color-search-pulse-bg: #f8dede;
-    --color-status-bar-bg: #f3d3d3;
-    /* パステルは明るい面に淡いグラデーションが乗っても重く見えないため、
-       「今日」のマスにだけ、隅から溶けるような柔らかい発光を残している。 */
-    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
+    --color-title-hover-glow: rgba(109, 83, 145, 0.12);
+    --color-date-hover-glow: rgba(154, 126, 194, 0.42);
+    --color-search-pulse-1: rgba(154, 126, 194, 0.36);
+    --color-search-pulse-2: rgba(154, 126, 194, 0.28);
+    --color-search-pulse-bg: #d9ccec;
+    --color-status-bar-bg: #d3c2e6;
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
 /* ==================== パステル：セージグリーン ==================== */
 body[data-theme="pastel-green"] {
-    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
-       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
-    --color-bg: #dcefe1;
-    --color-panel-bg: #e8f6ec;
-    --color-cell-bg: #f0faf2;
-    --color-input-bg: #cbe6d3;
-    --color-modal-bg: #e8f6ec;
+    --color-bg: #d7ead9;
+    --color-panel-bg: #e1f0e3;
+    --color-cell-bg: #eef8ef;
+    --color-input-bg: #c4e0c9;
+    --color-modal-bg: #e1f0e3;
     --color-modal-overlay: rgba(30, 45, 25, 0.4);
-    --color-input-bg-hover: #b9dcc4;
+    --color-input-bg-hover: #aed4b6;
     --color-selected-bg: #c3ddc9;
 
     --color-text: #3c4436;
 
-    --color-border: #d5ecda;
-    --color-border-input: #8fae7a;
-    --color-dashed-border: #8fae7a;
+    --color-border: #cde5d1;
+    --color-border-input: #7a9c68;
+    --color-dashed-border: #7a9c68;
 
     --color-accent: #4a6a3a;
     --color-accent-2: #5f8a4c;
     --color-accent-3: #4f8a52;
     --color-accent-4: #4a6a3a;
-    --color-accent-strong: #6f9a5c;
-    --color-day-header-bg: #6f9a5c;
+    --color-accent-strong: #7a9c68;
+    --color-day-header-bg: #7a9c68;
     --color-day-header-text: #ffffff;
     --color-event-bg: rgba(95, 125, 77, 0.14);
 
@@ -110,87 +127,124 @@ body[data-theme="pastel-green"] {
     --color-date-hover-glow: rgba(111, 154, 92, 0.42);
     --color-search-pulse-1: rgba(111, 154, 92, 0.36);
     --color-search-pulse-2: rgba(111, 154, 92, 0.28);
-    --color-search-pulse-bg: #e3edda;
-    --color-status-bar-bg: #dbe8d2;
-    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
+    --color-search-pulse-bg: #d7ecdb;
+    --color-status-bar-bg: #cbe2d0;
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：バターイエロー ==================== */
-body[data-theme="pastel-yellow"] {
-    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
-       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
-    --color-bg: #f7edc7;
-    --color-panel-bg: #faf3d6;
-    --color-cell-bg: #fcf7e2;
-    --color-input-bg: #f0e0a3;
-    --color-modal-bg: #faf3d6;
-    --color-modal-overlay: rgba(55, 42, 15, 0.4);
-    --color-input-bg-hover: #ead38d;
-    --color-selected-bg: #ecd992;
+/* ==================== パステル：スモーキーピンク ==================== */
+/* 甘さを抑えた、くすみのあるモーヴ系ピンク */
+body[data-theme="pastel-pink"] {
+    --color-bg: #e6d4da;
+    --color-panel-bg: #ecdee3;
+    --color-cell-bg: #f5eaed;
+    --color-input-bg: #dcc2ca;
+    --color-modal-bg: #ecdee3;
+    --color-modal-overlay: rgba(50, 30, 38, 0.4);
+    --color-input-bg-hover: #cfabb6;
+    --color-selected-bg: #ddbfc7;
 
-    --color-text: #4a4130;
+    --color-text: #453a3d;
 
-    --color-border: #f2e6bd;
-    --color-border-input: #cf9f3f;
-    --color-dashed-border: #cf9f3f;
+    --color-border: #e0cbd1;
+    --color-border-input: #9c6f79;
+    --color-dashed-border: #9c6f79;
 
-    --color-accent: #8a611e;
-    --color-accent-2: #b0872e;
-    --color-accent-3: #c2861a;
-    --color-accent-4: #8a611e;
-    --color-accent-strong: #bf8f2e;
-    --color-day-header-bg: #bf8f2e;
+    --color-accent: #7a4f59;
+    --color-accent-2: #8f606b;
+    --color-accent-3: #a06f7a;
+    --color-accent-4: #7a4f59;
+    --color-accent-strong: #9c6f79;
+    --color-day-header-bg: #9c6f79;
     --color-day-header-text: #ffffff;
-    --color-event-bg: rgba(166, 124, 46, 0.14);
+    --color-event-bg: rgba(122, 79, 89, 0.14);
 
     --color-weekend: #d15f78;
 
-    --color-title-hover-glow: rgba(166, 124, 46, 0.12);
-    --color-date-hover-glow: rgba(191, 143, 46, 0.42);
-    --color-search-pulse-1: rgba(191, 143, 46, 0.36);
-    --color-search-pulse-2: rgba(191, 143, 46, 0.28);
-    --color-search-pulse-bg: #f4e7bf;
-    --color-status-bar-bg: #ecd99a;
-    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
+    --color-title-hover-glow: rgba(122, 79, 89, 0.12);
+    --color-date-hover-glow: rgba(156, 111, 121, 0.42);
+    --color-search-pulse-1: rgba(156, 111, 121, 0.36);
+    --color-search-pulse-2: rgba(156, 111, 121, 0.28);
+    --color-search-pulse-bg: #e6d1d6;
+    --color-status-bar-bg: #dcc3ca;
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：ラベンダー ==================== */
-body[data-theme="pastel-lavender"] {
-    /* 2026-09-05: 白に近すぎて色が飛んで見える、というご指摘を受け、
-       背景まわりの彩度を少し上げて「ちゃんと色のあるパステル」に寄せている。 */
-    --color-bg: #e3e2f6;
-    --color-panel-bg: #ebeaf9;
-    --color-cell-bg: #f2f1fb;
-    --color-input-bg: #d5d3f0;
-    --color-modal-bg: #ebeaf9;
-    --color-modal-overlay: rgba(35, 30, 55, 0.4);
-    --color-input-bg-hover: #c6c4e9;
-    --color-selected-bg: #cac7e8;
+/* ==================== パステル：カフェオレベージュ ==================== */
+body[data-theme="pastel-beige"] {
+    --color-bg: #e8dcc9;
+    --color-panel-bg: #eee4d3;
+    --color-cell-bg: #f6efe3;
+    --color-input-bg: #ddc7a5;
+    --color-modal-bg: #eee4d3;
+    --color-modal-overlay: rgba(50, 40, 20, 0.4);
+    --color-input-bg-hover: #cfb28a;
+    --color-selected-bg: #ddc6a3;
 
-    --color-text: #3d3a4a;
+    --color-text: #4a3f30;
 
-    --color-border: #ddd9f3;
-    --color-border-input: #a6a0e0;
-    --color-dashed-border: #a6a0e0;
+    --color-border: #e2d2b8;
+    --color-border-input: #9c7c50;
+    --color-dashed-border: #9c7c50;
 
-    --color-accent: #55447f;
-    --color-accent-2: #6d5aa8;
-    --color-accent-3: #7d5bc7;
-    --color-accent-4: #55447f;
-    --color-accent-strong: #8a78cc;
-    --color-day-header-bg: #8a78cc;
+    --color-accent: #7a5c38;
+    --color-accent-2: #8f6c42;
+    --color-accent-3: #a0794a;
+    --color-accent-4: #7a5c38;
+    --color-accent-strong: #ab8a63;
+    --color-day-header-bg: #ab8a63;
     --color-day-header-text: #ffffff;
-    --color-event-bg: rgba(106, 90, 160, 0.14);
+    --color-event-bg: rgba(122, 92, 56, 0.14);
 
     --color-weekend: #d15f78;
 
-    --color-title-hover-glow: rgba(106, 90, 160, 0.12);
-    --color-date-hover-glow: rgba(138, 120, 204, 0.42);
-    --color-search-pulse-1: rgba(138, 120, 204, 0.36);
-    --color-search-pulse-2: rgba(138, 120, 204, 0.28);
-    --color-search-pulse-bg: #e8e4f7;
-    --color-status-bar-bg: #ddd6f2;
-    --color-today-overlay: linear-gradient(135deg, var(--color-date-hover-glow), transparent 70%);
+    --color-title-hover-glow: rgba(122, 92, 56, 0.12);
+    --color-date-hover-glow: rgba(171, 138, 99, 0.42);
+    --color-search-pulse-1: rgba(171, 138, 99, 0.36);
+    --color-search-pulse-2: rgba(171, 138, 99, 0.28);
+    --color-search-pulse-bg: #ecdcc3;
+    --color-status-bar-bg: #ddc7a8;
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+}
+
+/* ==================== パステル：モノトーン ==================== */
+/* UIの骨格（背景・パネル・見出し・枠線）だけを白黒グレーでまとめる。
+   行動テンプレートの色はテンプレートごとに個別管理されており、
+   このテーマ切り替えでは変わらず、鮮やかな色のまま残る（意図した仕様）。 */
+body[data-theme="pastel-mono"] {
+    --color-bg: #dcdcdc;
+    --color-panel-bg: #e4e4e4;
+    --color-cell-bg: #f2f2f2;
+    --color-input-bg: #cfcfcf;
+    --color-modal-bg: #e4e4e4;
+    --color-modal-overlay: rgba(20, 20, 20, 0.4);
+    --color-input-bg-hover: #bcbcbc;
+    --color-selected-bg: #cccccc;
+
+    --color-text: #333333;
+
+    --color-border: #d2d2d2;
+    --color-border-input: #7a7a7a;
+    --color-dashed-border: #7a7a7a;
+
+    --color-accent: #4a4a4a;
+    --color-accent-2: #5e5e5e;
+    --color-accent-3: #6e6e6e;
+    --color-accent-4: #4a4a4a;
+    --color-accent-strong: #7a7a7a;
+    --color-day-header-bg: #7a7a7a;
+    --color-day-header-text: #ffffff;
+    --color-event-bg: rgba(90, 90, 90, 0.14);
+
+    --color-weekend: #d15f78;
+
+    --color-title-hover-glow: rgba(90, 90, 90, 0.12);
+    --color-date-hover-glow: rgba(122, 122, 122, 0.42);
+    --color-search-pulse-1: rgba(122, 122, 122, 0.36);
+    --color-search-pulse-2: rgba(122, 122, 122, 0.28);
+    --color-search-pulse-bg: #d6d6d6;
+    --color-status-bar-bg: #c9c9c9;
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
 /* ==================== アナスイ：ゴールド ==================== */

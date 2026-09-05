@@ -111,11 +111,30 @@
     --color-end-time: #ffaa44;        /* 終了時刻プレビューの文字色 */
 
     /* ==================== ③フォント ====================
-       2026-09-03追加。今は年月タイトルにだけ明朝体を使っているが、
-       将来「標準ゴシック／明朝体／丸文字」を選べるフォント切り替え機能を
-       追加しやすいよう、色のテーマ切り替えと同じ考え方で変数化してある。
-       （THEME_STYLESと同じ要領で、切り替え機能を作る時はbody[data-font="..."]
-       のようなセレクタでこの変数を上書きすればよい） */
+       2026-09-03追加、2026-09-05に切り替え機能を実装。
+       ここに書かれているのは「明朝体」（既定値）の見た目。
+       js/themes.js の FONTS一覧から選ぶと、bodyタグに
+       data-font="gothic"/"mincho"/"maru" が付き、下の
+       body[data-font="..."] ブロックがこの変数を上書きする。
+       色のテーマ切り替え（THEME_STYLES / body[data-theme]）と
+       全く同じ考え方の仕組み。 */
     --font-body: sans-serif;                        /* 通常の文字 */
     --font-heading: 'Shippori Mincho', serif;        /* 年月タイトルなど、見出し的に使う部分 */
+}
+
+/* ==================== フォント切り替え（body[data-font]） ====================
+   標準ゴシック：--font-heading も通常の文字と同じsans-serifに戻す。
+   明朝体：:root の初期値と同じ（対称に書いておくためあえて重複させている）。
+   丸文字：見出しだけでなく通常の文字（--font-body）も丸みのある書体にする。 */
+body[data-font="gothic"] {
+    --font-heading: sans-serif;
+    --font-body: sans-serif;
+}
+body[data-font="mincho"] {
+    --font-heading: 'Shippori Mincho', serif;
+    --font-body: sans-serif;
+}
+body[data-font="maru"] {
+    --font-heading: 'Zen Maru Gothic', sans-serif;
+    --font-body: 'Zen Maru Gothic', sans-serif;
 }

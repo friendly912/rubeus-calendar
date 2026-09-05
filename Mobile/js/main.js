@@ -14,6 +14,9 @@ async function startCalendarApp() {
     loadTheme();
     applyTheme();
     renderThemeSettingsUI();
+    loadFont();
+    applyFont();
+    renderFontSettingsUI();
 
     updateTitle();
     renderTemplates();

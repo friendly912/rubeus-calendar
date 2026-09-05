@@ -15,16 +15,19 @@ function showSettingsModal() {
     if (typeof renderCalendarSwitcher === 'function') renderCalendarSwitcher();
     document.getElementById('settingsModal').style.display = 'flex';
     snapshotTheme();
+    snapshotFont();
 }
 
 function closeSettingsModal() {
     revertThemeIfNeeded();
+    revertFontIfNeeded();
     document.getElementById('settingsModal').style.display = 'none';
 }
 
 function saveSettings() {
     confirmBeforeDelete = document.getElementById('confirmBulkDelete').checked;
     commitTheme();
+    commitFont();
     saveAllData();
     closeSettingsModal();
 }

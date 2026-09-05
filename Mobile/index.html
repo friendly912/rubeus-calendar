@@ -40,10 +40,11 @@
 <!-- Android/Chromeでの同様の指定（manifestのdisplay:standaloneと合わせて機能する） -->
 <meta name="mobile-web-app-capable" content="yes">
 
-<!-- 年月タイトルに使う明朝体（serif）フォント。将来のフォント切り替え機能に備え、
-     CSS変数(--font-heading)経由で使うようにしている（css/variables.css参照）。 -->
+<!-- フォント切り替え機能（設定画面の「標準ゴシック／明朝体／丸文字」）で使う
+     明朝体・丸文字フォント。CSS変数(--font-heading, --font-body)経由で
+     使うようにしている（css/variables.css参照）。 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Maru+Gothic:wght@400;700&display=swap">
 
 <link rel="stylesheet" href="css/variables.css?v=20260825a">
 <link rel="stylesheet" href="css/themes.css?v=20260825a">
@@ -636,6 +637,18 @@
                 カレンダー全体の雰囲気をテーマからお選びいただけます。
             </p>
             <div id="themeSettingsContainer" class="theme-options"></div>
+        </div>
+
+        <!--
+            フォントの選択。配色テーマと全く同じ仕組み（js/themes.js の
+            FONTS一覧から自動生成、保存を押すまでは反映しない）。
+        -->
+        <div class="settings-section">
+            <h4>■ フォント</h4>
+            <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
+                文字の書体をお選びいただけます。
+            </p>
+            <div id="fontSettingsContainer" class="theme-options"></div>
         </div>
 
         <div style="display:flex; gap:10px; margin-top:20px;">
