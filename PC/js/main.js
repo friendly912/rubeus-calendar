@@ -18,6 +18,15 @@ async function startCalendarApp() {
     applyFont();
     renderFontSettingsUI();
 
+    // 【2026-09-06 追加】起動時は必ず「今日を含む月」を表示する。
+    // js/state.js の currentYear / currentMonth は開発中に使っていた暫定値
+    // （2026年8月）のまま残っており、それを更新する処理がここに無かったため、
+    // スマホでアプリを完全に終了してから開き直した時など、前回どの月を
+    // 見ていたかに関わらず常にその暫定値の月が開いてしまう不具合があった。
+    const today = new Date();
+    currentYear = today.getFullYear();
+    currentMonth = today.getMonth();
+
     updateTitle();
     renderTemplates();
     rebuildAllEventsCache();
