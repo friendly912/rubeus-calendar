@@ -336,7 +336,15 @@
 }
 .theme-options {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    /*
+      【2026-09-06 修正】横画面（幅が広い）で見た時、トーンのボタンが4〜5個しか
+      無いのに auto-fill が「入りうる列数」だけ列を確保してしまい、実際のボタンは
+      左側の列に押し込まれ、右側に何も無い空の列がそのまま残っていた
+      （＝見た目が左に偏って見える不具合）。
+      auto-fit に変えると、中身の無い列は幅0に潰れて実在する列だけが
+      横幅いっぱいに均等に広がるため、ボタンの数に関わらず自然に並ぶ。
+    */
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 8px;
 }
 .theme-option-btn {

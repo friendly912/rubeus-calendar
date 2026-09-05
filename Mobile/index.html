@@ -636,7 +636,19 @@
             <p style="font-size:13px; color:var(--color-muted); margin:0 0 10px 0;">
                 カレンダー全体の雰囲気をテーマからお選びいただけます。
             </p>
-            <div id="themeSettingsContainer" class="theme-options"></div>
+            <!--
+                【2026-09-06 修正】以前はこの div にも class="theme-options" を
+                付けていたが、js/themes.js の renderThemeSettingsUI() が
+                ここへ差し込むのはボタンではなく「theme-style-group」（スタイル見出し＋
+                ボタン一覧）が2個（パステル/アナスイ）なので、ボタン用のグリッド指定
+                （.theme-options の grid-template-columns）が誤ってこの外側の
+                divにも掛かってしまい、横幅が広い画面（スマホの横画面など）で
+                2つのグループが横並びの2列グリッドとして扱われ、
+                それぞれの列が窮屈になって中のボタンが左に偏って見える不具合があった。
+                ボタン用のグリッドは各グループの内側（.theme-style-group > .theme-options）
+                だけに掛かればよいため、この外側のdivからはclassを外している。
+            -->
+            <div id="themeSettingsContainer"></div>
         </div>
 
         <!--
