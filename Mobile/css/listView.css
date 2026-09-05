@@ -25,25 +25,31 @@
 body.list-view #calendar { display: none; }
 body.list-view .calendar-list { display: flex; }
 
-/* ---- 1日分のまとまり（日付見出し＋その日の予定） ---- */
+/* ---- 1日分のまとまり（日付見出し＋その日の予定） ----
+   2026-09-05: カレンダー形式の .date と同じ光沢レイヤー・影を付けて、
+   カレンダー形式⇄リスト形式で見た目のトーンが揃うようにしている。 */
 .list-day-group {
-    background: var(--color-cell-bg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     padding: 10px 12px;
     cursor: pointer;
     position: relative;
 }
 
 /*
-  今日の日付のまとまりを強調する（カレンダー形式の .date.today と同じ考え方）。
-  【2026-08-05 追加】検索欄に文字が入っている時と同じ明滅アニメーション
-  （searchingPulse、drawer.css で定義）を、カレンダー形式の .date.today と
-  揃えて付けている。
+  今日の日付のまとまりを強調する。
+  【2026-09-05 変更】以前はsearchingPulseで枠線だけ明滅させていたが、
+  カレンダー形式の .date.today を「面はテーマ色へのグラデーション、
+  線は極細の光る枠、外側にソフトなグロー」という方式に変更したのに合わせ、
+  こちらも同じ見た目・同じ todayPulse アニメーションに揃えている。
 */
 .list-day-group.today {
-    border: 2px solid var(--color-accent-3);
-    animation: searchingPulse 2.4s infinite ease-in-out;
+    border: 1px solid var(--color-accent-3);
+    background: var(--color-today-overlay), linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+    box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    animation: todayPulse 2.4s infinite ease-in-out;
 }
 
 /* 複数選択モードで選択されている日付のまとまり（カレンダー形式と同じ黄色の強調） */

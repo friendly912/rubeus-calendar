@@ -55,6 +55,14 @@
   （--color-accent-strong）へ向かってごく淡く伸びるグラデーションに
   している。グラデーションの終点を100%より先（160%）に置くことで、
   マスの中では最後まで混ざりきらない「淡い」見え方に調整している。
+
+  【2026-09-05 曜日見出しを、より馴染むトーンに調整】
+  以前は曜日見出しの背景に --color-accent-strong（濃いめのアクセント色）を
+  そのまま使っていたが、実機で見ると下の真っ白に近い日付セルと合わさって
+  「表計算ソフトの表」のように見えてしまう、というご指摘をいただいた。
+  そのため --color-day-header-bg は accent-strong よりずっと明るく淡い
+  専用の色に、--color-day-header-text も白ではなく濃い目のアクセント色に
+  変更し、全体になじむ柔らかい見た目にしている。
 */
 
 /* ==================== パステル：ニュアンスブルー ==================== */
@@ -80,8 +88,8 @@ body[data-theme="pastel-blue"] {
     --color-accent-3: #9a7ec2;
     --color-accent-4: #6d5391;
     --color-accent-strong: #a98cc9;
-    --color-day-header-bg: #a98cc9;
-    --color-day-header-text: #ffffff;
+    --color-day-header-bg: #cbb8e0;
+    --color-day-header-text: #5d4479;
     --color-event-bg: rgba(109, 83, 145, 0.14);
 
     --color-weekend: #d15f78;
@@ -117,8 +125,8 @@ body[data-theme="pastel-green"] {
     --color-accent-3: #4f8a52;
     --color-accent-4: #4a6a3a;
     --color-accent-strong: #7a9c68;
-    --color-day-header-bg: #7a9c68;
-    --color-day-header-text: #ffffff;
+    --color-day-header-bg: #b9d1a8;
+    --color-day-header-text: #43602f;
     --color-event-bg: rgba(95, 125, 77, 0.14);
 
     --color-weekend: #d15f78;
@@ -155,8 +163,8 @@ body[data-theme="pastel-pink"] {
     --color-accent-3: #a06f7a;
     --color-accent-4: #7a4f59;
     --color-accent-strong: #9c6f79;
-    --color-day-header-bg: #9c6f79;
-    --color-day-header-text: #ffffff;
+    --color-day-header-bg: #d9bcc2;
+    --color-day-header-text: #6b4750;
     --color-event-bg: rgba(122, 79, 89, 0.14);
 
     --color-weekend: #d15f78;
@@ -192,8 +200,8 @@ body[data-theme="pastel-beige"] {
     --color-accent-3: #a0794a;
     --color-accent-4: #7a5c38;
     --color-accent-strong: #ab8a63;
-    --color-day-header-bg: #ab8a63;
-    --color-day-header-text: #ffffff;
+    --color-day-header-bg: #ddc49f;
+    --color-day-header-text: #6b5030;
     --color-event-bg: rgba(122, 92, 56, 0.14);
 
     --color-weekend: #d15f78;
@@ -232,8 +240,8 @@ body[data-theme="pastel-mono"] {
     --color-accent-3: #6e6e6e;
     --color-accent-4: #4a4a4a;
     --color-accent-strong: #7a7a7a;
-    --color-day-header-bg: #7a7a7a;
-    --color-day-header-text: #ffffff;
+    --color-day-header-bg: #c9c9c9;
+    --color-day-header-text: #3f3f3f;
     --color-event-bg: rgba(90, 90, 90, 0.14);
 
     --color-weekend: #d15f78;

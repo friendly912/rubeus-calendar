@@ -193,13 +193,18 @@ body.mode-portrait .calendar {
 }
 
 .date {
-    background: var(--color-cell-bg);
+    /* 2026-09-05: 単なる「背景色のベタ塗り」だと質感が平坦に見える、
+       というご指摘を受け、上から下へごく薄い光を乗せて、柔らかい光沢・
+       立体感を出している（ガラスや紙のカードが上から光を受けているような
+       イメージ）。下地の色（--color-cell-bg）自体は変えていない。 */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 6px;
     /* 2026-09-03: マス同士の隙間（.calendarのgap）と枠線だけでは、
        暗い配色の時に隣のマスとの境目が沈んで見えにくくなることがあるため、
-       ごく薄い影を足して「1マス＝1枚の独立したカード」感を補強している。 */
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+       ごく薄い影を足して「1マス＝1枚の独立したカード」感を補強している。
+       2026-09-05: 上端に薄い光の縁（inset）を追加し、光沢感をさらに補強。 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     padding: 3px;
     /* PC版は min-height:112px と余裕があったが、スマホの横画面は縦の高さが
        非常に限られているため、大幅に縮小している。
@@ -241,18 +246,20 @@ body.mode-portrait .calendar {
 */
 .date.today {
     border: 1px solid var(--color-accent-3);
-    background: var(--color-today-overlay), var(--color-cell-bg);
-    box-shadow: 0 0 14px var(--color-date-hover-glow);
+    /* 2026-09-05: 通常のマスと同じ光沢レイヤーを残しつつ、
+       一番上に today-overlay（アクセント色へのグラデーション）を重ねる。 */
+    background: var(--color-today-overlay), linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 45%), var(--color-cell-bg);
+    box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
 @keyframes todayPulse {
     0%, 100% {
         border-color: var(--color-border-input);
-        box-shadow: 0 0 8px var(--color-search-pulse-1);
+        box-shadow: 0 0 8px var(--color-search-pulse-1), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
     50% {
         border-color: var(--color-accent-3);
-        box-shadow: 0 0 16px var(--color-search-pulse-2);
+        box-shadow: 0 0 16px var(--color-search-pulse-2), inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 }
 
