@@ -34,7 +34,7 @@ body.list-view .calendar-list { display: flex; }
     background: var(--color-cell-gloss), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15), inset 0 1px 0 var(--color-cell-highlight);
     padding: 10px 12px;
     cursor: pointer;
     position: relative;
@@ -50,7 +50,7 @@ body.list-view .calendar-list { display: flex; }
 .list-day-group.today {
     border: 1px solid var(--color-accent-3);
     background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
-    box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 var(--color-cell-highlight);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
 

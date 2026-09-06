@@ -310,6 +310,7 @@ body[data-theme="annasui-blue"] {
     --color-status-bar-bg: rgba(68, 170, 255, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
 }
 
 /* ==================== アナスイ：ゴールド ====================
@@ -359,6 +360,7 @@ body[data-theme="annasui-gold"] {
     --color-status-bar-bg: rgba(217, 165, 74, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
 }
 
 /* ==================== アナスイ：ローズ ==================== */
@@ -397,6 +399,7 @@ body[data-theme="annasui-rose"] {
     --color-status-bar-bg: rgba(224, 148, 156, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
 }
 
 /* ==================== アナスイ：エメラルド ==================== */
@@ -435,6 +438,7 @@ body[data-theme="annasui-green"] {
     --color-status-bar-bg: rgba(126, 203, 150, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
 }
 
 /* ==================== アナスイ：パープル ==================== */
@@ -473,4 +477,5 @@ body[data-theme="annasui-purple"] {
     --color-status-bar-bg: rgba(160, 140, 214, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
 }
