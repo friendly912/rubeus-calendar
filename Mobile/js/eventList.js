@@ -34,7 +34,12 @@ function showEventList(dateKey, day) {
             const found = (typeof findTemplateForEvent === 'function') ? findTemplateForEvent(ev) : { temp: null };
             const temp = found.temp || { color: '#888' };
             const div = document.createElement('div');
-            div.style.cssText = `display:flex; background:#1a1a22; padding:12px; margin:6px 0; border-radius:8px; cursor:pointer;`;
+            // 【2026-09-06 修正】背景・時刻の文字色が #1a1a22 / #77ccff に
+            // 直書きされており、これは初期のダークテーマの色そのものだったため、
+            // パステル/アナスイなど他のテーマに切り替えても常にダーク配色のまま
+            // 表示されてしまっていた。var(--color-input-bg) / var(--color-accent-2)
+            // に差し替え、選んでいるテーマの色にきちんと従うようにしている。
+            div.style.cssText = `display:flex; background:var(--color-input-bg); padding:12px; margin:6px 0; border-radius:8px; cursor:pointer;`;
             // 【旧バージョンの不具合修正】
             // ev.template（テンプレート名）と ev.memo（メモ本文）は
             // どちらもユーザーが自由入力できる文字列。
@@ -44,10 +49,10 @@ function showEventList(dateKey, day) {
             // ここでは両方とも escapeHtml() を通してから埋め込む。
             div.innerHTML = `
                 <div style="width:6px; background:${temp.color}; border-radius:3px; margin-right:12px;"></div>
-                <div style="flex:1">
+                <div style="flex:1; min-width:0;">
                     <div style="font-weight:bold;">${escapeHtml(ev.template)}</div>
-                    <div style="color:#77ccff;font-size:14px;">${escapeHtml(getTimeDisplay(ev))}</div>
-                    ${ev.memo ? `<div style="margin-top:6px;font-size:13px;color:#bbb;">${linkifyMemo(ev.memo)}</div>` : ''}
+                    <div style="color:var(--color-accent-2);font-size:14px;">${escapeHtml(getTimeDisplay(ev))}</div>
+                    ${ev.memo ? `<div style="margin-top:6px;font-size:13px;color:#bbb;overflow-wrap:break-word;word-break:break-all;">${linkifyMemo(ev.memo)}</div>` : ''}
                 </div>
             `;
             div.onclick = () => {
