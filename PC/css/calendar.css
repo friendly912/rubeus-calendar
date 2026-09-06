@@ -210,17 +210,17 @@
        2026-09-06: 光沢レイヤーもテーマ側で出し分ける --color-cell-gloss に変更
        （アナスイ系は today-overlay・cell-gloss とも none になる）。 */
     background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
-    box-shadow: 0 0 3px var(--color-date-hover-glow), inset 0 1px 0 var(--color-cell-highlight);
+    box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 var(--color-cell-highlight);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
 @keyframes todayPulse {
     0%, 100% {
         border-color: var(--color-border-input);
-        box-shadow: 0 0 3px var(--color-search-pulse-1), inset 0 1px 0 var(--color-cell-highlight);
+        box-shadow: 0 0 8px var(--color-search-pulse-1), inset 0 1px 0 var(--color-cell-highlight);
     }
     50% {
         border-color: var(--color-accent-3);
-        box-shadow: 0 0 3px var(--color-search-pulse-2), inset 0 1px 0 var(--color-cell-highlight);
+        box-shadow: 0 0 16px var(--color-search-pulse-2), inset 0 1px 0 var(--color-cell-highlight);
     }
 }
 
