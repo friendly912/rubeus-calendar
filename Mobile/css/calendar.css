@@ -216,7 +216,7 @@ body.mode-portrait .calendar {
        しており、パステル系だけに掛かるようになっている。 */
     background: var(--color-cell-gloss), var(--color-cell-bg);
     border: 2px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 8px;
     /* 2026-09-03: マス同士の隙間（.calendarのgap）と枠線だけでは、
        暗い配色の時に隣のマスとの境目が沈んで見えにくくなることがあるため、
        ごく薄い影を足して「1マス＝1枚の独立したカード」感を補強している。
