@@ -262,7 +262,7 @@ body.mode-portrait .calendar {
   重ねて描画しているだけで、面自体を変えない元の方針は崩していない。
 */
 .date.today {
-    border: 2px solid var(--color-accent-3);
+    border: 1px solid var(--color-accent-3);
     /* 2026-09-05: 通常のマスと同じ光沢レイヤーを残しつつ、
        一番上に today-overlay（アクセント色へのグラデーション）を重ねる。
        2026-09-06: 光沢レイヤーもテーマ側で出し分ける --color-cell-gloss に変更
