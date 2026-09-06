@@ -215,7 +215,7 @@ body.mode-portrait .calendar {
        「グラデーションがかかって見える」というご指摘を受けテーマ側でnoneに
        しており、パステル系だけに掛かるようになっている。 */
     background: var(--color-cell-gloss), var(--color-cell-bg);
-    border: 1px solid var(--color-border);
+    border: 2px solid var(--color-border);
     border-radius: 6px;
     /* 2026-09-03: マス同士の隙間（.calendarのgap）と枠線だけでは、
        暗い配色の時に隣のマスとの境目が沈んで見えにくくなることがあるため、
