@@ -17,8 +17,19 @@
   単色テーマは全廃してこの2スタイルに置き換えている。
     ・パステル系（明るい配色。背景は白ではなく、同系統でトーンを変えた色）
         pastel-blue / pastel-green / pastel-pink / pastel-beige / pastel-mono
-    ・アナスイ系（黒背景に、光るような縁取りのアクセントを効かせた配色）
+    ・ダークモード系（黒背景に、光るような縁取りのアクセントを効かせた配色。
+      設定画面の内部IDは今も annasui- のままだが、表示名は「ダークモード」）
+        annasui-blue（元々のダークモードのベース色）/
         annasui-gold / annasui-rose / annasui-green / annasui-purple
+
+  【2026-09-06 「ベース」トーンを追加】
+  「配色バリエーションの路線は良いが、元のダークモードのベースも残しておきたい」
+  というご要望を受け、annasui-blue を追加した。これは初期からずっと
+  css/variables.css の :root に残っていた「元々のダークモード」の色そのもの
+  （アクセントは青、#44aaff系）を、他のダークモードのトーンと同じ構造
+  （背景・カード・枠線などは共通、アクセント色だけが違う）で復活させたもの。
+  「ダークモードのベース」と「その色違いバリエーション」が同じグループに
+  まとまっている、という構成が今回のご要望のポイント。
 
   【2026-09-05 パステルの配色を刷新】
   初期のパステルは背景がほぼ白に近く「色が飛んで見える」というご指摘と、
@@ -253,6 +264,52 @@ body[data-theme="pastel-mono"] {
     --color-search-pulse-bg: #d6d6d6;
     --color-status-bar-bg: #c9c9c9;
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+}
+
+/* ==================== ダークモード：ベース ====================
+   2026-09-06追加。「配色バリエーションの路線は良いが、元のダークモードの
+   ベースも残しておきたい」というご要望を受け、初期からずっと
+   css/variables.css の :root に残していた「元々のダークモード」の
+   アクセント色（青、#44aaff系）を、アナスイ系と対になる同じグループの
+   1トーンとして復活させたもの。背景・カード・枠線などの構造は
+   他のダークモードのトーン（ゴールド/ローズ/エメラルド/パープル）と
+   完全に揃え、アクセント色（青）だけが異なる「バリエーションの一つ」
+   という位置づけにしている。 */
+body[data-theme="annasui-blue"] {
+    --color-bg: #0a0908;
+    --color-panel-bg: #0d0c0b;
+    --color-cell-bg: #141210;
+    --color-input-bg: #131211;
+    --color-modal-bg: #100f0e;
+    --color-modal-overlay: rgba(4, 4, 4, 0.4);
+    --color-input-bg-hover: #1d1b19;
+    --color-selected-bg: rgba(68, 170, 255, 0.16);
+
+    --color-text: #ece7e2;
+
+    --color-border: #3d3835;
+    --color-border-input: #2f5a8a;
+    --color-dashed-border: #2f5a8a;
+
+    --color-accent: #44aaff;
+    --color-accent-2: #44aaff;
+    --color-accent-3: #6fc3ff;
+    --color-accent-4: #44aaff;
+    --color-accent-strong: #2f74e0;
+    --color-day-header-bg: transparent;
+    --color-day-header-text: #44aaff;
+    --color-event-bg: rgba(68, 170, 255, 0.14);
+
+    --color-weekend: #c96a76;
+
+    --color-title-hover-glow: rgba(68, 170, 255, 0.12);
+    --color-date-hover-glow: rgba(68, 170, 255, 0.4);
+    --color-search-pulse-1: rgba(68, 170, 255, 0.3);
+    --color-search-pulse-2: rgba(68, 170, 255, 0.24);
+    --color-search-pulse-bg: #17130f;
+    --color-status-bar-bg: rgba(68, 170, 255, 0.18);
+    --color-today-overlay: none;
+    --color-cell-gloss: none;
 }
 
 /* ==================== アナスイ：ゴールド ====================

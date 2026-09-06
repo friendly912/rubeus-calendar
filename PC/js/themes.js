@@ -14,7 +14,7 @@
 
   【仕組みの考え方】
   css/variables.css に、色の基本の初期値が定義されている。
-  css/themes.css に、9種類のテーマ（パステル5トーン＋アナスイ4トーン）の
+  css/themes.css に、10種類のテーマ（パステル5トーン＋ダークモード5トーン）の
   上書き用の色がまとめて定義されている。
   このファイルは、選ばれたテーマのIDを
       document.body.dataset.theme = 'pastel-blue'
@@ -40,6 +40,17 @@
   css/themes.css を参照）。IDも分かりやすいよう
   pastel-rose→pastel-pink、pastel-yellow→pastel-beige、
   pastel-lavender→pastel-blue に変更している。
+
+  【2026-09-06 「アナスイ」→「ダークモード」に表示名を変更、ベーストーン追加】
+  「配色バリエーションの路線は良いが、元のダークモードのベースも残しておきたい」
+  というご要望を受け、
+    ・スタイルの表示名を「アナスイ」から「ダークモード」に変更
+    （内部IDは 'annasui' のまま。保存済みデータへの影響を避けるため）
+    ・元々のダークモード（css/variables.css の :root）の色をそのまま使う
+      「ベース」トーン（annasui-blue）を追加し、他の色違いトーンと
+      同じグループの先頭に配置
+  を行った。「ベースと、その色違いバリエーションが対になって並ぶ」という
+  構成が今回のご要望のポイント。
 */
 
 // テーマの設定を保存しておくlocalStorageのキー名
@@ -68,9 +79,17 @@ const THEME_STYLES = [
         ]
     },
     {
+        // 【2026-09-06】表示名は「アナスイ」から「ダークモード」に変更したが、
+        // 内部ID（'annasui'、および各トーンの 'annasui-xxx'）は保存済みの
+        // localStorageの値を無効にしないよう、そのまま残している。
         id: 'annasui',
-        label: 'アナスイ',
+        label: 'ダークモード',
         tones: [
+            // 【2026-09-06追加】元々のダークモード（css/variables.css の :root）の
+            // 色そのものをベーストーンとして復活させた。「ベースと、その
+            // 色違いバリエーションが同じグループにまとまっている」という
+            // ご要望への対応。他のトーン（ゴールド以降）より先頭に置いている。
+            { id: 'annasui-blue', label: 'ベース', swatch: '#44aaff' },
             { id: 'annasui-gold', label: 'ゴールド', swatch: '#d9a54a' },
             { id: 'annasui-rose', label: 'ローズ', swatch: '#e0949c' },
             { id: 'annasui-green', label: 'エメラルド', swatch: '#7ecb96' },
