@@ -48,7 +48,7 @@ body.list-view .calendar-list { display: flex; }
   こちらも同じ見た目・同じ todayPulse アニメーションに揃えている。
 */
 .list-day-group.today {
-    border: 1px solid var(--color-accent-3);
+    border: 2px solid var(--color-accent-3);
     background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
     box-shadow: 0 0 14px var(--color-date-hover-glow), inset 0 1px 0 var(--color-cell-highlight);
     animation: todayPulse 2.4s infinite ease-in-out;
