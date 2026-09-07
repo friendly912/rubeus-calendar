@@ -333,18 +333,21 @@ body[data-theme="annasui-blue"] {
    背後のカレンダーがうっすら透けて見えるのに対し、アナスイではほぼ
    見えなくなってしまい、印象が揃っていなかった（4トーンすべて同様）。 */
 body[data-theme="annasui-gold"] {
-    --color-bg: #0a0908;
-    --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #141210;
-    --color-input-bg: #131211;
-    --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.4);
-    --color-input-bg-hover: #1d1b19;
+    /* 2026-09-07修正: 背景を他のトーンと共有していた暖色系ニュートラル
+       （色みの無い黒）から、ゴールドのアクセントに合わせてほんのり
+       琥珀色を帯びた黒に変更した（ベース＝青／パープルと同じ考え方）。 */
+    --color-bg: #0d0b08;
+    --color-panel-bg: #15120d;
+    --color-cell-bg: #1b1710;
+    --color-input-bg: #201b13;
+    --color-modal-bg: #19150f;
+    --color-modal-overlay: rgba(13, 11, 8, 0.4);
+    --color-input-bg-hover: #29231b;
     --color-selected-bg: rgba(217, 165, 74, 0.16);
 
     --color-text: #ece7e2;
 
-    --color-border: #3d3835;
+    --color-border: #322a1e;
     --color-border-input: #8a6a30;
     --color-dashed-border: #8a6a30;
 
@@ -372,18 +375,21 @@ body[data-theme="annasui-gold"] {
 
 /* ==================== アナスイ：ローズ ==================== */
 body[data-theme="annasui-rose"] {
-    --color-bg: #0a0908;
-    --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #141210;
-    --color-input-bg: #131211;
-    --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.4);
-    --color-input-bg-hover: #1d1b19;
+    /* 2026-09-07修正: 背景を他のトーンと共有していた暖色系ニュートラル
+       （色みの無い黒）から、ローズのアクセントに合わせてほんのり
+       赤みを帯びた黒に変更した（ベース＝青／パープルと同じ考え方）。 */
+    --color-bg: #0f0a0b;
+    --color-panel-bg: #171012;
+    --color-cell-bg: #1d1417;
+    --color-input-bg: #22171b;
+    --color-modal-bg: #1b1215;
+    --color-modal-overlay: rgba(15, 10, 11, 0.4);
+    --color-input-bg-hover: #2b1d23;
     --color-selected-bg: rgba(224, 148, 156, 0.16);
 
     --color-text: #ece7e2;
 
-    --color-border: #3d3835;
+    --color-border: #352429;
     --color-border-input: #7a3f46;
     --color-dashed-border: #7a3f46;
 
@@ -411,18 +417,21 @@ body[data-theme="annasui-rose"] {
 
 /* ==================== アナスイ：エメラルド ==================== */
 body[data-theme="annasui-green"] {
-    --color-bg: #0a0908;
-    --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #141210;
-    --color-input-bg: #131211;
-    --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.4);
-    --color-input-bg-hover: #1d1b19;
+    /* 2026-09-07修正: 背景を他のトーンと共有していた暖色系ニュートラル
+       （色みの無い黒）から、エメラルドのアクセントに合わせてほんのり
+       緑みを帯びた黒に変更した（ベース＝青／パープルと同じ考え方）。 */
+    --color-bg: #090e0a;
+    --color-panel-bg: #0f1611;
+    --color-cell-bg: #131c16;
+    --color-input-bg: #16211a;
+    --color-modal-bg: #111a14;
+    --color-modal-overlay: rgba(9, 14, 10, 0.4);
+    --color-input-bg-hover: #1d2a22;
     --color-selected-bg: rgba(126, 203, 150, 0.16);
 
     --color-text: #ece7e2;
 
-    --color-border: #3d3835;
+    --color-border: #203026;
     --color-border-input: #2f5c40;
     --color-dashed-border: #2f5c40;
 
