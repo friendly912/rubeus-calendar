@@ -14,6 +14,15 @@
     box-sizing: border-box;
 }
 
+/* 2026-09-07追加: button/input/select/textarea はブラウザの初期設定で
+   親要素のfont-familyを継承せず、既定のフォント（Arial等）で
+   表示されてしまうため、明示的に継承させる。これが無いと、
+   フォント切り替え（明朝体・丸文字）がボタンなどの文字には
+   反映されない不具合になる。 */
+button, input, select, textarea {
+    font-family: inherit;
+}
+
 body {
     background: var(--color-bg);
     color: var(--color-text);
