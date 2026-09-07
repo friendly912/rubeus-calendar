@@ -276,20 +276,27 @@ body[data-theme="pastel-mono"] {
    完全に揃え、アクセント色（青）だけが異なる「バリエーションの一つ」
    という位置づけにしている。 */
 body[data-theme="annasui-blue"] {
-    --color-bg: #0a0908;
-    --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #141210;
-    --color-input-bg: #131211;
-    --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.4);
-    --color-input-bg-hover: #1d1b19;
+    /* 2026-09-07修正: 「ベース」は他のダークモード・バリエーションと違い、
+       css/variables.css の :root にずっと残っていた「元々のダークモード」の
+       色をそのまま復元する専用トーンのはずだったが、他のトーン（ゴールド等）
+       と同じ構造にするために背景・パネル・セル・枠線を共通の暖色系ニュートラル
+       （#0a0908 系）にそろえてしまっていた。この暖色系は青みが無いため、
+       セルが「ほぼ黒」に見えてしまう、というご指摘を受け、背景まわりの色だけ
+       :root の元の値（#0a0a0f 系、青みの残る紺色）に戻した。 */
+    --color-bg: #0a0a0f;
+    --color-panel-bg: #111118;
+    --color-cell-bg: #16161f;
+    --color-input-bg: #1a1a22;
+    --color-modal-bg: #14141f;
+    --color-modal-overlay: rgba(5, 5, 15, 0.4);
+    --color-input-bg-hover: #222233;
     --color-selected-bg: rgba(68, 170, 255, 0.16);
 
-    --color-text: #ece7e2;
+    --color-text: #e0e0e8;
 
-    --color-border: #3d3835;
-    --color-border-input: #2f5a8a;
-    --color-dashed-border: #2f5a8a;
+    --color-border: #282835;
+    --color-border-input: #336699;
+    --color-dashed-border: #334466;
 
     --color-accent: #44aaff;
     --color-accent-2: #44aaff;
