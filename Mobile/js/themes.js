@@ -97,7 +97,7 @@ const THEME_STYLES = [
             // 色そのものをベーストーンとして復活させた。「ベースと、その
             // 色違いバリエーションが同じグループにまとまっている」という
             // ご要望への対応。他のトーン（ゴールド以降）より先頭に置いている。
-            { id: 'annasui-blue', label: 'ベース', swatch: '#44aaff' },
+            { id: 'annasui-blue', label: 'ブルー', swatch: '#44aaff' },
             { id: 'annasui-gold', label: 'ゴールド', swatch: '#d9a54a' },
             { id: 'annasui-rose', label: 'ローズ', swatch: '#e0949c' },
             { id: 'annasui-green', label: 'エメラルド', swatch: '#7ecb96' },
