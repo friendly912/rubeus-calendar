@@ -138,15 +138,17 @@
 
 /* ==================== フォント切り替え（body[data-font]） ====================
    標準ゴシック：--font-heading も通常の文字と同じsans-serifに戻す。
-   明朝体：:root の初期値と同じ（対称に書いておくためあえて重複させている）。
-   丸文字：見出しだけでなく通常の文字（--font-body）も丸みのある書体にする。 */
+   明朝体・丸文字：どちらも見出しだけでなく通常の文字（--font-body）にも
+   同じ書体を当て、フォント切り替えが画面全体に反映されるようにしている。
+   2026-09-07修正: 明朝体は --font-heading だけ書体を変えていたため、
+   年月タイトル以外（日付・予定など）が標準フォントのままになっていた。 */
 body[data-font="gothic"] {
     --font-heading: sans-serif;
     --font-body: sans-serif;
 }
 body[data-font="mincho"] {
     --font-heading: 'Shippori Mincho', serif;
-    --font-body: sans-serif;
+    --font-body: 'Shippori Mincho', serif;
 }
 body[data-font="maru"] {
     --font-heading: 'Zen Maru Gothic', sans-serif;
