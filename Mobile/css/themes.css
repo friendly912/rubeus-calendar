@@ -450,18 +450,23 @@ body[data-theme="annasui-green"] {
 
 /* ==================== アナスイ：パープル ==================== */
 body[data-theme="annasui-purple"] {
-    --color-bg: #0a0908;
-    --color-panel-bg: #0d0c0b;
-    --color-cell-bg: #141210;
-    --color-input-bg: #131211;
-    --color-modal-bg: #100f0e;
-    --color-modal-overlay: rgba(4, 4, 4, 0.4);
-    --color-input-bg-hover: #1d1b19;
+    /* 2026-09-07修正: 背景が他のトーンと同じ暖色系ニュートラル
+       （#0a0908系、色みが無い黒）だったため、曜日・日付セルが
+       「ただの黒」に見えてしまっていた。参考画像のような、パープルの
+       アクセントに合わせてほんのり紫みを帯びた黒に変更した
+       （ベース＝アナスイブルーで背景に青みを足したのと同じ考え方）。 */
+    --color-bg: #0d0a10;
+    --color-panel-bg: #15111a;
+    --color-cell-bg: #1b1521;
+    --color-input-bg: #201927;
+    --color-modal-bg: #191420;
+    --color-modal-overlay: rgba(13, 10, 16, 0.4);
+    --color-input-bg-hover: #291f31;
     --color-selected-bg: rgba(160, 140, 214, 0.16);
 
     --color-text: #ece7e2;
 
-    --color-border: #3d3835;
+    --color-border: #322a3d;
     --color-border-input: #4a3d73;
     --color-dashed-border: #4a3d73;
 
