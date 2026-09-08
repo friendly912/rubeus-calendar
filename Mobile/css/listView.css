@@ -74,7 +74,7 @@ body.list-view .calendar-list { display: flex; }
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 6px;
-    color: var(--color-text);
+    color: var(--color-date-num-text);
 }
 .list-day-header.sunday,
 .list-day-header.saturday {
