@@ -68,6 +68,23 @@ const THEME_STORAGE_KEY = 'calendarTheme';
 */
 const THEME_STYLES = [
     {
+        // 【2026-09-08追加】色のテーマ機能ができる前からずっとあった、
+        // アプリ本来の「デフォルト」の見た目（css/variables.css の :root の
+        // 値そのもの）を、パステル／ダークモードのどちらのバリエーションにも
+        // 属さない、完全に独立した選択肢として復活させた。
+        // 「以前デフォルトをダークモードのブルーに統合してよいと伝えたが、
+        // 曜日の文字色が年月タイトルと微妙に違う色（モーヴブルー寄り）に
+        // なっているなど、ニュアンスが失われるため撤回したい」というご指摘
+        // への対応。tone.id を 'default' にし、css/themes.css 側にも
+        // pastel-*/annasui-* のどのセレクタとも一致しない専用ブロックを
+        // 用意することで、他のトーンの上書きの影響を一切受けないようにしている。
+        id: 'default',
+        label: 'デフォルト',
+        tones: [
+            { id: 'default', label: 'デフォルト', swatch: '#44aaff' }
+        ]
+    },
+    {
         id: 'pastel',
         label: 'パステル',
         tones: [
@@ -103,7 +120,7 @@ const THEME_STYLES = [
 const THEME_IDS = THEME_STYLES.flatMap(style => style.tones.map(tone => tone.id));
 
 // 今選ばれているテーマのID
-let currentTheme = 'pastel-blue';
+let currentTheme = 'default';
 
 // 設定モーダルを開いた時点でのテーマを覚えておく変数。
 // 「キャンセル」で元に戻すために使う（詳しくは snapshotTheme / revertThemeIfNeeded を参照）。
@@ -113,7 +130,7 @@ let themeSnapshotBeforeEdit = null;
   loadTheme()
   --------------------------------------------------------------
   起動時にlocalStorageから、前回選んだテーマを読み込む。
-  保存されていなければ "dark"（現行のダークテーマ）のままにする。
+  保存されていなければ "default"（アプリ本来のデフォルト配色）のままにする。
 */
 function loadTheme() {
     // 【2026-08-03 プロフィール機能に対応】
@@ -122,9 +139,9 @@ function loadTheme() {
     //
     // 【2026-09-03】以前の単色テーマ（dark/blue等）やパステルの旧トーンID
     // （pastel-rose等）が保存されたままの場合、THEME_IDSに含まれず無効な
-    // 値になるため、その場合も既定の 'pastel-blue' に戻す。
+    // 値になるため、その場合も既定の 'default' に戻す。
     const saved = localStorage.getItem(getProfileScopedKey(THEME_STORAGE_KEY));
-    currentTheme = saved && THEME_IDS.includes(saved) ? saved : 'pastel-blue';
+    currentTheme = saved && THEME_IDS.includes(saved) ? saved : 'default';
 }
 
 /*
