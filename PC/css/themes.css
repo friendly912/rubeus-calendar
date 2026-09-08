@@ -107,7 +107,13 @@ body[data-theme="pastel-blue"] {
     --color-input-bg-hover: #c7aed9;
     --color-selected-bg: #dcc7ea;
 
-    --color-text: #453a52;
+    /* 2026-09-08修正: 直前の修正で日付の数字が正しく表示されるようになった
+       ものの、元の --color-text がほぼ黒に近い暗さだったため「一方的な黒」
+       に見えてしまう、というご指摘を受けた。彩度を上げて明度も少し上げ、
+       各トーンの色味がはっきり分かる、黒よりやわらかい文字色に調整した
+       （5トーンすべて同様。--color-date-num-text はこの値を参照するため
+       日付の数字にもそのまま反映される）。 */
+    --color-text: #685281;
 
     --color-border: #e2d3ec;
     --color-border-input: #a98cc9;
@@ -160,7 +166,7 @@ body[data-theme="pastel-green"] {
     --color-input-bg-hover: #aed4b6;
     --color-selected-bg: #c3ddc9;
 
-    --color-text: #3c4436;
+    --color-text: #5f6f52;
 
     --color-border: #cde5d1;
     --color-border-input: #7a9c68;
@@ -202,7 +208,7 @@ body[data-theme="pastel-pink"] {
     --color-input-bg-hover: #cfabb6;
     --color-selected-bg: #ddbfc7;
 
-    --color-text: #453a3d;
+    --color-text: #6e585e;
 
     --color-border: #e0cbd1;
     --color-border-input: #9c6f79;
@@ -244,7 +250,7 @@ body[data-theme="pastel-beige"] {
     --color-input-bg-hover: #dcc873;
     --color-selected-bg: #e8d698;
 
-    --color-text: #4a4326;
+    --color-text: #827335;
 
     --color-border: #ecdfae;
     --color-border-input: #b89a3c;
@@ -289,7 +295,7 @@ body[data-theme="pastel-mono"] {
     --color-input-bg-hover: #bcbcbc;
     --color-selected-bg: #cccccc;
 
-    --color-text: #333333;
+    --color-text: #575757;
 
     --color-border: #d2d2d2;
     --color-border-input: #7a7a7a;
