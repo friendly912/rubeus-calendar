@@ -114,13 +114,18 @@ const THEME_STYLES = [
         // ・ゴールド→イエロー、ローズ→ピンク、エメラルド→グリーンは表示名の
         //   変更のみ（色・IDは変更なし）。パープルは元々の名前のまま。
         // ・モノクロ（annasui-mono）はパステル側と対になるよう新規追加した。
+        //
+        // 【2026-09-08 彩度を調整】「色の主張が強い」というご指摘を受け、
+        // パープル/グリーン/ピンク/イエロー（モノクロ以外）のアクセント系の
+        // 色をすべて彩度60%・明度-6%ほど落として、より落ち着いた雰囲気に
+        // 調整した（swatchも同じ値に変更。実際の色定義はcss/themes.css）。
         id: 'annasui',
         label: 'ダークモード',
         tones: [
-            { id: 'annasui-purple', label: 'パープル', swatch: '#a08cd6' },
-            { id: 'annasui-green', label: 'グリーン', swatch: '#7ecb96' },
-            { id: 'annasui-rose', label: 'ピンク', swatch: '#e0949c' },
-            { id: 'annasui-gold', label: 'イエロー', swatch: '#d9a54a' },
+            { id: 'annasui-purple', label: 'パープル', swatch: '#9587bc' },
+            { id: 'annasui-green', label: 'グリーン', swatch: '#7ab08b' },
+            { id: 'annasui-rose', label: 'ピンク', swatch: '#c78f95' },
+            { id: 'annasui-gold', label: 'イエロー', swatch: '#b39051' },
             { id: 'annasui-mono', label: 'モノクロ', swatch: '#b0b0b0' }
         ]
     }
