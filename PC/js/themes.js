@@ -85,32 +85,43 @@ const THEME_STYLES = [
         ]
     },
     {
+        // 【2026-09-08】ダークモードと共通の5色（パープル/グリーン/ピンク/
+        // イエロー/モノクロ）展開に再編した。表示名だけの変更で、色・IDは
+        // 従来のまま（ニュアンスブルー→パープル、セージ→グリーン、
+        // スモーキーピンク→ピンク、カフェオレベージュ→イエロー、
+        // モノトーン→モノクロ）。カフェオレベージュ（pastel-beige）だけは
+        // 色そのものも茶色から黄色寄りに調整している（css/themes.css参照）。
         id: 'pastel',
         label: 'パステル',
         tones: [
-            { id: 'pastel-blue', label: 'ニュアンスブルー', swatch: '#a98cc9' },
-            { id: 'pastel-green', label: 'セージ', swatch: '#7a9c68' },
-            { id: 'pastel-pink', label: 'スモーキーピンク', swatch: '#9c6f79' },
-            { id: 'pastel-beige', label: 'カフェオレベージュ', swatch: '#ab8a63' },
-            { id: 'pastel-mono', label: 'モノトーン', swatch: '#7a7a7a' }
+            { id: 'pastel-blue', label: 'パープル', swatch: '#a98cc9' },
+            { id: 'pastel-green', label: 'グリーン', swatch: '#7a9c68' },
+            { id: 'pastel-pink', label: 'ピンク', swatch: '#9c6f79' },
+            { id: 'pastel-beige', label: 'イエロー', swatch: '#c2a545' },
+            { id: 'pastel-mono', label: 'モノクロ', swatch: '#7a7a7a' }
         ]
     },
     {
         // 【2026-09-06】表示名は「アナスイ」から「ダークモード」に変更したが、
         // 内部ID（'annasui'、および各トーンの 'annasui-xxx'）は保存済みの
         // localStorageの値を無効にしないよう、そのまま残している。
+        //
+        // 【2026-09-08 再編】パステルと共通の5色（パープル/グリーン/ピンク/
+        // イエロー/モノクロ）に整理した。
+        // ・「ベース」（annasui-blue、元々のダークモードの青）は撤去した。
+        //   デフォルトテーマが完全に独立した選択肢として復活したため、
+        //   同じ役割のトーンをダークモード内に重複して持つ必要がなくなった。
+        // ・ゴールド→イエロー、ローズ→ピンク、エメラルド→グリーンは表示名の
+        //   変更のみ（色・IDは変更なし）。パープルは元々の名前のまま。
+        // ・モノクロ（annasui-mono）はパステル側と対になるよう新規追加した。
         id: 'annasui',
         label: 'ダークモード',
         tones: [
-            // 【2026-09-06追加】元々のダークモード（css/variables.css の :root）の
-            // 色そのものをベーストーンとして復活させた。「ベースと、その
-            // 色違いバリエーションが同じグループにまとまっている」という
-            // ご要望への対応。他のトーン（ゴールド以降）より先頭に置いている。
-            { id: 'annasui-blue', label: 'ブルー', swatch: '#44aaff' },
-            { id: 'annasui-gold', label: 'ゴールド', swatch: '#d9a54a' },
-            { id: 'annasui-rose', label: 'ローズ', swatch: '#e0949c' },
-            { id: 'annasui-green', label: 'エメラルド', swatch: '#7ecb96' },
-            { id: 'annasui-purple', label: 'パープル', swatch: '#a08cd6' }
+            { id: 'annasui-purple', label: 'パープル', swatch: '#a08cd6' },
+            { id: 'annasui-green', label: 'グリーン', swatch: '#7ecb96' },
+            { id: 'annasui-rose', label: 'ピンク', swatch: '#e0949c' },
+            { id: 'annasui-gold', label: 'イエロー', swatch: '#d9a54a' },
+            { id: 'annasui-mono', label: 'モノクロ', swatch: '#b0b0b0' }
         ]
     }
 ];

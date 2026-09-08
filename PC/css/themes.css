@@ -92,21 +92,24 @@ body[data-theme="default"] {
     --color-cell-highlight: transparent;
 }
 
-/* ==================== パステル：ニュアンスブルー ==================== */
-/* 水色をベースに、選択日など差し色として薄紫を効かせた2色使いのトーン */
+/* ==================== パステル：パープル ====================
+   2026-09-08修正: 元は「ニュアンスブルー」という名前で、アクセント
+   （薄紫）に対して背景が水色というちぐはぐな2色使いのトーンだった。
+   ダークモード側の「パープル」と対になる色として、背景も紫系に統一した
+   （アクセント・曜日ヘッダー・グロー系の変数はもともと紫だったため変更なし）。 */
 body[data-theme="pastel-blue"] {
-    --color-bg: #cfe7ee;
-    --color-panel-bg: #d8ecf1;
-    --color-cell-bg: #e9f5f8;
-    --color-input-bg: #bfe0e8;
-    --color-modal-bg: #d8ecf1;
-    --color-modal-overlay: rgba(30, 45, 55, 0.4);
-    --color-input-bg-hover: #a9d3de;
-    --color-selected-bg: #c7d9ea;
+    --color-bg: #e6dced;
+    --color-panel-bg: #ece3f1;
+    --color-cell-bg: #f6f0f9;
+    --color-input-bg: #d9c8e4;
+    --color-modal-bg: #ece3f1;
+    --color-modal-overlay: rgba(40, 28, 52, 0.4);
+    --color-input-bg-hover: #c7aed9;
+    --color-selected-bg: #dcc7ea;
 
-    --color-text: #2f4a52;
+    --color-text: #453a52;
 
-    --color-border: #bfe0e6;
+    --color-border: #e2d3ec;
     --color-border-input: #a98cc9;
     --color-dashed-border: #a98cc9;
 
@@ -130,7 +133,10 @@ body[data-theme="pastel-blue"] {
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：セージグリーン ==================== */
+/* ==================== パステル：グリーン ====================
+   2026-09-08: 表示名を「セージグリーン」から「グリーン」に変更
+   （ダークモード側の「グリーン」と対になる名前にそろえた）。色自体は
+   変更していない。 */
 body[data-theme="pastel-green"] {
     --color-bg: #d7ead9;
     --color-panel-bg: #e1f0e3;
@@ -167,8 +173,10 @@ body[data-theme="pastel-green"] {
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：スモーキーピンク ==================== */
-/* 甘さを抑えた、くすみのあるモーヴ系ピンク */
+/* ==================== パステル：ピンク ====================
+   2026-09-08: 表示名を「スモーキーピンク」から「ピンク」に変更
+   （ダークモード側の「ピンク」と対になる名前にそろえた）。色自体は
+   変更していない（甘さを抑えた、くすみのあるモーヴ系ピンク）。 */
 body[data-theme="pastel-pink"] {
     --color-bg: #e6d4da;
     --color-panel-bg: #ecdee3;
@@ -205,44 +213,50 @@ body[data-theme="pastel-pink"] {
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：カフェオレベージュ ==================== */
+/* ==================== パステル：イエロー ====================
+   2026-09-08修正: 元は「カフェオレベージュ」という茶系のトーンだったが、
+   ダークモード側の「イエロー（重厚なダークゴールド）」と対になる色として、
+   彩度を上げて茶色ではなくきちんと黄色と分かる配色に描き直した。 */
 body[data-theme="pastel-beige"] {
-    --color-bg: #e8dcc9;
-    --color-panel-bg: #eee4d3;
-    --color-cell-bg: #f6efe3;
-    --color-input-bg: #ddc7a5;
-    --color-modal-bg: #eee4d3;
-    --color-modal-overlay: rgba(50, 40, 20, 0.4);
-    --color-input-bg-hover: #cfb28a;
-    --color-selected-bg: #ddc6a3;
+    --color-bg: #f0e8c8;
+    --color-panel-bg: #f4eed3;
+    --color-cell-bg: #faf6e4;
+    --color-input-bg: #e8dba0;
+    --color-modal-bg: #f4eed3;
+    --color-modal-overlay: rgba(50, 45, 15, 0.4);
+    --color-input-bg-hover: #dcc873;
+    --color-selected-bg: #e8d698;
 
-    --color-text: #4a3f30;
+    --color-text: #4a4326;
 
-    --color-border: #e2d2b8;
-    --color-border-input: #9c7c50;
-    --color-dashed-border: #9c7c50;
+    --color-border: #ecdfae;
+    --color-border-input: #b89a3c;
+    --color-dashed-border: #b89a3c;
 
-    --color-accent: #7a5c38;
-    --color-accent-2: #8f6c42;
-    --color-accent-3: #a0794a;
-    --color-accent-4: #7a5c38;
-    --color-accent-strong: #ab8a63;
-    --color-day-header-bg: #ddc49f;
-    --color-day-header-text: #6b5030;
-    --color-event-bg: rgba(122, 92, 56, 0.14);
+    --color-accent: #8a7024;
+    --color-accent-2: #a3872b;
+    --color-accent-3: #b89a3c;
+    --color-accent-4: #8a7024;
+    --color-accent-strong: #c2a545;
+    --color-day-header-bg: #e6d488;
+    --color-day-header-text: #6b5518;
+    --color-event-bg: rgba(138, 112, 36, 0.14);
 
     --color-weekend: #d15f78;
 
-    --color-title-hover-glow: rgba(122, 92, 56, 0.12);
-    --color-date-hover-glow: rgba(171, 138, 99, 0.42);
-    --color-search-pulse-1: rgba(171, 138, 99, 0.36);
-    --color-search-pulse-2: rgba(171, 138, 99, 0.28);
-    --color-search-pulse-bg: #ecdcc3;
-    --color-status-bar-bg: #ddc7a8;
+    --color-title-hover-glow: rgba(138, 112, 36, 0.12);
+    --color-date-hover-glow: rgba(184, 154, 60, 0.42);
+    --color-search-pulse-1: rgba(184, 154, 60, 0.36);
+    --color-search-pulse-2: rgba(184, 154, 60, 0.28);
+    --color-search-pulse-bg: #f2e6b8;
+    --color-status-bar-bg: #e6d488;
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== パステル：モノトーン ==================== */
+/* ==================== パステル：モノクロ ====================
+   2026-09-08: 表示名を「モノトーン」から「モノクロ」に変更
+   （ダークモード側の「モノクロ」と対になる名前にそろえた）。色自体は
+   変更していない。 */
 /* UIの骨格（背景・パネル・見出し・枠線）だけを白黒グレーでまとめる。
    行動テンプレートの色はテンプレートごとに個別管理されており、
    このテーマ切り替えでは変わらず、鮮やかな色のまま残る（意図した仕様）。 */
@@ -282,61 +296,12 @@ body[data-theme="pastel-mono"] {
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
 }
 
-/* ==================== ダークモード：ベース ====================
-   2026-09-06追加。「配色バリエーションの路線は良いが、元のダークモードの
-   ベースも残しておきたい」というご要望を受け、初期からずっと
-   css/variables.css の :root に残していた「元々のダークモード」の
-   アクセント色（青、#44aaff系）を、アナスイ系と対になる同じグループの
-   1トーンとして復活させたもの。背景・カード・枠線などの構造は
-   他のダークモードのトーン（ゴールド/ローズ/エメラルド/パープル）と
-   完全に揃え、アクセント色（青）だけが異なる「バリエーションの一つ」
-   という位置づけにしている。 */
-body[data-theme="annasui-blue"] {
-    /* 2026-09-07修正: 「ベース」は他のダークモード・バリエーションと違い、
-       css/variables.css の :root にずっと残っていた「元々のダークモード」の
-       色をそのまま復元する専用トーンのはずだったが、他のトーン（ゴールド等）
-       と同じ構造にするために背景・パネル・セル・枠線を共通の暖色系ニュートラル
-       （#0a0908 系）にそろえてしまっていた。この暖色系は青みが無いため、
-       セルが「ほぼ黒」に見えてしまう、というご指摘を受け、背景まわりの色だけ
-       :root の元の値（#0a0a0f 系、青みの残る紺色）に戻した。 */
-    --color-bg: #0a0a0f;
-    --color-panel-bg: #111118;
-    --color-cell-bg: #16161f;
-    --color-input-bg: #1a1a22;
-    --color-modal-bg: #14141f;
-    --color-modal-overlay: rgba(5, 5, 15, 0.4);
-    --color-input-bg-hover: #222233;
-    --color-selected-bg: rgba(68, 170, 255, 0.16);
+/* ==================== アナスイ：イエロー（重厚なダークゴールド） ====================
+   2026-09-08: 表示名を「ゴールド」から「イエロー」に変更（パステル側の
+   「イエロー」と対になる、重厚なダークゴールドという位置づけ）。
+   色自体は変更していない。内部ID（annasui-gold）は保存済みデータへの
+   影響を避けるためそのまま残している。
 
-    --color-text: #e0e0e8;
-
-    --color-border: #282835;
-    --color-border-input: #336699;
-    --color-dashed-border: #334466;
-
-    --color-accent: #44aaff;
-    --color-accent-2: #44aaff;
-    --color-accent-3: #6fc3ff;
-    --color-accent-4: #44aaff;
-    --color-accent-strong: #2f74e0;
-    --color-day-header-bg: transparent;
-    --color-day-header-text: #44aaff;
-    --color-event-bg: rgba(68, 170, 255, 0.14);
-
-    --color-weekend: #c96a76;
-
-    --color-title-hover-glow: rgba(68, 170, 255, 0.12);
-    --color-date-hover-glow: rgba(68, 170, 255, 0.4);
-    --color-search-pulse-1: rgba(68, 170, 255, 0.3);
-    --color-search-pulse-2: rgba(68, 170, 255, 0.24);
-    --color-search-pulse-bg: #17130f;
-    --color-status-bar-bg: rgba(68, 170, 255, 0.18);
-    --color-today-overlay: none;
-    --color-cell-gloss: none;
-    --color-cell-highlight: transparent;
-}
-
-/* ==================== アナスイ：ゴールド ====================
    2026-09-06追加: 日付マス・リストの日付グループに乗る光沢グラデーション
    （--color-cell-gloss）を none にし、面をフラットな塗りに戻している。
    パステル系のような明るい背景では光沢が馴染むが、アナスイ系のような
@@ -389,7 +354,10 @@ body[data-theme="annasui-gold"] {
     --color-cell-highlight: transparent;
 }
 
-/* ==================== アナスイ：ローズ ==================== */
+/* ==================== アナスイ：ピンク ====================
+   2026-09-08: 表示名を「ローズ」から「ピンク」に変更（パステル側の
+   「ピンク」と対になる名前にそろえた）。色自体は変更していない。
+   内部ID（annasui-rose）は保存済みデータへの影響を避けそのまま残している。 */
 body[data-theme="annasui-rose"] {
     /* 2026-09-07修正: 背景を他のトーンと共有していた暖色系ニュートラル
        （色みの無い黒）から、ローズのアクセントに合わせてほんのり
@@ -431,7 +399,9 @@ body[data-theme="annasui-rose"] {
     --color-cell-highlight: transparent;
 }
 
-/* ==================== アナスイ：エメラルド ==================== */
+/* ==================== アナスイ：グリーン ====================
+   2026-09-08: 表示名を「エメラルド」から「グリーン」に変更（パステル側の
+   「グリーン」と対になる名前にそろえた）。色自体は変更していない。 */
 body[data-theme="annasui-green"] {
     /* 2026-09-07修正: 背景を他のトーンと共有していた暖色系ニュートラル
        （色みの無い黒）から、エメラルドのアクセントに合わせてほんのり
@@ -512,6 +482,48 @@ body[data-theme="annasui-purple"] {
     --color-search-pulse-2: rgba(160, 140, 214, 0.24);
     --color-search-pulse-bg: #17130f;
     --color-status-bar-bg: rgba(160, 140, 214, 0.18);
+    --color-today-overlay: none;
+    --color-cell-gloss: none;
+    --color-cell-highlight: transparent;
+}
+
+/* ==================== アナスイ：モノクロ ====================
+   2026-09-08追加。パステル側の「モノクロ」と対になる、彩度ゼロの
+   ダークモード用トーン。他のダークモードのトーンと違い、背景に
+   特定の色みをあえて足さず、完全なグレースケールのままにしている。 */
+body[data-theme="annasui-mono"] {
+    --color-bg: #0a0a0a;
+    --color-panel-bg: #0d0d0d;
+    --color-cell-bg: #131313;
+    --color-input-bg: #181818;
+    --color-modal-bg: #131313;
+    --color-modal-overlay: rgba(10, 10, 10, 0.4);
+    --color-input-bg-hover: #222222;
+    --color-selected-bg: rgba(176, 176, 176, 0.16);
+
+    --color-text: #e5e5e5;
+
+    --color-border: #2e2e2e;
+    --color-border-input: #5c5c5c;
+    --color-dashed-border: #5c5c5c;
+
+    --color-accent: #b0b0b0;
+    --color-accent-2: #b0b0b0;
+    --color-accent-3: #c8c8c8;
+    --color-accent-4: #b0b0b0;
+    --color-accent-strong: #8a8a8a;
+    --color-day-header-bg: transparent;
+    --color-day-header-text: #b0b0b0;
+    --color-event-bg: rgba(176, 176, 176, 0.14);
+
+    --color-weekend: #c96a76;
+
+    --color-title-hover-glow: rgba(176, 176, 176, 0.12);
+    --color-date-hover-glow: rgba(176, 176, 176, 0.4);
+    --color-search-pulse-1: rgba(176, 176, 176, 0.3);
+    --color-search-pulse-2: rgba(176, 176, 176, 0.24);
+    --color-search-pulse-bg: #171717;
+    --color-status-bar-bg: rgba(176, 176, 176, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
     --color-cell-highlight: transparent;
