@@ -329,37 +329,37 @@ body[data-theme="annasui-gold"] {
     --color-modal-bg: #19150f;
     --color-modal-overlay: rgba(13, 11, 8, 0.4);
     --color-input-bg-hover: #29231b;
-    --color-selected-bg: rgba(179, 144, 81, 0.16);
+    --color-selected-bg: rgba(200, 157, 81, 0.16);
 
     --color-text: #ece7e2;
 
     --color-border: #322a1e;
-    --color-border-input: #645437;
-    --color-dashed-border: #645437;
+    --color-border-input: #7a6236;
+    --color-dashed-border: #7a6236;
 
-    --color-accent: #b39051;
-    --color-accent-2: #b39051;
-    --color-accent-3: #c7a870;
-    --color-accent-4: #b39051;
-    --color-accent-strong: #886d41;
+    --color-accent: #c89d51;
+    --color-accent-2: #c89d51;
+    --color-accent-3: #dab572;
+    --color-accent-4: #c89d51;
+    --color-accent-strong: #a37b3a;
     --color-day-header-bg: transparent;
     --color-day-header-border: var(--color-border);
-    --color-day-header-text: #b39051;
-    --color-event-bg: rgba(179, 144, 81, 0.14);
+    --color-day-header-text: #c89d51;
+    --color-event-bg: rgba(200, 157, 81, 0.14);
 
     /* 2026-09-08修正: 参考画像と比べて日付の数字（特に休日）が明るすぎる、
        というご指摘を受け、休日色を少し落ち着いた色に、通常の日付の数字は
        専用の変数（--color-date-num-text）を新設して少し暗いオフホワイトに
        した（5トーンすべて同じ値。見出しやボタンなど他の文字色は変更なし）。 */
-    --color-weekend: #ab6972;
-    --color-date-num-text: #d2cec9;
+    --color-weekend: #c17a83;
+    --color-date-num-text: #e4dfd9;
 
-    --color-title-hover-glow: rgba(179, 144, 81, 0.12);
-    --color-date-hover-glow: rgba(179, 144, 81, 0.4);
-    --color-search-pulse-1: rgba(179, 144, 81, 0.3);
-    --color-search-pulse-2: rgba(179, 144, 81, 0.24);
+    --color-title-hover-glow: rgba(200, 157, 81, 0.12);
+    --color-date-hover-glow: rgba(200, 157, 81, 0.4);
+    --color-search-pulse-1: rgba(200, 157, 81, 0.3);
+    --color-search-pulse-2: rgba(200, 157, 81, 0.24);
     --color-search-pulse-bg: #17130f;
-    --color-status-bar-bg: rgba(179, 144, 81, 0.18);
+    --color-status-bar-bg: rgba(200, 157, 81, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
     --color-cell-highlight: transparent;
@@ -380,33 +380,33 @@ body[data-theme="annasui-rose"] {
     --color-modal-bg: #1b1215;
     --color-modal-overlay: rgba(15, 10, 11, 0.4);
     --color-input-bg-hover: #2b1d23;
-    --color-selected-bg: rgba(199, 143, 149, 0.16);
+    --color-selected-bg: rgba(214, 148, 155, 0.16);
 
     --color-text: #ece7e2;
 
     --color-border: #352429;
-    --color-border-input: #5c3e42;
-    --color-dashed-border: #5c3e42;
+    --color-border-input: #6e4146;
+    --color-dashed-border: #6e4146;
 
-    --color-accent: #c78f95;
-    --color-accent-2: #c78f95;
-    --color-accent-3: #d4a7ac;
-    --color-accent-4: #c78f95;
-    --color-accent-strong: #a36970;
+    --color-accent: #d6949b;
+    --color-accent-2: #d6949b;
+    --color-accent-3: #e1aeb4;
+    --color-accent-4: #d6949b;
+    --color-accent-strong: #b46d75;
     --color-day-header-bg: transparent;
     --color-day-header-border: var(--color-border);
-    --color-day-header-text: #c78f95;
-    --color-event-bg: rgba(199, 143, 149, 0.14);
+    --color-day-header-text: #d6949b;
+    --color-event-bg: rgba(214, 148, 155, 0.14);
 
-    --color-weekend: #ab6972;
-    --color-date-num-text: #d2cec9;
+    --color-weekend: #c17a83;
+    --color-date-num-text: #e4dfd9;
 
-    --color-title-hover-glow: rgba(199, 143, 149, 0.12);
-    --color-date-hover-glow: rgba(199, 143, 149, 0.4);
-    --color-search-pulse-1: rgba(199, 143, 149, 0.3);
-    --color-search-pulse-2: rgba(199, 143, 149, 0.24);
+    --color-title-hover-glow: rgba(214, 148, 155, 0.12);
+    --color-date-hover-glow: rgba(214, 148, 155, 0.4);
+    --color-search-pulse-1: rgba(214, 148, 155, 0.3);
+    --color-search-pulse-2: rgba(214, 148, 155, 0.24);
     --color-search-pulse-bg: #17130f;
-    --color-status-bar-bg: rgba(199, 143, 149, 0.18);
+    --color-status-bar-bg: rgba(214, 148, 155, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
     --color-cell-highlight: transparent;
@@ -426,33 +426,33 @@ body[data-theme="annasui-green"] {
     --color-modal-bg: #111a14;
     --color-modal-overlay: rgba(9, 14, 10, 0.4);
     --color-input-bg-hover: #1d2a22;
-    --color-selected-bg: rgba(122, 176, 139, 0.16);
+    --color-selected-bg: rgba(127, 192, 147, 0.16);
 
     --color-text: #ece7e2;
 
     --color-border: #203026;
-    --color-border-input: #2c4134;
-    --color-dashed-border: #2c4134;
+    --color-border-input: #30513c;
+    --color-dashed-border: #30513c;
 
-    --color-accent: #7ab08b;
-    --color-accent-2: #7ab08b;
-    --color-accent-3: #93c4a2;
-    --color-accent-4: #7ab08b;
-    --color-accent-strong: #537c61;
+    --color-accent: #7fc093;
+    --color-accent-2: #7fc093;
+    --color-accent-3: #9ad2ab;
+    --color-accent-4: #7fc093;
+    --color-accent-strong: #539069;
     --color-day-header-bg: transparent;
     --color-day-header-border: var(--color-border);
-    --color-day-header-text: #7ab08b;
-    --color-event-bg: rgba(122, 176, 139, 0.14);
+    --color-day-header-text: #7fc093;
+    --color-event-bg: rgba(127, 192, 147, 0.14);
 
-    --color-weekend: #ab6972;
-    --color-date-num-text: #d2cec9;
+    --color-weekend: #c17a83;
+    --color-date-num-text: #e4dfd9;
 
-    --color-title-hover-glow: rgba(122, 176, 139, 0.12);
-    --color-date-hover-glow: rgba(122, 176, 139, 0.4);
-    --color-search-pulse-1: rgba(122, 176, 139, 0.3);
-    --color-search-pulse-2: rgba(122, 176, 139, 0.24);
+    --color-title-hover-glow: rgba(127, 192, 147, 0.12);
+    --color-date-hover-glow: rgba(127, 192, 147, 0.4);
+    --color-search-pulse-1: rgba(127, 192, 147, 0.3);
+    --color-search-pulse-2: rgba(127, 192, 147, 0.24);
     --color-search-pulse-bg: #17130f;
-    --color-status-bar-bg: rgba(122, 176, 139, 0.18);
+    --color-status-bar-bg: rgba(127, 192, 147, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
     --color-cell-highlight: transparent;
@@ -472,33 +472,33 @@ body[data-theme="annasui-purple"] {
     --color-modal-bg: #191420;
     --color-modal-overlay: rgba(13, 10, 16, 0.4);
     --color-input-bg-hover: #291f31;
-    --color-selected-bg: rgba(149, 135, 188, 0.16);
+    --color-selected-bg: rgba(157, 140, 203, 0.16);
 
     --color-text: #ece7e2;
 
     --color-border: #322a3d;
-    --color-border-input: #423b56;
-    --color-dashed-border: #423b56;
+    --color-border-input: #483f67;
+    --color-dashed-border: #483f67;
 
-    --color-accent: #9587bc;
-    --color-accent-2: #9587bc;
-    --color-accent-3: #aa9dc9;
-    --color-accent-4: #9587bc;
-    --color-accent-strong: #73629b;
+    --color-accent: #9d8ccb;
+    --color-accent-2: #9d8ccb;
+    --color-accent-3: #b3a4d7;
+    --color-accent-4: #9d8ccb;
+    --color-accent-strong: #7a65ac;
     --color-day-header-bg: transparent;
     --color-day-header-border: var(--color-border);
-    --color-day-header-text: #9587bc;
-    --color-event-bg: rgba(149, 135, 188, 0.14);
+    --color-day-header-text: #9d8ccb;
+    --color-event-bg: rgba(157, 140, 203, 0.14);
 
-    --color-weekend: #ab6972;
-    --color-date-num-text: #d2cec9;
+    --color-weekend: #c17a83;
+    --color-date-num-text: #e4dfd9;
 
-    --color-title-hover-glow: rgba(149, 135, 188, 0.12);
-    --color-date-hover-glow: rgba(149, 135, 188, 0.4);
-    --color-search-pulse-1: rgba(149, 135, 188, 0.3);
-    --color-search-pulse-2: rgba(149, 135, 188, 0.24);
+    --color-title-hover-glow: rgba(157, 140, 203, 0.12);
+    --color-date-hover-glow: rgba(157, 140, 203, 0.4);
+    --color-search-pulse-1: rgba(157, 140, 203, 0.3);
+    --color-search-pulse-2: rgba(157, 140, 203, 0.24);
     --color-search-pulse-bg: #17130f;
-    --color-status-bar-bg: rgba(149, 135, 188, 0.18);
+    --color-status-bar-bg: rgba(157, 140, 203, 0.18);
     --color-today-overlay: none;
     --color-cell-gloss: none;
     --color-cell-highlight: transparent;
@@ -534,8 +534,8 @@ body[data-theme="annasui-mono"] {
     --color-day-header-text: #b0b0b0;
     --color-event-bg: rgba(176, 176, 176, 0.14);
 
-    --color-weekend: #ab6972;
-    --color-date-num-text: #d2cec9;
+    --color-weekend: #c17a83;
+    --color-date-num-text: #e4dfd9;
 
     --color-title-hover-glow: rgba(176, 176, 176, 0.12);
     --color-date-hover-glow: rgba(176, 176, 176, 0.4);

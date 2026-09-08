@@ -130,10 +130,10 @@ const THEME_STYLES = [
         id: 'annasui',
         label: 'ダークモード',
         tones: [
-            { id: 'annasui-purple', label: 'パープル', swatch: '#9587bc' },
-            { id: 'annasui-green', label: 'グリーン', swatch: '#7ab08b' },
-            { id: 'annasui-rose', label: 'ピンク', swatch: '#c78f95' },
-            { id: 'annasui-gold', label: 'イエロー', swatch: '#b39051' },
+            { id: 'annasui-purple', label: 'パープル', swatch: '#9d8ccb' },
+            { id: 'annasui-green', label: 'グリーン', swatch: '#7fc093' },
+            { id: 'annasui-rose', label: 'ピンク', swatch: '#d6949b' },
+            { id: 'annasui-gold', label: 'イエロー', swatch: '#c89d51' },
             { id: 'annasui-mono', label: 'モノクロ', swatch: '#b0b0b0' }
         ]
     }
