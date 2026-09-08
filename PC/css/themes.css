@@ -121,6 +121,18 @@ body[data-theme="pastel-blue"] {
     --color-day-header-bg: #cbb8e0;
     --color-day-header-text: #5d4479;
     --color-day-header-border: var(--color-border-input);
+    /* 2026-09-08修正: --color-date-num-text は :root で var(--color-text) と
+       定義しているだけだったため、パステル各トーンがここで --color-text を
+       上書きしても反映されず、日付の数字だけ :root 本来の色（ダークモードの
+       明るいオフホワイト）のまま background との対比がほぼ無くなり、文字が
+       ひどく薄く見えてしまっていた（CSS変数の var() は定義した場所の
+       カスケードで解決されるため、祖先要素で決まった時点の値がそのまま
+       子要素に継承される。同じ場所で改めて上書きしないと、子孫での
+       --color-text の変更を追いかけてくれない）。ここで改めて
+       var(--color-text) を上書きし、各トーン自身の文字色を確実に
+       参照するようにした（ダークモード各トーンは元々ここを個別の色で
+       上書きしていたため、この問題の影響を受けていなかった）。 */
+    --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(109, 83, 145, 0.14);
 
     --color-weekend: #d15f78;
@@ -162,6 +174,7 @@ body[data-theme="pastel-green"] {
     --color-day-header-bg: #b9d1a8;
     --color-day-header-text: #43602f;
     --color-day-header-border: var(--color-border-input);
+    --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(95, 125, 77, 0.14);
 
     --color-weekend: #d15f78;
@@ -203,6 +216,7 @@ body[data-theme="pastel-pink"] {
     --color-day-header-bg: #d9bcc2;
     --color-day-header-text: #6b4750;
     --color-day-header-border: var(--color-border-input);
+    --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(122, 79, 89, 0.14);
 
     --color-weekend: #d15f78;
@@ -244,6 +258,7 @@ body[data-theme="pastel-beige"] {
     --color-day-header-bg: #e6d488;
     --color-day-header-text: #6b5518;
     --color-day-header-border: var(--color-border-input);
+    --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(138, 112, 36, 0.14);
 
     --color-weekend: #d15f78;
@@ -288,6 +303,7 @@ body[data-theme="pastel-mono"] {
     --color-day-header-bg: #c9c9c9;
     --color-day-header-text: #3f3f3f;
     --color-day-header-border: var(--color-border-input);
+    --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(90, 90, 90, 0.14);
 
     --color-weekend: #d15f78;
