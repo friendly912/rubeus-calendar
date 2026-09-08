@@ -343,7 +343,7 @@ body[data-theme="annasui-gold"] {
     --color-accent-4: #d9a54a;
     --color-accent-strong: #b8842f;
     --color-day-header-bg: transparent;
-    --color-day-header-border: transparent;
+    --color-day-header-border: var(--color-border);
     --color-day-header-text: #d9a54a;
     --color-event-bg: rgba(217, 165, 74, 0.14);
 
@@ -389,7 +389,7 @@ body[data-theme="annasui-rose"] {
     --color-accent-4: #e0949c;
     --color-accent-strong: #c06b75;
     --color-day-header-bg: transparent;
-    --color-day-header-border: transparent;
+    --color-day-header-border: var(--color-border);
     --color-day-header-text: #e0949c;
     --color-event-bg: rgba(224, 148, 156, 0.14);
 
@@ -434,7 +434,7 @@ body[data-theme="annasui-green"] {
     --color-accent-4: #7ecb96;
     --color-accent-strong: #4f9e6b;
     --color-day-header-bg: transparent;
-    --color-day-header-border: transparent;
+    --color-day-header-border: var(--color-border);
     --color-day-header-text: #7ecb96;
     --color-event-bg: rgba(126, 203, 150, 0.14);
 
@@ -479,7 +479,7 @@ body[data-theme="annasui-purple"] {
     --color-accent-4: #a08cd6;
     --color-accent-strong: #7c63b8;
     --color-day-header-bg: transparent;
-    --color-day-header-border: transparent;
+    --color-day-header-border: var(--color-border);
     --color-day-header-text: #a08cd6;
     --color-event-bg: rgba(160, 140, 214, 0.14);
 
@@ -522,7 +522,7 @@ body[data-theme="annasui-mono"] {
     --color-accent-4: #b0b0b0;
     --color-accent-strong: #8a8a8a;
     --color-day-header-bg: transparent;
-    --color-day-header-border: transparent;
+    --color-day-header-border: var(--color-border);
     --color-day-header-text: #b0b0b0;
     --color-event-bg: rgba(176, 176, 176, 0.14);
 
