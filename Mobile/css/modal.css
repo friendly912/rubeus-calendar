@@ -149,7 +149,7 @@
 .template-option {
     padding: 14px 8px;
     text-align: center;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
     cursor: pointer;
 }
@@ -166,7 +166,7 @@
     color: var(--color-accent-3);
     margin: 12px 0;
     padding: 12px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 12px;
 }
 #startTimePreview, #editStartTimePreview { color: var(--color-start-time); }
@@ -182,7 +182,7 @@
 .time-btn {
     /* タップ領域を確保するため、PC版より上下を少し広めにしている */
     padding: 13px 6px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;
     text-align: center;
@@ -200,7 +200,7 @@
     opacity: 0.4;
     cursor: not-allowed;
 }
-.time-btn.disabled:hover { background: var(--color-input-bg); }
+.time-btn.disabled:hover { background: var(--gradient-nav-btn), var(--color-input-bg); }
 
 .minute-section { margin-top: 14px; }
 .minute-row { margin-bottom: 8px; }
@@ -210,7 +210,7 @@
 /* ---- 終了日カレンダー ---- */
 .end-date-option {
     padding: 14px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
     margin: 6px 0;
     cursor: pointer;
@@ -238,7 +238,7 @@
 .end-date-day-header {
     text-align: center;
     padding: 5px 2px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 4px;
     font-weight: bold;
     font-size: 11px;
@@ -295,7 +295,7 @@
 .settings-section {
     margin: 14px 0;
     padding: 14px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
 }
 .settings-section h4 {
@@ -352,7 +352,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 2px solid transparent;
     border-radius: 10px;
     color: var(--color-text);

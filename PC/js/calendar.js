@@ -91,6 +91,9 @@ function generateCalendar(hitDates = null) {
         const idx = (i + weekStart) % 7;
         const div = document.createElement('div');
         div.className = 'day-header';
+        // 2026-09-29追加: 曜日見出しの「日」「土」を、日付の数字と同じ色にするため
+        if (idx === 0) div.classList.add('sunday');
+        if (idx === 6) div.classList.add('saturday');
         div.textContent = days[idx];
         cal.appendChild(div);
         if (i === 0) firstDayHeaderEl = div;

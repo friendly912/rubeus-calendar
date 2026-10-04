@@ -24,7 +24,7 @@ button, input, select, textarea {
 }
 
 body {
-    background: var(--color-bg);
+    background: var(--gradient-page), var(--color-bg);
     color: var(--color-text);
     font-family: var(--font-body);
     margin: 0;

@@ -56,6 +56,9 @@
     padding: 8px 10px;
     font-size: 14px;
     white-space: nowrap;
+    /* 2026-09-29追加: 完全なベタ塗りに見えて重たくならないよう、ごく弱い色ムラを
+       .btn の単色背景の上に重ねる。--gradient-nav-btnがnoneのテーマは変化なし。 */
+    background: var(--gradient-nav-btn), var(--color-input-bg);
 }
 
 /* ---- 状態バー（コピー中 / 複数選択中） ---- */
@@ -198,13 +201,18 @@ body.mode-portrait .calendar {
 .day-header {
     text-align: center;
     padding: 8px 2px;
-    background: var(--color-day-header-bg);
+    /* 2026-09-29修正: ベタ塗りが重たく見えないよう、ごく弱い色ムラを重ねる
+       （--gradient-day-headerがnoneの場合は今までと同じベタ塗りのまま）。 */
+    background: var(--gradient-day-header), var(--color-day-header-bg);
     border: 1px solid var(--color-day-header-border);
     border-radius: 4px;
     font-weight: bold;
     font-size: 12px;
     color: var(--color-day-header-text);
 }
+/* 2026-09-29追加: 曜日見出しの「日」「土」を、日付の数字と同じ色に統一する。 */
+.day-header.sunday { color: var(--color-sunday); }
+.day-header.saturday { color: var(--color-saturday); }
 
 .date {
     /* 2026-09-05: 単なる「背景色のベタ塗り」だと質感が平坦に見える、
@@ -266,8 +274,11 @@ body.mode-portrait .calendar {
     /* 2026-09-05: 通常のマスと同じ光沢レイヤーを残しつつ、
        一番上に today-overlay（アクセント色へのグラデーション）を重ねる。
        2026-09-06: 光沢レイヤーもテーマ側で出し分ける --color-cell-gloss に変更
-       （アナスイ系は today-overlay・cell-gloss とも none になる）。 */
-    background: var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
+       （アナスイ系は today-overlay・cell-gloss とも none になる）。
+       2026-09-29追加: 白のにじみ方が1方向だけだと単調に見えるため、
+       右上・右下それぞれに広がる非対称な白の抜け（-2・-3）を土台の上に
+       重ねられるようにした。未設定のテーマはnoneなので今までと変わらない。 */
+    background: var(--color-today-overlay-3), var(--color-today-overlay-2), var(--color-today-overlay), var(--color-cell-gloss), var(--color-cell-bg);
     box-shadow: 0 0 8px var(--color-date-hover-glow), 0 0 24px var(--color-date-hover-glow), inset 0 1px 0 var(--color-cell-highlight);
     animation: todayPulse 2.4s infinite ease-in-out;
 }
@@ -304,8 +315,9 @@ body.mode-portrait .calendar {
     color: var(--color-date-num-text);
 }
 
-.date.sunday .date-num,
-.date.saturday .date-num { color: var(--color-weekend); }
+/* 土日の日付番号だけ色を変える（2026-09-29: 日曜・土曜を別々の色にできるよう分離） */
+.date.sunday .date-num { color: var(--color-sunday); }
+.date.saturday .date-num { color: var(--color-saturday); }
 
 /* ---- 予定表示 ---- */
 

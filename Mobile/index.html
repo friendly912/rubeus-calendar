@@ -360,7 +360,7 @@
             <h3 id="editTitle" style="margin:0;">テンプレート編集</h3>
             <button class="close-btn" onclick="closeEditTemplateModal()">×</button>
         </div>
-        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px;">
+        <input type="text" id="editName" placeholder="テンプレート名" style="width:100%; padding:12px; margin:10px 0; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px;">
         <input type="color" id="editColor" class="color-input" value="#00ffcc">
         <!--
             【2026-08-05 追加】
@@ -370,7 +370,7 @@
             display:none にして隠す。
             押しても【保存】を押すまでは確定しない（入力欄の中身が変わるだけ）。
         -->
-        <button id="resetTemplateBtn" onclick="resetTemplateToDefault()" style="width:100%; margin-bottom:10px; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; display:none;">↺ 初期状態に戻す</button>
+        <button id="resetTemplateBtn" onclick="resetTemplateToDefault()" style="width:100%; margin-bottom:10px; padding:10px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; display:none;">↺ 初期状態に戻す</button>
         <div style="display:flex; gap:10px; margin-top:16px;">
             <button onclick="deleteTemplate()" class="btn-danger" style="flex:1; padding:12px; border-radius:8px;">削除</button>
             <button onclick="saveTemplateEdit()" style="flex:2; padding:12px; background:var(--color-success); border:none; color:white; border-radius:8px;">保存</button>
@@ -426,7 +426,7 @@
 
         <div id="memoStep" style="display:none; margin-top:18px;">
             <h4>メモ（任意）</h4>
-            <textarea id="wizardMemo" rows="4" style="width:100%; padding:12px; background:var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <textarea id="wizardMemo" rows="4" style="width:100%; padding:12px; background:var(--gradient-nav-btn), var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
             <div style="display:flex; gap:10px; margin-top:18px;">
                 <button onclick="prevToTimeStep()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); color:var(--color-text); border:none; border-radius:8px;">戻る</button>
                 <button onclick="saveEventFromWizard()" style="flex:2; padding:12px; background:var(--color-success); color:white;">登録</button>
@@ -470,7 +470,7 @@
 
         <div style="margin:12px 0;">
             <p>メモ</p>
-            <textarea id="detailMemo" rows="3" style="width:100%; padding:12px; background:var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
+            <textarea id="detailMemo" rows="3" style="width:100%; padding:12px; background:var(--gradient-nav-btn), var(--color-input-bg); color:var(--color-text); border:1px solid var(--color-border-input); border-radius:8px;"></textarea>
         </div>
 
         <div class="modal-actions">
@@ -551,7 +551,7 @@
         <div class="settings-section">
             <h4>■ アカウント</h4>
             <p id="signedInEmail" style="font-size:14px; margin:0 0 10px 0; word-break:break-all;"></p>
-            <button type="button" onclick="logoutCurrentUser()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">ログアウト</button>
+            <button type="button" onclick="logoutCurrentUser()" style="width:100%; padding:10px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">ログアウト</button>
         </div>
         <div class="settings-section">
             <h4>■ カレンダー</h4>
@@ -560,8 +560,8 @@
             </p>
             <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)" style="width:100%; margin-bottom:8px;"></select>
             <button type="button" onclick="createNewCalendar()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">＋ 新しいカレンダー</button>
-            <button type="button" onclick="renameCurrentCalendar()" style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">名前を変更</button>
-            <button type="button" onclick="deleteCurrentCalendar()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">このカレンダーを削除</button>
+            <button type="button" onclick="renameCurrentCalendar()" style="width:100%; padding:10px; margin-bottom:8px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">名前を変更</button>
+            <button type="button" onclick="deleteCurrentCalendar()" style="width:100%; padding:10px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">このカレンダーを削除</button>
         </div>
         <div class="settings-section">
             <h4>■ アプリの入口</h4>
@@ -570,7 +570,7 @@
             </p>
             <input type="text" id="currentCalendarUrl" readonly
                 onclick="this.select();"
-                style="width:100%; padding:10px; margin-bottom:8px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; font-size:12px;">
+                style="width:100%; padding:10px; margin-bottom:8px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px; font-size:12px;">
             <button onclick="copyAppEntryUrl()" class="btn" style="width:100%; padding:10px;">URLをコピー</button>
         </div>
 
@@ -621,7 +621,7 @@
             </p>
             <button onclick="downloadBackup()" class="btn" style="width:100%; padding:10px; margin-bottom:8px;">バックアップをダウンロード</button>
             <input type="file" id="restoreFileInput" accept="application/json" style="display:none" onchange="restoreBackupFromFile(this.files[0]); this.value='';">
-            <button onclick="document.getElementById('restoreFileInput').click()" style="width:100%; padding:10px; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">バックアップから復元</button>
+            <button onclick="document.getElementById('restoreFileInput').click()" style="width:100%; padding:10px; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-muted); border-radius:8px;">バックアップから復元</button>
         </div>
 
         <!--
@@ -684,7 +684,7 @@
         </div>
         <form id="calendarNameForm">
             <input type="text" id="calendarNameInput" placeholder="例：仕事用、プライベート用" maxlength="40" autocomplete="off"
-                style="width:100%; padding:12px; margin:10px 0; background:var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px; font-size:16px;">
+                style="width:100%; padding:12px; margin:10px 0; background:var(--gradient-nav-btn), var(--color-input-bg); border:1px solid var(--color-border-input); color:var(--color-text); border-radius:8px; font-size:16px;">
             <div id="calendarNameError" style="display:none; margin:0 0 8px; color:#ff8a8a; font-size:13px;"></div>
             <div style="display:flex; gap:10px; margin-top:16px;">
                 <button type="button" onclick="closeCalendarNameModal()" style="flex:1; padding:12px; background:var(--color-input-bg-hover); border:none; color:var(--color-text); border-radius:8px;">キャンセル</button>

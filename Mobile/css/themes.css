@@ -98,9 +98,21 @@ body[data-theme="default"] {
    ダークモード側の「パープル」と対になる色として、背景も紫系に統一した
    （アクセント・曜日ヘッダー・グロー系の変数はもともと紫だったため変更なし）。 */
 body[data-theme="pastel-blue"] {
-    --color-bg: #e6dced;
-    --color-panel-bg: #ece3f1;
-    --color-cell-bg: #f6f0f9;
+    /* 2026-09-29修正: 基準画像を計測すると、画面背景・カレンダー土台とも
+       このコードよりずっと白に近く、彩度も低かった。3段階（背景<土台<セル）
+       の明るさの差は保ったまま、全体を大きく明るくした。 */
+    --color-bg: #e0eaf8;
+    --color-panel-bg: #eef5fc;
+    /* 2026-09-29修正: セルのグラデーションが薄れる下部を計測すると、
+       このコードよりもう少し青寄り（冷たいラベンダー）だった。 */
+    --color-cell-bg: #f0f5fc;
+    /* 2026-09-29再修正: 直前の修正でnoneにしたが、基準画像を見直すと
+       パステル系の日付セルには右下方向へ抜ける、ごく薄いグラデーションが
+       実際にはあった（ダークモード系は面を完全にフラットのままにする方針
+       で問題ない）。ダークとパステルで見た目が分かれるよう、パステルだけ
+       この光沢を持たせる（今回、強さを再度強めた）。 */
+    --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
+    --color-cell-highlight: transparent;
     --color-input-bg: #d9c8e4;
     --color-modal-bg: #ece3f1;
     --color-modal-overlay: rgba(40, 28, 52, 0.4);
@@ -119,14 +131,22 @@ body[data-theme="pastel-blue"] {
     --color-border-input: #a98cc9;
     --color-dashed-border: #a98cc9;
 
-    --color-accent: #6d5391;
+    /* 2026-09-29修正: 基準シート（03.png）に明記された値に合わせた。
+       年月タイトル（--color-accent）は「黒に近い紫紺」、今日セルの
+       枠・発光（--color-accent-3）はシート記載の#8A7BFFに。 */
+    --color-accent: #2e2747;
     --color-accent-2: #8a6fb0;
-    --color-accent-3: #9a7ec2;
+    --color-accent-3: #8a7bff;
     --color-accent-4: #6d5391;
     --color-accent-strong: #a98cc9;
-    --color-day-header-bg: #cbb8e0;
-    --color-day-header-text: #5d4479;
-    --color-day-header-border: var(--color-border-input);
+    /* 2026-09-29修正: 基準画像を計測すると、曜日見出しの背景はセルとほぼ
+       同じくらい白に近い、ごく薄いラベンダーだった（以前の値は濃すぎた）。
+       枠線も基準画像には見当たらなかったためtransparentにした。 */
+    --color-day-header-bg: #e6eafb;
+    /* 2026-09-29修正: 基準シートの「平日：ほぼ黒に近いテーマ寄りの濃色」
+       に合わせた（曜日ヘッダーと日付の数字を統一）。 */
+    --color-day-header-text: #2e2747;
+    --color-day-header-border: transparent;
     /* 2026-09-08修正: --color-date-num-text は :root で var(--color-text) と
        定義しているだけだったため、パステル各トーンがここで --color-text を
        上書きしても反映されず、日付の数字だけ :root 本来の色（ダークモードの
@@ -138,10 +158,17 @@ body[data-theme="pastel-blue"] {
        var(--color-text) を上書きし、各トーン自身の文字色を確実に
        参照するようにした（ダークモード各トーンは元々ここを個別の色で
        上書きしていたため、この問題の影響を受けていなかった）。 */
-    --color-date-num-text: var(--color-text);
+    /* 2026-09-29修正: 全体の文字色（--color-text）は変えず、平日の日付の
+       数字だけ基準シート通りの「ほぼ黒に近いテーマ寄りの濃色」に上書き。 */
+    --color-date-num-text: #2e2747;
     --color-event-bg: rgba(109, 83, 145, 0.14);
 
     --color-weekend: #d15f78;
+    /* 2026-09-29追加: 日曜・土曜を別々の色に。青×薄紫の世界観を崩さないよう、
+       もとのくすみ紫（#a86bc9系）から、ほんの少しだけ赤みを足す程度に留めた。
+       土曜は基準画像の青をそのまま採用。 */
+    --color-sunday: #b06bc4;
+    --color-saturday: #4f7edb;
 
     --color-title-hover-glow: rgba(109, 83, 145, 0.12);
     --color-date-hover-glow: rgba(154, 126, 194, 0.42);
@@ -149,7 +176,26 @@ body[data-theme="pastel-blue"] {
     --color-search-pulse-2: rgba(154, 126, 194, 0.28);
     --color-search-pulse-bg: #d9ccec;
     --color-status-bar-bg: #d3c2e6;
-    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+    /* 2026-09-29追加: 「Enterまたは検索で当該月へ」等の補足文字（--color-muted）
+       がテーマから浮いたグレーのままだったため、紫みを帯びた色に統一した。 */
+    --color-muted: #8f7d9c;
+    /* 2026-09-29修正: 基準シートの「当日セルの表現」に明記された色
+       （#C7D4FF→#8A7BFF）そのままに変更。 */
+    --color-today-overlay: linear-gradient(135deg, #c7d4ff, #8a7bff 210%);
+    /* 2026-09-29追加: 「今日」セルの白のにじみを非対称にする2層と、画面背景の
+       縦グラデーション、ボタン・曜日見出しのごく弱い色ムラ。
+       白の抜け方（-2・-3）は色を持たない共通の重ね方なので、パステル4トーン
+       すべて同じ値を使っている。 */
+    --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
+    --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
+    --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
+    /* 2026-09-29修正: 基準シートの「ボタンの表現」に明記された、
+       テーマ色2色の実グラデーション（#DDE5FF→#B8B1FF）に変更
+       （白を薄く重ねるだけの表現から変更）。下部ナビにも同じ考え方を適用。 */
+    --gradient-nav-btn: linear-gradient(135deg, #dde5ff, #b8b1ff);
+    --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, #dde5ff, #b8b1ff);
+    --gradient-bottomnav-active: linear-gradient(135deg, #b8b1ff, #8a7bff);
 }
 
 /* ==================== パステル：グリーン ====================
@@ -157,9 +203,15 @@ body[data-theme="pastel-blue"] {
    （ダークモード側の「グリーン」と対になる名前にそろえた）。色自体は
    変更していない。 */
 body[data-theme="pastel-green"] {
-    --color-bg: #d7ead9;
-    --color-panel-bg: #e1f0e3;
+    /* 2026-09-29修正: 基準画像に合わせ、背景・土台とも白に近く明るくした */
+    --color-bg: #e3ecdf;
+    --color-panel-bg: #f4faf2;
     --color-cell-bg: #eef8ef;
+    /* 2026-09-29再修正: 基準画像には右下方向への薄いグラデーションが
+       実際にはあった。ダークモード系とは見た目を分けるため、パステルだけ
+       この光沢を持たせる（今回、強さを再度強めた）。 */
+    --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
+    --color-cell-highlight: transparent;
     --color-input-bg: #c4e0c9;
     --color-modal-bg: #e1f0e3;
     --color-modal-overlay: rgba(30, 45, 25, 0.4);
@@ -177,13 +229,18 @@ body[data-theme="pastel-green"] {
     --color-accent-3: #4f8a52;
     --color-accent-4: #4a6a3a;
     --color-accent-strong: #7a9c68;
-    --color-day-header-bg: #b9d1a8;
+    /* 2026-09-29修正: 基準画像に合わせ、セルに近い薄い色・枠線なしにした */
+    --color-day-header-bg: #e9f2e7;
     --color-day-header-text: #43602f;
-    --color-day-header-border: var(--color-border-input);
+    --color-day-header-border: transparent;
     --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(95, 125, 77, 0.14);
 
     --color-weekend: #d15f78;
+    /* 2026-09-29追加: 日曜・土曜を別々の色に。赤〜ローズが緑の補色に近く
+       自然に見えるため、基準画像の方向性をそのまま採用。 */
+    --color-sunday: #b56c8e;
+    --color-saturday: #2f7d8a;
 
     --color-title-hover-glow: rgba(95, 125, 77, 0.12);
     --color-date-hover-glow: rgba(111, 154, 92, 0.42);
@@ -191,7 +248,16 @@ body[data-theme="pastel-green"] {
     --color-search-pulse-2: rgba(111, 154, 92, 0.28);
     --color-search-pulse-bg: #d7ecdb;
     --color-status-bar-bg: #cbe2d0;
-    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 210%);
+    /* 2026-09-29追加: 「今日」セルの白のにじみを非対称にする2層と、画面背景の
+       縦グラデーション、ボタン・曜日見出しのごく弱い色ムラ。 */
+    --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
+    --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
+    --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
+    --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+    --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：ピンク ====================
@@ -199,9 +265,15 @@ body[data-theme="pastel-green"] {
    （ダークモード側の「ピンク」と対になる名前にそろえた）。色自体は
    変更していない（甘さを抑えた、くすみのあるモーヴ系ピンク）。 */
 body[data-theme="pastel-pink"] {
-    --color-bg: #e6d4da;
-    --color-panel-bg: #ecdee3;
+    /* 2026-09-29修正: 基準画像に合わせ、背景・土台とも白に近く明るくした */
+    --color-bg: #ede2e2;
+    --color-panel-bg: #f6f0ef;
     --color-cell-bg: #f5eaed;
+    /* 2026-09-29再修正: 基準画像には右下方向への薄いグラデーションが
+       実際にはあった。ダークモード系とは見た目を分けるため、パステルだけ
+       この光沢を持たせる（今回、強さを再度強めた）。 */
+    --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
+    --color-cell-highlight: transparent;
     --color-input-bg: #dcc2ca;
     --color-modal-bg: #ecdee3;
     --color-modal-overlay: rgba(50, 30, 38, 0.4);
@@ -219,13 +291,18 @@ body[data-theme="pastel-pink"] {
     --color-accent-3: #a06f7a;
     --color-accent-4: #7a4f59;
     --color-accent-strong: #9c6f79;
-    --color-day-header-bg: #d9bcc2;
+    /* 2026-09-29修正: 基準画像に合わせ、セルに近い薄い色・枠線なしにした */
+    --color-day-header-bg: #f5e9ea;
     --color-day-header-text: #6b4750;
-    --color-day-header-border: var(--color-border-input);
+    --color-day-header-border: transparent;
     --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(122, 79, 89, 0.14);
 
     --color-weekend: #d15f78;
+    /* 2026-09-29追加: 日曜・土曜を別々の色に。テーマ自体がピンク系のため
+       同系統のローズが濃くなる程度で自然に馴染む。基準画像の方向性を採用。 */
+    --color-sunday: #c05c7c;
+    --color-saturday: #5f7ed8;
 
     --color-title-hover-glow: rgba(122, 79, 89, 0.12);
     --color-date-hover-glow: rgba(156, 111, 121, 0.42);
@@ -233,7 +310,16 @@ body[data-theme="pastel-pink"] {
     --color-search-pulse-2: rgba(156, 111, 121, 0.28);
     --color-search-pulse-bg: #e6d1d6;
     --color-status-bar-bg: #dcc3ca;
-    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 210%);
+    /* 2026-09-29追加: 「今日」セルの白のにじみを非対称にする2層と、画面背景の
+       縦グラデーション、ボタン・曜日見出しのごく弱い色ムラ。 */
+    --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
+    --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
+    --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
+    --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+    --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：イエロー ====================
@@ -241,13 +327,24 @@ body[data-theme="pastel-pink"] {
    ダークモード側の「イエロー（重厚なダークゴールド）」と対になる色として、
    彩度を上げて茶色ではなくきちんと黄色と分かる配色に描き直した。 */
 body[data-theme="pastel-beige"] {
-    --color-bg: #f0e8c8;
-    --color-panel-bg: #f4eed3;
-    --color-cell-bg: #faf6e4;
-    --color-input-bg: #e8dba0;
-    --color-modal-bg: #f4eed3;
+    /* 2026-09-29修正: 基準画像（4色並べた際に他3色と最も馴染んでいた
+       「第一弾」の黄色）を計測すると、背景・土台・セルがこのコードより
+       ずっと白・クリームに寄っていたため、彩度を落として明るくした
+       （「黄色というより茶色っぽい」という印象を避ける狙い）。 */
+    /* 2026-09-29再修正: 前回の調整はまだ基準画像より一段暗かったため、
+       さらに白に近づけた */
+    --color-bg: #fbf3de;
+    --color-panel-bg: #fffbf0;
+    --color-cell-bg: #fffcf1;
+    /* 2026-09-29再修正: 基準画像には右下方向への薄いグラデーションが
+       実際にはあった。ダークモード系とは見た目を分けるため、パステルだけ
+       この光沢を持たせる（今回、強さを再度強めた）。 */
+    --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
+    --color-cell-highlight: transparent;
+    --color-input-bg: #f0e3ae;
+    --color-modal-bg: #fbf6e8;
     --color-modal-overlay: rgba(50, 45, 15, 0.4);
-    --color-input-bg-hover: #dcc873;
+    --color-input-bg-hover: #e0cf85;
     --color-selected-bg: #e8d698;
 
     --color-text: #827335;
@@ -261,13 +358,18 @@ body[data-theme="pastel-beige"] {
     --color-accent-3: #b89a3c;
     --color-accent-4: #8a7024;
     --color-accent-strong: #c2a545;
-    --color-day-header-bg: #e6d488;
+    /* 2026-09-29修正: 基準画像に合わせ、セルに近い薄いクリーム色・枠線なしにした */
+    --color-day-header-bg: #faf1d9;
     --color-day-header-text: #6b5518;
-    --color-day-header-border: var(--color-border-input);
+    --color-day-header-border: transparent;
     --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(138, 112, 36, 0.14);
 
     --color-weekend: #d15f78;
+    /* 2026-09-29追加: 日曜・土曜を別々の色に。基準画像の赤は少し主張が強かった
+       ため、赤系であることは保ちつつ彩度を落として馴染ませた。 */
+    --color-sunday: #cd8678;
+    --color-saturday: #5f7ea8;
 
     --color-title-hover-glow: rgba(138, 112, 36, 0.12);
     --color-date-hover-glow: rgba(184, 154, 60, 0.42);
@@ -275,7 +377,16 @@ body[data-theme="pastel-beige"] {
     --color-search-pulse-2: rgba(184, 154, 60, 0.28);
     --color-search-pulse-bg: #f2e6b8;
     --color-status-bar-bg: #e6d488;
-    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 210%);
+    /* 2026-09-29追加: 「今日」セルの白のにじみを非対称にする2層と、画面背景の
+       縦グラデーション、ボタン・曜日見出しのごく弱い色ムラ。 */
+    --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
+    --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
+    --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
+    --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+    --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：モノクロ ====================
@@ -286,8 +397,12 @@ body[data-theme="pastel-beige"] {
    行動テンプレートの色はテンプレートごとに個別管理されており、
    このテーマ切り替えでは変わらず、鮮やかな色のまま残る（意図した仕様）。 */
 body[data-theme="pastel-mono"] {
-    --color-bg: #dcdcdc;
-    --color-panel-bg: #e4e4e4;
+    /* 2026-09-29追加: 他のパステル4トーン（青・緑・ピンク・イエロー）に
+       行ったのと同じ考え方で、背景・土台を基準画像相当の明るさまで
+       白に近づけた。モノクロは基準画像が無いため、他4トーンでの明度の
+       縮め方（白との距離を半分程度にする）を目安にそろえている。 */
+    --color-bg: #ececec;
+    --color-panel-bg: #f1f1f1;
     --color-cell-bg: #f2f2f2;
     --color-input-bg: #cfcfcf;
     --color-modal-bg: #e4e4e4;
@@ -306,13 +421,17 @@ body[data-theme="pastel-mono"] {
     --color-accent-3: #6e6e6e;
     --color-accent-4: #4a4a4a;
     --color-accent-strong: #7a7a7a;
-    --color-day-header-bg: #c9c9c9;
+    /* 2026-09-29修正: 他4トーンと同じく、白に近い薄さ・枠線なしにした */
+    --color-day-header-bg: #ebebeb;
     --color-day-header-text: #3f3f3f;
-    --color-day-header-border: var(--color-border-input);
+    --color-day-header-border: transparent;
     --color-date-num-text: var(--color-text);
     --color-event-bg: rgba(90, 90, 90, 0.14);
 
     --color-weekend: #d15f78;
+    /* 2026-09-29追加: 日曜・土曜の色分けを、パステル：グリーンと同じ色で適用 */
+    --color-sunday: #b56c8e;
+    --color-saturday: #2f7d8a;
 
     --color-title-hover-glow: rgba(90, 90, 90, 0.12);
     --color-date-hover-glow: rgba(122, 122, 122, 0.42);
@@ -320,7 +439,19 @@ body[data-theme="pastel-mono"] {
     --color-search-pulse-2: rgba(122, 122, 122, 0.28);
     --color-search-pulse-bg: #d6d6d6;
     --color-status-bar-bg: #c9c9c9;
-    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 160%);
+    --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 210%);
+    /* 2026-09-29追加: 他4トーンと同じ内容（白のにじみの非対称レイヤー、
+       画面背景の縦グラデーション、ボタン・曜日見出し・下部タブの色ムラ、
+       日付セルの上部が白に近いグラデーション）をモノクロにも適用。 */
+    --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
+    --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
+    --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
+    --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+    --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
+    --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
+    --color-cell-highlight: transparent;
 }
 
 /* ==================== アナスイ：イエロー（重厚なダークゴールド） ====================

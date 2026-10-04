@@ -26,7 +26,8 @@
 }
 
 .search {
-    background: var(--color-input-bg);
+    /* 2026-09-29追加: 他のボタン・入力欄と同じ色ムラを適用して統一 */
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 1px solid var(--color-border-input);
     color: var(--color-text);
     padding: 9px 36px 9px 12px;
@@ -95,7 +96,10 @@
 
 .search-btn {
     padding: 6px 12px;
-    background: var(--color-input-bg);
+    /* 2026-09-29追加: 前月/次月ボタンと同じ色ムラ・グラデーションを適用し、
+       サイドバー内のボタンの質感を統一（未対応テーマは--gradient-nav-btnが
+       noneのため見た目に変化なし）。 */
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-accent-4);
     border: 1px solid var(--color-border-input);
     border-radius: 6px;
@@ -128,7 +132,8 @@
 }
 
 .template {
-    background: var(--color-input-bg);
+    /* 2026-09-29追加: 他のボタン・入力欄と同じ色ムラを適用して統一 */
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     padding: 8px 10px;
     margin: 0 0 6px;
     border-radius: 8px;
@@ -197,7 +202,7 @@
 }
 .template-action-btn:hover {
     color: var(--color-text);
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
 }
 
 .sidebar-footer {
@@ -231,7 +236,7 @@
 
 .select-weekstart {
     padding: 9px 10px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-text);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;
@@ -241,7 +246,7 @@
 
 .btn-settings {
     padding: 10px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-accent-4);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;

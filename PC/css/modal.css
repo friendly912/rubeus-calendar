@@ -116,7 +116,7 @@
 .template-option {
     padding: 16px 10px;
     text-align: center;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
     cursor: pointer;
 }
@@ -134,7 +134,7 @@
     color: var(--color-accent-3);
     margin: 20px 0;
     padding: 15px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 12px;
 }
 /* 開始時刻・終了時刻でプレビューの色を変え、見分けやすくしている */
@@ -150,7 +150,7 @@
 
 .time-btn {
     padding: 14px 8px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;
     text-align: center;
@@ -169,7 +169,7 @@
     opacity: 0.4;
     cursor: not-allowed;
 }
-.time-btn.disabled:hover { background: var(--color-input-bg); }
+.time-btn.disabled:hover { background: var(--gradient-nav-btn), var(--color-input-bg); }
 
 .minute-section { margin-top: 20px; }
 .minute-row { margin-bottom: 12px; }
@@ -180,7 +180,7 @@
 
 .end-date-option {
     padding: 16px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
     margin: 8px 0;
     cursor: pointer;
@@ -206,7 +206,7 @@
 .end-date-day-header {
     text-align: center;
     padding: 6px 4px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 6px;
     font-weight: bold;
     font-size: 13px;
@@ -266,7 +266,7 @@
 .settings-section {
     margin: 20px 0;
     padding: 16px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border-radius: 10px;
 }
 .settings-section h4 {
@@ -307,7 +307,7 @@
     align-items: center;
     gap: 10px;
     padding: 12px 14px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 2px solid transparent;
     border-radius: 10px;
     color: var(--color-text);

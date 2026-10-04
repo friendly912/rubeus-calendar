@@ -43,7 +43,9 @@ body.mode-landscape .mobile-bottom-bar {
     padding: 15px 4px;
     font-size: 13px;
     font-weight: bold;
-    background: var(--color-cell-bg);
+    /* 2026-09-29修正: ベタ塗りが重たく見えないよう、ごく弱い色ムラを重ねる
+       （--gradient-bottomnavがnoneの場合は今までと同じベタ塗りのまま）。 */
+    background: var(--gradient-bottomnav), var(--color-cell-bg);
     border: 1px solid var(--color-border);
     border-radius: 10px;
     color: var(--color-text);
@@ -53,9 +55,11 @@ body.mode-landscape .mobile-bottom-bar {
     text-overflow: ellipsis;
 }
 .bottom-bar-btn:hover { border-color: var(--color-accent-2); }
-/* 今選ばれている「見せ方」のボタンだけ強調する（カレンダー形式／リスト形式） */
+/* 今選ばれている「見せ方」のボタンだけ強調する（カレンダー形式／リスト形式）
+   2026-09-29修正: 選択中タブは色ムラも通常タブよりわずかに強くする
+   （--gradient-bottomnav-activeがnoneの場合は今までと同じベタ塗りのまま）。 */
 .bottom-bar-btn.active {
-    background: var(--color-accent-strong);
+    background: var(--gradient-bottomnav-active), var(--color-accent-strong);
     color: white;
     border-color: var(--color-accent-4);
 }
@@ -195,7 +199,7 @@ body.mode-landscape .mobile-bottom-bar {
     margin-bottom: 8px;
 }
 .search {
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     border: 1px solid var(--color-border-input);
     color: var(--color-text);
     padding: 9px 36px 9px 12px;
@@ -257,7 +261,10 @@ body.mode-landscape .mobile-bottom-bar {
 .search-btn {
     margin-top: 6px;
     padding: 8px 16px;
-    background: var(--color-input-bg);
+    /* 2026-09-29追加: 前月/次月ボタンと同じ色ムラ・グラデーションを適用し、
+       ボタンの質感を統一（未対応テーマは--gradient-nav-btnがnoneのため
+       見た目に変化なし）。 */
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-accent-4);
     border: 1px solid var(--color-border-input);
     border-radius: 6px;
@@ -281,7 +288,7 @@ body.mode-landscape .mobile-bottom-bar {
     padding-right: 4px;
 }
 .template {
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     padding: 12px 14px; /* PC版よりタップしやすいよう上下を少し広めにしている */
     margin: 6px 0;
     border-radius: 8px;
@@ -380,7 +387,7 @@ body.template-reordering {
 }
 .select-weekstart {
     padding: 15px 10px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-text);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;
@@ -388,7 +395,7 @@ body.template-reordering {
 }
 .btn-settings {
     padding: 14px 10px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-accent-4);
     border: 1px solid var(--color-border-input);
     border-radius: 8px;
@@ -438,7 +445,7 @@ body.mode-portrait .sidebar-drawer {
     flex: 1;
     padding: 15px 4px;
     font-size: 12px;
-    background: var(--color-input-bg);
+    background: var(--gradient-nav-btn), var(--color-input-bg);
     color: var(--color-accent-4);
     border: 1px solid var(--color-border-input);
     border-radius: 6px;
