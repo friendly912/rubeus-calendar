@@ -24,6 +24,8 @@
 <link rel="stylesheet" href="css/base.css?v=20260825a">
 <link rel="stylesheet" href="css/calendar.css?v=20260825a">
 <link rel="stylesheet" href="css/sidebar.css?v=20260825a">
+<link rel="stylesheet" href="css/drawer.css?v=20260825a">
+<link rel="stylesheet" href="css/listView.css?v=20260825a">
 <link rel="stylesheet" href="css/modal.css?v=20260825a">
 <link rel="stylesheet" href="../js/login.css?v=20260825a">
 </head>
@@ -94,43 +96,75 @@
         </div>
 
         <div class="calendar" id="calendar"></div>
+
+        <!--
+            【2026-10-05 追加】「リスト形式」を選んだ時に使う、一覧表示用のコンテナ。
+            普段（カレンダー形式の時）は非表示。中身の描画・表示切り替えは
+            すべて js/listView.js が担当する。
+        -->
+        <div class="calendar-list" id="calendarList"></div>
+
+        <!--
+            【2026-10-05 追加】カレンダー下部のタブ列。スマホ版と同じ3つの操作をまとめている。
+              ・カレンダー形式／リスト形式 … 見せ方の切り替え（js/listView.js）
+              ・メニュー … 検索・行動テンプレート・設定のドロワーを開く（js/drawer.js）
+            タブを足したことで縦に収まらない場合は、日付マスを縮めずに
+            ページ全体をマウスホイールでスクロールする（css/base.css の .main 参照）。
+        -->
+        <div class="bottom-bar">
+            <button type="button" class="bottom-bar-btn view-format-btn" data-format="calendar">📅 カレンダー形式</button>
+            <button type="button" class="bottom-bar-btn view-format-btn" data-format="list">📋 リスト形式</button>
+            <button type="button" class="bottom-bar-btn" onclick="openDrawer()" aria-label="メニューを開く">☰ メニュー</button>
+        </div>
+    </div>
+</div>
+
+<!-- ドロワーの背景の幕。ここをクリックするとドロワーが閉じる -->
+<div id="drawerBackdrop" class="drawer-backdrop" onclick="closeDrawer()"></div>
+
+<!--
+    【2026-10-05 変更】以前は画面右側に常時表示していたサイドバー。
+    中身はそのままに、下部の「メニュー」タブから呼び出すドロワーに変更した。
+    ×ボタン・外側クリック・右方向へのドラッグ・Escキーで閉じる（js/drawer.js）。
+-->
+<div class="sidebar sidebar-drawer" id="sidebarDrawer">
+    <div class="drawer-header">
+        <h2>メニュー</h2>
+        <button type="button" class="drawer-close-btn" onclick="closeDrawer()" aria-label="メニューを閉じる">×</button>
+    </div>
+    <div class="sidebar-search">
+        <label class="sidebar-label sidebar-calendar-select">カレンダー
+            <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)"></select>
+        </label>
+        <div class="search-drop-zone">
+            <div class="search-container">
+                <input type="text" id="search" class="search" placeholder="検索（行動・時間・メモ）" oninput="handleSearchInput()" onkeyup="handleSearchKeyup(event)">
+                <button id="clearBtn" class="clear-btn" onclick="clearSearch()">×</button>
+            </div>
+            <div class="search-row">
+                <span class="search-hint">Enterまたは検索で当該月へ</span>
+                <button onclick="performGlobalSearch()" class="search-btn">検索</button>
+            </div>
+        </div>
     </div>
 
-    <div class="sidebar">
-        <div class="sidebar-search">
-            <label class="sidebar-label sidebar-calendar-select">カレンダー
-                <select class="calendar-switcher select-weekstart" onchange="onCalendarSwitcherChange(this)"></select>
-            </label>
-            <div class="search-drop-zone">
-                <div class="search-container">
-                    <input type="text" id="search" class="search" placeholder="検索（行動・時間・メモ）" oninput="handleSearchInput()" onkeyup="handleSearchKeyup(event)">
-                    <button id="clearBtn" class="clear-btn" onclick="clearSearch()">×</button>
-                </div>
-                <div class="search-row">
-                    <span class="search-hint">Enterまたは検索で当該月へ</span>
-                    <button onclick="performGlobalSearch()" class="search-btn">検索</button>
-                </div>
-            </div>
+    <div class="sidebar-templates">
+        <h2>行動テンプレート</h2>
+        <div class="templates-container" id="templates"></div>
+        <div class="template-actions">
+            <button type="button" class="template-action-btn" onclick="addNewTemplate()">＋ 追加</button>
+            <button type="button" class="template-action-btn" onclick="restoreDeletedDefaultTemplates()">初期を復活</button>
         </div>
+    </div>
 
-        <div class="sidebar-templates">
-            <h2>行動テンプレート</h2>
-            <div class="templates-container" id="templates"></div>
-            <div class="template-actions">
-                <button type="button" class="template-action-btn" onclick="addNewTemplate()">＋ 追加</button>
-                <button type="button" class="template-action-btn" onclick="restoreDeletedDefaultTemplates()">初期を復活</button>
-            </div>
-        </div>
-
-        <div class="sidebar-footer">
-            <label class="sidebar-label">週の始まり
-                <select id="weekStart" class="select-weekstart" onchange="changeWeekStart()">
-                    <option value="0">日曜始まり</option>
-                    <option value="1">月曜始まり</option>
-                </select>
-            </label>
-            <button onclick="showSettingsModal()" class="btn-settings">設定</button>
-        </div>
+    <div class="sidebar-footer">
+        <label class="sidebar-label">週の始まり
+            <select id="weekStart" class="select-weekstart" onchange="changeWeekStart()">
+                <option value="0">日曜始まり</option>
+                <option value="1">月曜始まり</option>
+            </select>
+        </label>
+        <button onclick="showSettingsModal()" class="btn-settings">設定</button>
     </div>
 </div>
 
@@ -138,6 +172,26 @@
      以下、9種類のモーダル（ポップアップ画面）をまとめて配置している。
      どのモーダルも普段は .modal クラスの display:none で隠れており、
      対応するJS（例：showDatePicker()）が display:flex にすることで表示される。 -->
+
+<!--
+    【2026-10-05 追加】リスト形式専用：「＋ 新しい予定を追加」から開始日を選ぶモーダル。
+    スマホ版と同じもの。中身の描画・操作は js/listView.js の
+    showStartDatePickerModal() / renderStartDateCalendar() が担当する。
+-->
+<div id="startDatePickerModal" class="modal" onclick="if(event.target===this) closeStartDatePickerModal()">
+    <div class="modal-content" onclick="event.stopImmediatePropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; color:var(--color-accent);">開始日を選択</h3>
+            <button class="close-btn" onclick="closeStartDatePickerModal()">×</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <button onclick="prevStartDateMonth()" class="btn" style="padding:8px 12px;">← 前月</button>
+            <div id="startDateCalendarHeader" style="font-weight:bold; font-size:16px;"></div>
+            <button onclick="nextStartDateMonth()" class="btn" style="padding:8px 12px;">次月 →</button>
+        </div>
+        <div id="startDateCalendar"></div>
+    </div>
+</div>
 
 <!-- 1. 年月選択モーダル -->
 <div id="dateModal" class="modal" onclick="if(event.target===this) closeDateModal()">
@@ -557,6 +611,8 @@
 <script src="js/copyPaste.js?v=20260825a"></script>
 <script src="js/settings.js?v=20260825a"></script>
 <script src="js/themes.js?v=20260825a"></script>
+<script src="js/drawer.js?v=20260825a"></script>
+<script src="js/listView.js?v=20260825a"></script>
 <script src="js/main.js?v=20260825a"></script>
 </body>
 </html>

@@ -194,6 +194,8 @@ body[data-theme="pastel-blue"] {
        （白を薄く重ねるだけの表現から変更）。下部ナビにも同じ考え方を適用。 */
     --gradient-nav-btn: linear-gradient(135deg, #dde5ff, #b8b1ff);
     --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, #dde5ff, #b8b1ff);
+    --gradient-bottomnav-active: linear-gradient(135deg, #b8b1ff, #8a7bff);
 }
 
 /* ==================== パステル：グリーン ====================
@@ -254,6 +256,8 @@ body[data-theme="pastel-green"] {
     --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
     --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
     --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：ピンク ====================
@@ -314,6 +318,8 @@ body[data-theme="pastel-pink"] {
     --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
     --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
     --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：イエロー ====================
@@ -379,6 +385,8 @@ body[data-theme="pastel-beige"] {
     --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
     --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
     --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
 }
 
 /* ==================== パステル：モノクロ ====================
@@ -433,13 +441,15 @@ body[data-theme="pastel-mono"] {
     --color-status-bar-bg: #c9c9c9;
     --color-today-overlay: linear-gradient(135deg, var(--color-cell-bg), var(--color-accent-strong) 210%);
     /* 2026-09-29追加: 他4トーンと同じ内容（白のにじみの非対称レイヤー、
-       画面背景の縦グラデーション、ボタン・曜日見出しの色ムラ、日付セルの
-       上部が白に近いグラデーション）をモノクロにも適用。 */
+       画面背景の縦グラデーション、ボタン・曜日見出し・下部タブの色ムラ、
+       日付セルの上部が白に近いグラデーション）をモノクロにも適用。 */
     --color-today-overlay-2: radial-gradient(circle at 80% 22%, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.32) 24%, rgba(255, 255, 255, 0) 48%);
     --color-today-overlay-3: radial-gradient(circle at 66% 86%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.3) 34%, rgba(255, 255, 255, 0) 64%);
     --gradient-page: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 18%, rgba(255, 255, 255, 0) 78%, rgba(255, 255, 255, 0.35) 100%);
     --gradient-nav-btn: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
     --gradient-day-header: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
+    --gradient-bottomnav-active: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0) 60%);
     --color-cell-gloss: linear-gradient(160deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 75%);
     --color-cell-highlight: transparent;
 }

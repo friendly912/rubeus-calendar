@@ -1,0 +1,116 @@
+/*
+  drawer.css（PC版）
+  ------------------------------------------------------------
+  【2026-10-05 追加】スマホ版と操作体系を揃えるため、
+   ・カレンダー下部のタブ列（カレンダー形式／リスト形式／メニュー）
+   ・以前は右側に常時表示していたサイドバーを、メニュータブから
+     呼び出す「ドロワー（引き出し）」にする
+  ための見た目を担当する。スマホ版の Mobile/css/drawer.css と同じクラス名・
+  同じ考え方にしている。ドロワーの中身（検索欄・テンプレート一覧など）の
+  見た目は、今まで通り sidebar.css が担当する。
+*/
+
+/* ---- カレンダー下部のタブ列 ---- */
+.bottom-bar {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0; /* カレンダー本体が伸び縮みしても、このタブ列の高さは変わらないようにする */
+}
+.bottom-bar-btn {
+    flex: 1;
+    min-width: 0; /* 文字が長くてもボタンの幅が均等を保てるように */
+    padding: 16px 8px;
+    font-size: 16px;
+    font-weight: bold;
+    /* ベタ塗りが重たく見えないよう、ごく弱い色ムラを重ねる
+       （--gradient-bottomnavがnoneの場合はベタ塗りのまま）。スマホ版と同じ変数。 */
+    background: var(--gradient-bottomnav), var(--color-cell-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    color: var(--color-text);
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bottom-bar-btn:hover { border-color: var(--color-accent-2); }
+/* 今選ばれている「見せ方」のボタンだけ強調する（カレンダー形式／リスト形式） */
+.bottom-bar-btn.active {
+    background: var(--gradient-bottomnav-active), var(--color-accent-strong);
+    color: white;
+    border-color: var(--color-accent-4);
+}
+
+/* ---- ドロワーの背景の幕 ----
+   ドロワーが開いている間だけ表示され、外側クリックで閉じる操作も受け付ける。
+   display:none にせず opacity + pointer-events で制御しているのは、
+   閉じる時にふわっと消えるアニメーションを付けやすくするため。
+   濃さはスマホ版と同じ（左に見えているカレンダーが暗くなりすぎないよう、
+   モーダルの暗幕 --color-modal-overlay より薄めの固定値）。 */
+.drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 220;
+}
+.drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ---- ドロワー本体 ----
+   .sidebar（sidebar.css）の見た目はそのまま使い、置き場所だけを
+   「画面右端に重ねて出てくる」形に変えている。 */
+.sidebar.sidebar-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 340px;
+    max-width: 90vw;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5), inset -20px 0 24px -20px rgba(0, 0, 0, 0.5);
+    z-index: 230; /* 背景幕より手前 */
+    /* 普段は画面の右外に完全に追い出しておき、.open が付いたらスライドして出てくる */
+    transform: translateX(calc(100% + 24px));
+    transition: transform 0.22s ease;
+    /* 右方向へドラッグして閉じられる（js/drawer.js）ことが分かるよう、掴める形のカーソルにする */
+    cursor: grab;
+}
+.sidebar.sidebar-drawer.open {
+    transform: translateX(0);
+}
+/* ドラッグ中は指（マウス）にぴったり付いてくるよう、アニメーションを止める。
+   ついでに、ドラッグ中に文字が選択されて青くなるのも防ぐ。 */
+.sidebar.sidebar-drawer.dragging {
+    transition: none;
+    cursor: grabbing;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex: 0 0 auto;
+}
+.drawer-header h2 {
+    margin: 0;
+    color: var(--color-accent-2);
+    font-size: 18px;
+    letter-spacing: normal;
+}
+.drawer-close-btn {
+    background: none;
+    border: none;
+    color: var(--color-close-btn);
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+}

@@ -9,11 +9,13 @@
 */
 
 .calendar-area {
-    flex: 1;              /* サイドバーの残りの横幅をすべて使う */
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: 0;          /* flexコンテナ内で中身がはみ出さないようにするための指定 */
+    /* 2026-10-05: 画面の高さに余裕がある時は高さいっぱいに広がり（日付マスが
+       残りの高さを分け合う）、足りない時は中身の高さまで伸びて .main（base.css）
+       がスクロールする。 */
+    min-height: 100%;
 }
 
 /* ---- 月移動ヘッダー（← 前月 / 年月 / 次月 →） ---- */
@@ -34,6 +36,16 @@
    .btn の単色背景の上に重ねる（.btnより後に書いて上書きする）。
    通常テーマは --gradient-nav-btn が none のため、今までと見た目は変わらない。 */
 .prev-btn, .next-btn { background: var(--gradient-nav-btn), var(--color-input-bg); }
+/* 2026-10-05: 操作しやすさと見た目の存在感を上げるため、前月/次月ボタンを
+   大きくした（クライアントのご要望）。.btn の共通サイズを上書きしている。 */
+.prev-btn, .next-btn {
+    min-width: 150px;
+    padding: 14px 28px;
+    font-size: 19px;
+    font-weight: bold;
+    border-radius: 12px;
+    white-space: nowrap;
+}
 
 .title {
     grid-column: 2 / 7;
@@ -100,7 +112,7 @@
 /* ---- カレンダーのマス目（グリッド） ---- */
 
 .calendar {
-    flex: 1;
+    flex: 1 0 auto; /* 2026-10-05: 残りの高さを使い、足りなければ縮まずに伸びる（.calendar-area参照） */
     background: var(--color-panel-bg);
     border-radius: 10px;
     padding: 12px;
@@ -136,9 +148,13 @@
       関係なく常に文字とほぼ同じ高さになる。
     */
     grid-template-rows: auto; /* 1行目（曜日見出し）は中身の高さぴったりに固定 */
-    grid-auto-rows: 1fr;      /* 2行目以降（日付マス）で残りの高さを均等に分け合う */
+    /* 2行目以降（日付マス）で残りの高さを均等に分け合う。
+       2026-10-05: 下部タブを追加した分、日付マスが縮みすぎないよう最低の高さ（128px）を
+       決めている。これより低くなる場合は縮めずに、ページ全体をスクロールする（base.css の .main）。 */
+    grid-auto-rows: minmax(128px, 1fr);
     gap: 6px;
-    overflow-y: auto; /* マスが画面高さに収まらない場合は縦スクロール */
+    /* 2026-10-05: 以前はマスが画面高さに収まらない場合にこの中だけを縦スクロール
+       していたが、ページ全体（.main）をスクロールする方式に変更した。 */
 }
 
 .day-header {

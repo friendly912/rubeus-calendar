@@ -34,6 +34,9 @@ async function startCalendarApp() {
 
     isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+    // 2026-10-05: 下部タブの「カレンダー形式／リスト形式」（js/listView.js）
+    initViewFormatUI();
+
     const searchInput = document.getElementById('search');
     searchInput.addEventListener('input', updateClearButton);
     const searchDropZone = document.querySelector('.search-drop-zone') || searchInput;
@@ -54,6 +57,14 @@ async function startCalendarApp() {
                 copiedEventData = null;
                 document.getElementById('copyStatus').style.display = 'none';
                 generateCalendar();
+                return;
+            }
+            // 2026-10-05: メニュー（ドロワー）が開いていれば、まずそれを閉じる。
+            // ただしドロワーから開いたモーダル（設定など）が上に出ている間は、
+            // 下の処理でモーダルの方を先に閉じる。
+            const modalOpen = [...document.querySelectorAll('.modal')].some(m => m.style.display === 'flex');
+            if (!modalOpen && isDrawerOpen()) {
+                closeDrawer();
                 return;
             }
             revertThemeIfNeeded();
